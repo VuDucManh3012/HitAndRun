@@ -129,6 +129,9 @@ public class ControllerPlayer : MonoBehaviour
 
     [Header("SpawnMap")]
     public GameObject SpawnMap;
+
+    [Header("AnimKey")]
+    public GameObject AnimKey;
     private void Awake()
     {
         myLevel = 1;
@@ -515,7 +518,7 @@ public class ControllerPlayer : MonoBehaviour
         {
             ObjectFollowCharacter.GetComponent<CameraFollow2>().onJump = true;
             SetSpeed(SpeedJump);
-            myBody.velocity = new Vector3(0, 10f, 0);
+            myBody.velocity = new Vector3(0, 20f, 0);
             StartCoroutine(setOnJump());
             //if(transform.position.x > 2)
             //{
@@ -529,16 +532,22 @@ public class ControllerPlayer : MonoBehaviour
     }
     private void JumpLow()
     {
-        myBody.velocity = new Vector3(0, 4.5f, 0);
-        SetSpeed(SpeedJump);
-        StartCoroutine(setUnDead());
-
+        if (!OnJump)
+        {
+            ObjectFollowCharacter.GetComponent<CameraFollow2>().onJump = true;
+            myBody.velocity = new Vector3(0, 9f, 0);
+            SetSpeed(SpeedJump-1);
+            StartCoroutine(setUnDead());
+            StartCoroutine(setOnJump());
+        }
     }
     IEnumerator setUnDead()
     {
         isUnDead = true;
-        yield return new WaitForSeconds(1.5f);
-        isUnDead = false;
+        OnJump = true;
+        yield return new WaitForSeconds(0.3f);
+        OnJump = false;
+        isUnDead = false;      
     }
     IEnumerator setMoveOnWall()
     {
@@ -999,7 +1008,7 @@ public class ControllerPlayer : MonoBehaviour
             int keyCurrent = System.Int32.Parse(PlayerPrefs.GetString("key"));
             keyCurrent += 1;
             PlayerPrefs.SetString("key", keyCurrent.ToString());
-            CanvasManager.CanvasQualityKeyController();
+            AnimKey.SetActive(true);
         }
         else if (other.tag == "EnemyStageEnding")
         {
