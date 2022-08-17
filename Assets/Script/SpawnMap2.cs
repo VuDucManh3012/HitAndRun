@@ -572,12 +572,30 @@ public class SpawnMap2 : MonoBehaviour
         }
         //////////////////////////////
         ///
-
         stage = System.Int32.Parse(PlayerPrefs.GetString("stage"));
-
         //add them hole
-        random = Random.Range(0, 3);
-        if (random == 1)
+        RandomHole();
+        ///////////////////////////////////////////////
+        //add them ending
+        random = Random.Range(0, stageEnding.Count);
+        ListMapFound.Add(stageEnding[random]);
+        /////////////////////////////
+        ///
+        /// 
+        /// Luu lai map found   
+
+        for (int i = 0; i < ListMapFound.Count; i++)
+        {
+            PlayerPrefs.SetString("ListMapFound " + i, ListMapFound[i].name);
+            PlayerPrefs.SetInt("ListMapFoundBeforeLength", ListMapFound.Count);
+        }
+        ///Luu lai stage before
+        PlayerPrefs.SetInt("StageBefore", stage);
+    }
+    public void RandomHole()
+    {
+        int random;
+        if (Random.Range(0, 10) <= 6)
         {
             Debug.LogWarning("Co the Thang");
             if (ToTalLevelInMap > 400)
@@ -617,22 +635,6 @@ public class SpawnMap2 : MonoBehaviour
             random = Random.Range(0, MapHole.Count);
             ListMapFound.Add(MapHole[random]);
         }
-        ///////////////////////////////////////////////
-        //add them ending
-        random = Random.Range(0, stageEnding.Count);
-        ListMapFound.Add(stageEnding[random]);
-        /////////////////////////////
-        ///
-        /// 
-        /// Luu lai map found   
-
-        for (int i = 0; i < ListMapFound.Count; i++)
-        {
-            PlayerPrefs.SetString("ListMapFound " + i, ListMapFound[i].name);
-            PlayerPrefs.SetInt("ListMapFoundBeforeLength", ListMapFound.Count);
-        }
-        ///Luu lai stage before
-        PlayerPrefs.SetInt("StageBefore", stage);
     }
     void TotalLevelInMap()
     {
@@ -861,15 +863,9 @@ public class SpawnMap2 : MonoBehaviour
             }
         }
         //add them hole
-        int random;
-        stage = System.Int32.Parse(PlayerPrefs.GetString("stage"));
-        if (Random.Range(0, 2) == 1)
-        {
-            random = Random.Range(0, MapHole.Count);
-            ListMapFound.Add(MapHole[random]);
-        }
+        RandomHole();
         //add them ending
-        random = Random.Range(0, stageEnding.Count);
+        int random = Random.Range(0, stageEnding.Count);
         ListMapFound.Add(stageEnding[random]);
     }
 }

@@ -23,7 +23,6 @@ public class CameraFollow2 : MonoBehaviour
     {
         //new Vector3(Target.transform.position.x, 0,Target.transform.position.z)
         //Target.transform.position
-        
         if (onJump)
         {
             Vector3 smoothPosition = Vector3.Lerp(transform.position, new Vector3(Target.transform.position.x, PositionYOnJump , Target.transform.position.z), smooth);
@@ -40,6 +39,7 @@ public class CameraFollow2 : MonoBehaviour
         if (other.tag == "Character")
         {
             onJump = false;
+            controllerPlayer.OnJump = false;
         }
     }
 }

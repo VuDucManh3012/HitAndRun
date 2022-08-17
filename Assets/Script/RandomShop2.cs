@@ -551,6 +551,7 @@ public class RandomShop2 : MonoBehaviour
     }
     private void AddDiamondAds(int value)
     {
+        AnalyticManager.LogWatchAds("RewardDiamondInShopWeapon", 1);
         adsShowing = false;
         string diamondCurrent = PlayerPrefs.GetString("diamond");
         int diamondCurrentInt = int.Parse(diamondCurrent) + 1500;

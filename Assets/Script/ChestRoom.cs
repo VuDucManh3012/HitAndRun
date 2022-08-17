@@ -227,6 +227,7 @@ public class ChestRoom : MonoBehaviour
         AdManager.Instance.ShowAdsReward(completeAds, "AddKeyChestRoom");
         void completeAds(int value)
         {
+            AnalyticManager.LogWatchAds("AddKey", 1);
             int currentKey = int.Parse(PlayerPrefs.GetString("key"));
             currentKey += 1;
             PlayerPrefs.SetString("key", currentKey.ToString());

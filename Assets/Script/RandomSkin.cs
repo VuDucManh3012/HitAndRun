@@ -474,6 +474,7 @@ public class RandomSkin : MonoBehaviour
     }
     private void OnCompleteAdsAddDiamond(int value)
     {
+        AnalyticManager.LogWatchAds("RewardDiamondInShopSkin", 1);
         adsShowing = false;
         string diamondCurrent = PlayerPrefs.GetString("diamond");
         int diamondCurrentInt = int.Parse(diamondCurrent) + 1500;
@@ -508,6 +509,7 @@ public class RandomSkin : MonoBehaviour
     }
     private void OnCompleteAdsToAddSkin7(int value)
     {
+        AnalyticManager.LogWatchAds("GetSkinSpecial7", 1);
         adsShowing = false;
         int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 0) + 1;
         PlayerPrefs.SetInt("skinSpecial" + 0, adsPoint);
@@ -542,6 +544,7 @@ public class RandomSkin : MonoBehaviour
     }
     private void OnCompleteAdsToAddSkin8(int value)
     {
+        AnalyticManager.LogWatchAds("GetSkinSpecial8", 1);
         adsShowing = false;
         int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 1) + 1;
         PlayerPrefs.SetInt("skinSpecial" + 1, adsPoint);
@@ -576,6 +579,7 @@ public class RandomSkin : MonoBehaviour
     }
     private void OnCompleteAdsToAddSkin9(int value)
     {
+        AnalyticManager.LogWatchAds("GetSkinSpecial9", 1);
         adsShowing = false;
         int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 2) + 1;
         PlayerPrefs.SetInt("skinSpecial" + 2, adsPoint);
@@ -610,6 +614,7 @@ public class RandomSkin : MonoBehaviour
     }
     private void OnCompleteAdsToAddSkin10(int value)
     {
+        AnalyticManager.LogWatchAds("GetSkinSpecial10", 1);
         adsShowing = false;
         int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 3) + 1;
         PlayerPrefs.SetInt("skinSpecial" + 3, adsPoint);
@@ -647,6 +652,7 @@ public class RandomSkin : MonoBehaviour
     }
     private void OnCompleteAdsToAddSkin11(int value)
     {
+        AnalyticManager.LogWatchAds("GetSkinSpecial11", 1);
         adsShowing = false;
         int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 4) + 1;
         PlayerPrefs.SetInt("skinSpecial" + 4, adsPoint);
@@ -680,6 +686,7 @@ public class RandomSkin : MonoBehaviour
     }
     private void OnCompleteAdsToAddSkin12(int value)
     {
+        AnalyticManager.LogWatchAds("GetSkinSpecial12", 1);
         adsShowing = false;
         int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 5) + 1;
         PlayerPrefs.SetInt("skinSpecial" + 5, adsPoint);

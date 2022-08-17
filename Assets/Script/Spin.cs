@@ -60,7 +60,7 @@ public class Spin : MonoBehaviour
         PlayerPrefs.DeleteKey("SpinSlot");
     }
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
         AddDayBefore = true;
         angleofOneGift = CIRCLE / numberOfGift;

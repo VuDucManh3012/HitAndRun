@@ -37,10 +37,12 @@ public class ControllerPlayer : MonoBehaviour
 
     public Save Save;
 
+    private bool BossEndingBonus = false;
     private float SeBonus;
     public Text SeBonusText;
     public Text DiamondFoundText;
     private double diamondBonus;
+    public Text BossBonus;
 
     private Vector3 myposition;
 
@@ -90,6 +92,7 @@ public class ControllerPlayer : MonoBehaviour
 
     private GameObject EnemyEndingModel;
     private GameObject EnemyEndingRagdoll;
+    private GameObject FireWorkEnemyEnding;
 
     private SWS.splineMove splineMoveComponent;
     public bool PlusedSeBonus = false;
@@ -170,7 +173,10 @@ public class ControllerPlayer : MonoBehaviour
         SetFloatingTextAnimator();
         ChangeCam("CamStart");
         CheckLevelEnemy();
+
+        myAnim.SetInteger("Ending", Random.Range(0, 5));
     }
+
     void FixedUpdate()
     {
         LeftRight();
@@ -180,38 +186,6 @@ public class ControllerPlayer : MonoBehaviour
         //
         SetOnRoad();
         AutoRotateFloatingText();
-        CheckAFK();
-    }
-    private int timeAfk;
-    private float TimeTick;
-    private int MaxTick = 1;
-    void CheckAFK()
-    {
-        if (CnInputManager.GetAxis("Horizontal") == 0)
-        {
-            TimeTick += Time.deltaTime;
-            if (TimeTick >= MaxTick)
-            {
-                TimeTick -= MaxTick;
-                timeAfk++;
-            }
-        }
-        else
-        {
-            timeAfk = 0;
-        }
-        if (timeAfk == 25)
-        {
-            WatchAdsAFK25s();
-        }
-        else if (timeAfk == 120)
-        {
-            timeAfk = 0;
-        }
-    }
-    public void SetTimeAfk()
-    {
-        timeAfk = 0;
     }
     public void AutoRotateFloatingText()
     {
@@ -226,7 +200,24 @@ public class ControllerPlayer : MonoBehaviour
         {
             AutoRotate();
         }
+        else if (OnJump)
+        {
+            if (JumpHighLeft == -1)
+            {
+                transform.rotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, 0, -30), 0.1f);
+            }
+            else if (JumpHighLeft == 1)
+            {
+                transform.rotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, 0, 30), 0.1f);
+            }
+            else
+            {
+                transform.rotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, 0, 0), 0.1f);
+            }
+
+        }
     }
+    public int JumpHighLeft;
     [ContextMenu("Addforce")]
     public void addForce(float y)
     {
@@ -245,7 +236,7 @@ public class ControllerPlayer : MonoBehaviour
         else
         {
             float newRotation = Quaternion.Angle(transform.localRotation, Quaternion.Euler(0, 0, 0)) * 0.1f;
-            transform.rotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, newRotation, 0), 0.1f);
+            transform.rotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, newRotation, 0), 0.2f);
         }
         deltaX2Before = transform.position.x;
     }
@@ -396,6 +387,10 @@ public class ControllerPlayer : MonoBehaviour
         Particle[a].SetActive(false);
         Particle[a].SetActive(true);
     }
+    public void OffParticle(int a)
+    {
+        Particle[a].SetActive(false);
+    }
     //Animation
     void SetRunTrue()
     {
@@ -468,9 +463,24 @@ public class ControllerPlayer : MonoBehaviour
         {
             int TotalDiamond = (int)(DiamondFound * SeBonus);
             DiamondFoundText.text = "You Earned";
-            SeBonusText.text = "" + TotalDiamond.ToString();
+            if (TotalDiamond <= 50)
+            {
+                TotalDiamond = 50;
+            }
+
+            SeBonusText.text = TotalDiamond.ToString();
             diamondBonus = (DiamondFound * SeBonus) - (DiamondFound * SeBonus) % 1;
-            QualityDiamond += diamondBonus;
+            if (BossEndingBonus)
+            {
+                QualityDiamond += diamondBonus;
+                QualityDiamond += 300;
+                BossBonus.text = "Boss Bonus : 300";
+            }
+            else
+            {
+                QualityDiamond += diamondBonus;
+            }
+
             Save.Diamond.text = QualityDiamond.ToString();
         }
         PlusedSeBonus = true;
@@ -509,8 +519,8 @@ public class ControllerPlayer : MonoBehaviour
     IEnumerator setOnJump()
     {
         OnJump = true;
-        yield return new WaitForSeconds(1f);
-        OnJump = false;
+        yield return new WaitForSeconds(1.5f);
+        //OnJump = false;
     }
     private void JumpHigh()
     {
@@ -518,7 +528,7 @@ public class ControllerPlayer : MonoBehaviour
         {
             ObjectFollowCharacter.GetComponent<CameraFollow2>().onJump = true;
             SetSpeed(SpeedJump);
-            myBody.velocity = new Vector3(0, 20f, 0);
+            myBody.velocity = new Vector3(0, 24f, 0);
             StartCoroutine(setOnJump());
             //if(transform.position.x > 2)
             //{
@@ -535,8 +545,8 @@ public class ControllerPlayer : MonoBehaviour
         if (!OnJump)
         {
             ObjectFollowCharacter.GetComponent<CameraFollow2>().onJump = true;
-            myBody.velocity = new Vector3(0, 9f, 0);
-            SetSpeed(SpeedJump-1);
+            myBody.velocity = new Vector3(0, 12f, 0);
+            SetSpeed(SpeedJump + 1);
             StartCoroutine(setUnDead());
             StartCoroutine(setOnJump());
         }
@@ -547,7 +557,7 @@ public class ControllerPlayer : MonoBehaviour
         OnJump = true;
         yield return new WaitForSeconds(0.3f);
         OnJump = false;
-        isUnDead = false;      
+        isUnDead = false;
     }
     IEnumerator setMoveOnWall()
     {
@@ -564,15 +574,18 @@ public class ControllerPlayer : MonoBehaviour
     }
     IEnumerator jumpAttack()
     {
-        SetJumpAttack360(false);
-        myAnim.SetInteger("AttackItem", 1);
-        yield return new WaitForSeconds(0.7f);
-        attackObject.SetActive(true);
-        myAnim.SetInteger("AttackItem", 2);
         unLimitDamage = true;
-        yield return new WaitForSeconds(0.7f);
-        attackObject.SetActive(false);
-        myAnim.SetInteger("AttackItem", 0);
+        SetJumpAttack360(false);
+        yield return new WaitForSeconds(0.2f);
+        myAnim.SetInteger("AttackItem", 1); 
+        attackObject.transform.GetChild(0).gameObject.SetActive(true);
+        yield return new WaitForSeconds(0.3f);
+        attackObject.transform.GetChild(1).gameObject.SetActive(true);
+        myAnim.SetInteger("AttackItem", 2);
+    }
+    public void SetAttackAnimTo0()
+    {
+        myAnim.SetInteger("AttackItem", 0); 
         unLimitDamage = false;
     }
     IEnumerator WaitToVictory(float second)
@@ -582,16 +595,15 @@ public class ControllerPlayer : MonoBehaviour
         Destroy(EnemyEndingModel);
         EnemyEndingRagdoll.transform.GetChild(PlayerPrefs.GetInt("IntBossToSpawn")).gameObject.SetActive(true);
         EnemyEndingRagdoll.SetActive(true);
-        yield return new WaitForSeconds(1);
-        //Destroy(Particle[5]);
+        yield return new WaitForSeconds(1.8f);
         Time.timeScale = 1f;
-        RotateCharacter(0, 180, 0);
-        RotateFloatingText(0, 180, 0);
-        ChangeCam("CamBossEnding");
-        yield return new WaitForSeconds(1);
+        OffParticle(5);
+        transform.localRotation = Quaternion.Euler(new Vector3(0, 180, 0));
+        FireWorkEnemyEnding.SetActive(true);
+        yield return new WaitForSeconds(5);
         UpdateDiamond();
         ActiveCanvasVictory();
-        startgame = false;
+
         transform.rotation = new Quaternion(0, 1, 0, 0);
     }
     public void pushOpposite()
@@ -617,11 +629,11 @@ public class ControllerPlayer : MonoBehaviour
     private void pushRight()
     {
         myBody.AddForce(Vector3.right, ForceMode.Impulse);
-        myBody.velocity = new Vector3(-3, 3, 0);
+        myBody.velocity = new Vector3(-3, 10, 0);
     }
     private void pushLeft()
     {
-        myBody.velocity = new Vector3(3, 3, 0);
+        myBody.velocity = new Vector3(3, 10, 0);
         myBody.AddForce(Vector3.left, ForceMode.Impulse);
     }
     [ContextMenu("Hurt")]
@@ -711,9 +723,11 @@ public class ControllerPlayer : MonoBehaviour
             }
         }
     }
+
     [ContextMenu("ReBorn")]
-    public void ReBorn()
+    public void ReBorn(int value)
     {
+        AnalyticManager.LogWatchAds("AdsReborn", 1);
         unsetLevelText = false;
         myAnim.SetBool("Die", false);
         myLevel = 1;
@@ -732,7 +746,6 @@ public class ControllerPlayer : MonoBehaviour
                 break;
             }
         }
-
     }
     public void StartGame()
     {
@@ -742,7 +755,6 @@ public class ControllerPlayer : MonoBehaviour
         ChangeCam("CamRun");
         SetSpeed(SpeedRoad);
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Bridge")
@@ -777,7 +789,7 @@ public class ControllerPlayer : MonoBehaviour
         {
             isMove = false;
             ChangeCam("CamEnding");
-            SetSpeed(SpeedRoad);
+            SetSpeed(SpeedRoad - 2);
             if (!PlusStage)
             {
                 QualityStage += 1;
@@ -812,6 +824,18 @@ public class ControllerPlayer : MonoBehaviour
             JumpHigh();
             SetJumpAttack360(false);
             other.transform.GetComponent<Animator>().Play("Piston", -1, 0f);
+            if (transform.position.x <= -2)
+            {
+                JumpHighLeft = -1;
+            }
+            else if (transform.position.x >= 2)
+            {
+                JumpHighLeft = 1;
+            }
+            else
+            {
+                JumpHighLeft = 0;
+            }
         }
         else if (other.tag == "ItemWall")
         {
@@ -830,6 +854,7 @@ public class ControllerPlayer : MonoBehaviour
                 onWall = true;
                 onRoad = true;
                 isMove = false;
+                myBody.useGravity = false;
                 if (other.transform.position.x > 0)
                 {
                     //Wall Right
@@ -966,7 +991,6 @@ public class ControllerPlayer : MonoBehaviour
                     {
                         hurt();
                         pushOppsiteEnemy();
-
                     }
                 }
             }
@@ -1012,16 +1036,23 @@ public class ControllerPlayer : MonoBehaviour
         }
         else if (other.tag == "EnemyStageEnding")
         {
-
+            BossEndingBonus = true;
+            //
+            int numberTimesKillBoss = PlayerPrefs.GetInt("NumberTimesKillBoss");
+            numberTimesKillBoss += 1;
+            PlayerPrefs.SetInt("NumberTimesKillBoss", numberTimesKillBoss);
+            //
             Time.timeScale = 0.7f;
             SetSpeed(0);
-            Jump(0, 10, 0);
+            Jump(0, 26, 0);
             SetVictoryTrue();
-            StartCoroutine(WaitToVictory(2f));
+            StartCoroutine(WaitToVictory(1.5f));
+            startgame = false;
             EnemyEndingRagdoll = other.transform.Find("EnemyRagdoll").gameObject;
             try
             {
                 EnemyEndingModel = other.transform.Find("EnemyModel").gameObject;
+                FireWorkEnemyEnding = other.transform.Find("FireWork").GetChild(0).gameObject;
             }
             catch
             {
@@ -1041,12 +1072,14 @@ public class ControllerPlayer : MonoBehaviour
         }
         else if (other.tag == "JumpAttack")
         {
+            attackObject.SetActive(true);
             StartCoroutine(jumpAttack());
         }
         else if (other.tag == "StartCurve")
         {
             GetComponent<PathCreation.Examples.PathFollower>().moveOnCurve = true;
             GetComponent<PathCreation.Examples.PathFollower>().pathCreator = other.transform.parent.Find("ControllerCurve").GetComponent<PathCreation.PathCreator>();
+            SetSpeed(0);
         }
         else if (other.tag == "EndCurve")
         {
@@ -1054,7 +1087,7 @@ public class ControllerPlayer : MonoBehaviour
             GetComponent<PathCreation.Examples.PathFollower>().pathCreator = null;
             GetComponent<PathCreation.Examples.PathFollower>().distanceTravelled = 0;
             isMove = true;
-            Jump(0, 5, 0);
+            Jump(0, 17, 0);
             SetSpeed(SpeedRoad);
             SetJumpWall();
         }
@@ -1081,17 +1114,34 @@ public class ControllerPlayer : MonoBehaviour
                 }
             }
         }
-        if (other.tag == "StageEnding")
+        else if (other.tag == "StageEnding")
         {
             transform.position = Vector3.Lerp(transform.position, new Vector3(other.transform.position.x, transform.position.y, transform.position.z), 0.2f);
         }
+        else if (other.tag == "Enemy")
+        {
+            if (myLevel <= 0 && !deletedLowerEnemy)
+            {
+                Destroy(other.transform.Find("LowerLevel").gameObject);
+                deletedLowerEnemy = true;
+            }
+        }
+        else if (other.tag == "Enemy3")
+        {
+            if (myLevel <= 0 && !deletedLowerEnemy)
+            {
+                Destroy(other.transform.Find("LowerLevel").gameObject);
+                deletedLowerEnemy = true;
+            }
+        }
     }
+    private bool deletedLowerEnemy;
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == "Bridge")
         {
             isMove = true;
-            Jump(0, 5, 0);
+            Jump(0, 17, 0);
             SetSpeed(SpeedRoad);
             SetJumpWall();
         }
@@ -1102,7 +1152,7 @@ public class ControllerPlayer : MonoBehaviour
                 moveOnWall = false;
                 onWall = false;
                 unLimitDamage = false;
-
+                myBody.useGravity = true;
                 RotateCharacter(0, 0, 0);
 
                 JumpLow();
@@ -1129,7 +1179,7 @@ public class ControllerPlayer : MonoBehaviour
             myposition = transform.position;
             myposition.z += 1;
             transform.position = other.GetComponent<BlackHole>().start.position;
-            ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.position.y;
+            ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.position.y + 2;
             ObjectFollowCharacter.transform.position = transform.position;
             DiamondBonusInHole = 0;
             //Cam
@@ -1211,6 +1261,7 @@ public class ControllerPlayer : MonoBehaviour
     }
     private void OnCompleteAdsX2Hole(int value)
     {
+        AnalyticManager.LogWatchAds("AdsInHole", 1);
         transform.position = myposition;
         ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.position.y;
         isMove = true;
@@ -1241,5 +1292,31 @@ public class ControllerPlayer : MonoBehaviour
         {
             AdManager.Instance.ShowInterstitial("AdsAFK25s", 1);
         }
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void ADSReborn()
+    {
+        if (!GameManager.NetworkAvailable)
+        {
+            PopupNoInternet.Show();
+            return;
+        }
+
+        if (adsShowing)
+            return;
+
+
+        if (!GameManager.EnableAds)
+        {
+            adsShowing = true;
+            AdManager.Instance.ShowAdsReward(ReBorn, "Reborn");
+        }
+#if !PROTOTYPE
+        else
+        {
+            adsShowing = true;
+            AdManager.Instance.ShowAdsReward(ReBorn, "Reborn");
+        }
+#endif
     }
 }

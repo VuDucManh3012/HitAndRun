@@ -16,6 +16,9 @@ public class Save : MonoBehaviour
     public GameObject PopupOfflineReward;
     public GameObject GameStartScene;
     public double DiamondBonusOffline;
+
+    public CanvasManager CanvasManager;
+    public GameObject QualityKey;
     public void ReadDimondOffline()
     {
         if (PlayerPrefs.HasKey("DateBefore"))
@@ -32,6 +35,7 @@ public class Save : MonoBehaviour
                 //hien popup
                 PopupOfflineReward.SetActive(true);
                 GameStartScene.SetActive(false);
+                QualityKey.SetActive(false);
                 //
                 if (PlayerPrefs.HasKey("DistanceMax"))
                 {
@@ -65,13 +69,14 @@ public class Save : MonoBehaviour
         DiamondBonusOffline = 0;
         PopupOfflineReward.SetActive(false);
         GameStartScene.SetActive(true);
+        CanvasManager.CanvasQualityKeyController();
         ReadText();
         ReadDimondOffline();
     }
     [ContextMenu("AddKey")]
     public void AddKey()
     {
-        int currentKey =System.Int32.Parse(PlayerPrefs.GetString("key"));
+        int currentKey = System.Int32.Parse(PlayerPrefs.GetString("key"));
         currentKey += 1;
         PlayerPrefs.SetString("key", currentKey.ToString());
         Debug.Log(PlayerPrefs.GetString("key"));

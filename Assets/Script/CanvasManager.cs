@@ -18,13 +18,14 @@ public class CanvasManager : MonoBehaviour
     [Header("Gift10Minutes")]
     public int startingTime = 600;
     public Text countdownText;
+    public GameObject NoticeGift10Minutes;
 
     [Header("CanvasOpenGift")]
     public GameObject ResultGift10minutes;
     public GameObject Gift10minutesButNotEnough;
     public Text currentTimeGift10miutes;
     private int diamondInChest;
-    private int currentTime;
+    public int currentTime;
     private bool onGift10minutes;
 
     [Header("OfflineReward")]
@@ -70,6 +71,12 @@ public class CanvasManager : MonoBehaviour
     public List<GameObject> ListImageKeyDisable;
 
     [Header("CanvasNewSkinEnding")]
+    public List<int> SkinNoBuy;
+    public List<int> WeaponNoBuy;
+    public int TypeShop;
+    public int indexSkin;
+    public int phanTramNewSkinEndingCurrent = 0;
+    public int phanTramNewSkinEndingBefore = 0;
     public GameObject CanvasNewSkinEnding;
     public Image ImageSkin;
     public Image ImageMarkSkin;
@@ -111,156 +118,110 @@ public class CanvasManager : MonoBehaviour
     {
         StarRate = Star;
     }
+    [ContextMenu("CanvasNewSkinEndingController")]
+    public void CanvasNewSkinEndingController()
+    {
+        CanvasNewSkinEnding.SetActive(true);
+
+        if (PlayerPrefs.HasKey("phanTramNewSkinEndingCurrent") && PlayerPrefs.GetInt("phanTramNewSkinEndingCurrent") != 100)
+        {
+            ThemPhanTramSkinEndingCurrent();
+            SetTextAndAnimSkinEnding();
+        }
+        else
+        {
+            RandomSkinEnding();
+            SetTextAndAnimSkinEnding();
+        }
+    }
+
+    public void RandomSkinEnding()
+    {
+        //checkball
+        for (int i = 1; i < 6; i++)
+        {
+            if (PlayerPrefs.GetInt("ball " + i) != 1)
+            {
+                WeaponNoBuy.Add(i);
+            }
+            if (PlayerPrefs.GetInt("skin " + i) != 1)
+            {
+                SkinNoBuy.Add(i);
+            }
+        }
+        //chon random
+        TypeShop = Random.Range(0, 2);
+        if (TypeShop == 0 && WeaponNoBuy.Count > 0)
+        {
+            indexSkin = Random.Range(0, WeaponNoBuy.Count);
+        }
+        else if (TypeShop == 1 && SkinNoBuy.Count > 0)
+        {
+            indexSkin = Random.Range(0, SkinNoBuy.Count);
+        }
+        //SetPhanTramCurrentFirst
+        phanTramNewSkinEndingCurrent = 25;
+        PlayerPrefs.SetInt("TypeShopEndingSkin", TypeShop);
+        PlayerPrefs.SetInt("IndexSkinEndingShop", indexSkin);
+        PlayerPrefs.SetInt("phanTramNewSkinEndingCurrent", phanTramNewSkinEndingCurrent);
+    }
+    public void ThemPhanTramSkinEndingCurrent()
+    {
+        phanTramNewSkinEndingCurrent = PlayerPrefs.GetInt("phanTramNewSkinEndingCurrent");
+        phanTramNewSkinEndingBefore = phanTramNewSkinEndingCurrent;
+        phanTramNewSkinEndingCurrent += 25;
+        PlayerPrefs.SetInt("phanTramNewSkinEndingCurrent", phanTramNewSkinEndingCurrent);
+    }
     public void SetAnimFillAmountSkinEnding(float fillAmount, float TextFillAmount)
     {
         AnimFillAmountSkinEnding = fillAmount;
         TextFillAmountSkinEnding = TextFillAmount;
     }
-
-    private int TypeItemNewSkinEnding = 0;
-    private int indexItemNewSkinEnding;
-    [ContextMenu("CanvasNewSkinEndingController")]
-    public void CanvasNewSkinEndingController()
+    public void SetTextAndAnimSkinEnding()
     {
         AnimFillAmountSkinEnding = 1;
-        AnimFillAmountSkinEndingCurrent = 1;
+        float CurrentProcess2 = phanTramNewSkinEndingBefore;
+        CurrentProcess2 /= 100;
+        AnimFillAmountSkinEndingCurrent = 1 - CurrentProcess2;
+
         TextFillAmountSkinEnding = 0;
-        TextFillAmountSkinEndingCurrent = 0;
-        TypeItemNewSkinEnding = 0;
-        indexItemNewSkinEnding = 0;
-        CanvasNewSkinEnding.SetActive(true);
-        //CheckBallWeapon+skin
-        for (int i = 1; i < 6; i++)
+        TextFillAmountSkinEndingCurrent = phanTramNewSkinEndingBefore;
+
+        TypeShop = PlayerPrefs.GetInt("TypeShopEndingSkin");
+        indexSkin = PlayerPrefs.GetInt("IndexSkinEndingShop");
+
+        if (TypeShop == 0)
         {
-            if (!PlayerPrefs.HasKey("ball " + i))
-            {
-                TypeItemNewSkinEnding = 1;
-                indexItemNewSkinEnding = i;
-                break;
-            }
-            else if (!PlayerPrefs.HasKey("skin " + i))
-            {
-                TypeItemNewSkinEnding = 2;
-                indexItemNewSkinEnding = i;
-                break;
-            }
+            ImageSkin.sprite = ListSpriteImage[indexSkin];
+        }
+        else if (TypeShop == 1)
+        {
+            ImageSkin.sprite = ListSpriteImage[indexSkin + 6];
         }
 
-        if (TypeItemNewSkinEnding == 0)
+        int CurrentProcess = PlayerPrefs.GetInt("phanTramNewSkinEndingCurrent");
+        float fillAmount = CurrentProcess;
+        fillAmount = 1 - (fillAmount / 100);
+        SetAnimFillAmountSkinEnding(fillAmount, CurrentProcess);
+        if (CurrentProcess == 100)
         {
-            CanvasNewSkinEnding.SetActive(false);
-            VictoryScene.SetActive(true);
+            ButtonNoThank.SetActive(true);
+            ButtonGetIt.SetActive(true);
+            ButtonAdsNewSkinEnding.SetActive(false);
+            ButtonNextLevel.SetActive(false);
         }
-        else if (TypeItemNewSkinEnding == 1)
+        else
         {
-            if (PlayerPrefs.HasKey("ProcessBall " + indexItemNewSkinEnding))
-            {
-                ImageSkin.sprite = ListSpriteImage[indexItemNewSkinEnding];
-                int CurrentProcess = PlayerPrefs.GetInt("ProcessBall " + indexItemNewSkinEnding);
-                //////////////////////////////////////////////////////////////////////////////////////////////
-                if (CurrentProcess >= 100)
-                {
-                    CurrentProcess = 100;
-                }
-                float CurrentProcess2 = CurrentProcess;
-                CurrentProcess2 /= 100;
-                AnimFillAmountSkinEndingCurrent = 1 - CurrentProcess2;
-                TextFillAmountSkinEndingCurrent = CurrentProcess;
-                //////////////////////////////////////////////////////////////////////////////////////////////
-                PlayerPrefs.SetInt("ProcessBall " + indexItemNewSkinEnding, CurrentProcess + 25);
-                CurrentProcess = PlayerPrefs.GetInt("ProcessBall " + indexItemNewSkinEnding);
-                if (CurrentProcess >= 100)
-                {
-                    CurrentProcess = 100;
-                }
-                float fillAmount = CurrentProcess;
-                fillAmount = 1 - (fillAmount / 100);
-                SetAnimFillAmountSkinEnding(fillAmount, CurrentProcess);
-                if (CurrentProcess < 100)
-                {
-                    ButtonAdsNewSkinEnding.SetActive(true);
-                    ButtonNextLevel.SetActive(true);
-                    ButtonGetIt.SetActive(false);
-                    ButtonNoThank.SetActive(false);
-                }
-                else
-                {
-                    ButtonAdsNewSkinEnding.SetActive(false);
-                    ButtonNextLevel.SetActive(false);
-                    ButtonGetIt.SetActive(true);
-                    ButtonNoThank.SetActive(true);
-                }
-            }
-            else
-            {
-                //+20Lan dau
-                PlayerPrefs.SetInt("ProcessBall " + indexItemNewSkinEnding, 25);
-                int CurrentProcess = PlayerPrefs.GetInt("ProcessBall " + indexItemNewSkinEnding);
-                ImageSkin.sprite = ListSpriteImage[indexItemNewSkinEnding];
-                float fillAmount = CurrentProcess;
-                fillAmount = 1 - (fillAmount / 100);
-                SetAnimFillAmountSkinEnding(fillAmount, CurrentProcess);
-                ButtonNextLevel.SetActive(true);
-            }
-        }
-        else if (TypeItemNewSkinEnding == 2)
-        {
-            if (PlayerPrefs.HasKey("ProcessSkin " + indexItemNewSkinEnding))
-            {
-                ImageSkin.sprite = ListSpriteImage[indexItemNewSkinEnding + 6];
-                int CurrentProcess = PlayerPrefs.GetInt("ProcessSkin " + indexItemNewSkinEnding);
-                //////////////////////////////////////////////////////////////////////////////////////////////
-                if (CurrentProcess >= 100)
-                {
-                    CurrentProcess = 100;
-                }
-                float CurrentProcess2 = CurrentProcess;
-                CurrentProcess2 /= 100;
-                AnimFillAmountSkinEndingCurrent = 1 - CurrentProcess2;
-                TextFillAmountSkinEndingCurrent = CurrentProcess;
-                //////////////////////////////////////////////////////////////////////////////////////////////
-                PlayerPrefs.SetInt("ProcessSkin " + indexItemNewSkinEnding, CurrentProcess + 25);
-                CurrentProcess = PlayerPrefs.GetInt("ProcessSkin " + indexItemNewSkinEnding);
-                if (CurrentProcess >= 100)
-                {
-                    CurrentProcess = 100;
-                }
-
-                float fillAmount = CurrentProcess;
-                fillAmount = 1 - (fillAmount / 100);
-                SetAnimFillAmountSkinEnding(fillAmount, CurrentProcess);
-                if (CurrentProcess < 100)
-                {
-                    ButtonAdsNewSkinEnding.SetActive(true);
-                    ButtonNextLevel.SetActive(true);
-                    ButtonGetIt.SetActive(false);
-                    ButtonNoThank.SetActive(false);
-                }
-                else
-                {
-                    ButtonAdsNewSkinEnding.SetActive(false);
-                    ButtonNextLevel.SetActive(false);
-                    ButtonGetIt.SetActive(true);
-                    ButtonNoThank.SetActive(true);
-                }
-            }
-            else
-            {
-                //+20Lan dau
-                PlayerPrefs.SetInt("ProcessSkin " + indexItemNewSkinEnding, 25);
-                int CurrentProcess = PlayerPrefs.GetInt("ProcessSkin " + indexItemNewSkinEnding);
-                ImageSkin.sprite = ListSpriteImage[indexItemNewSkinEnding + 6];
-                float fillAmount = CurrentProcess;
-                fillAmount = 1 - (fillAmount / 100);
-                SetAnimFillAmountSkinEnding(fillAmount, CurrentProcess);
-                ButtonNextLevel.SetActive(true);
-            }
+            ButtonNoThank.SetActive(false);
+            ButtonGetIt.SetActive(false);
+            ButtonAdsNewSkinEnding.SetActive(true);
+            ButtonNextLevel.SetActive(true);
         }
     }
     [ContextMenu("ButtonCanvasNewSkinEnding")]
     public void ButtonCanvasNewSkinEnding()
     {
-        if (TextFillAmountSkinEnding < 100)
+        if (TextFillAmountSkinEnding != 100)
         {
             //next level
             CanvasNewSkinEnding.SetActive(false);
@@ -271,6 +232,13 @@ public class CanvasManager : MonoBehaviour
             //ads
             WatchAdsGetSkinEnding();
             //get it
+        }
+    }
+    public void ButtonNoThanksNewSkinEnding()
+    {
+        if (PlayerPrefs.GetInt("phanTramNewSkinEndingCurrent") == 100)
+        {
+            PlayerPrefs.DeleteKey("phanTramNewSkinEndingCurrent");
         }
     }
     public void ButtonADSNewSkin()
@@ -388,6 +356,7 @@ public class CanvasManager : MonoBehaviour
         Save.ReadText();
         Save.PopupOfflineReward.SetActive(false);
         Save.GameStartScene.SetActive(true);
+        CanvasQualityKeyController();
         PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
     }
     public void ClaimDoubleOfflineReward()
@@ -465,19 +434,12 @@ public class CanvasManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //onBanner();
-        //
         GameOverScene.SetActive(false);
         VictoryScene.SetActive(false);
-        CanvasLuckyWheel.SetActive(true);
-        CanvasLuckyWheel.SetActive(false);
+        CanvasLuckyWheel.GetComponentInChildren<Spin>().Start();
         if (!PlayerPrefs.HasKey("currenttime"))
         {
             currentTime = startingTime;
-        }
-        else if (PlayerPrefs.GetInt("currenttime") == 0)
-        {
-            currentTime = 600;
         }
         else
         {
@@ -485,8 +447,6 @@ public class CanvasManager : MonoBehaviour
         }
         SetTextOfflineRewardUpdate();
         SetTextUpdateLevel();
-        CanvasQualityKeyController();
-
         //check lan dau vao shop
         if (!PlayerPrefs.HasKey("FirstGoShopSkin"))
         {
@@ -500,13 +460,14 @@ public class CanvasManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (onGift10minutes)
+        if (currentTime == 0)
         {
-
+            NoticeGift10Minutes.SetActive(true);
         }
-        else
+        else if (currentTime != 0)
         {
             CountDown();
+            NoticeGift10Minutes.SetActive(false);
         }
         CheckSlotSpin();
     }
@@ -541,6 +502,7 @@ public class CanvasManager : MonoBehaviour
         {
             currentTime = 0;
             onGift10minutes = true;
+            countdownText.text = "00:00";
         }
         else
         {
@@ -639,7 +601,70 @@ public class CanvasManager : MonoBehaviour
             Save.ReadText();
         }
         //
+        if (PlayerPrefs.GetInt("currenttime") == 0)
+        {
+            currentTime = 600;
+            onGift10minutes = false;
+        }
         currentTime = startingTime;
+    }
+    public void WatchADSClaimX2Gift()
+    {
+        if (!GameManager.NetworkAvailable)
+        {
+            PopupNoInternet.Show();
+            return;
+        }
+
+        if (adsShowing)
+            return;
+
+
+        if (!GameManager.EnableAds)
+        {
+            adsShowing = true;
+            AdManager.Instance.ShowAdsReward(OnCompleteAdsClaimX2Gift, "ClaimX2Gift");
+        }
+#if !PROTOTYPE
+        else
+        {
+            adsShowing = true;
+            AdManager.Instance.ShowAdsReward(OnCompleteAdsClaimX2Gift, "ClaimX2Gift");
+        }
+#endif
+    }
+    public void OnCompleteAdsClaimX2Gift(int value)
+    {
+        AnalyticManager.LogWatchAds("ClaimX2Gift10Minutes", 1);
+        ResultGift10minutes.SetActive(false);
+
+        //diamond ++
+        if (PlayerPrefs.GetString("diamond") != "")
+        {
+            int diamond = int.Parse(PlayerPrefs.GetString("diamond"));
+            diamond += (diamondInChest*2);
+            PlayerPrefs.SetString("diamond", diamond.ToString());
+            Save.ReadText();
+        }
+        //
+        if (PlayerPrefs.GetInt("currenttime") == 0)
+        {
+            currentTime = 600;
+            onGift10minutes = false;
+        }
+        currentTime = startingTime;
+    }
+    public void LoseItGift()
+    {
+        ResultGift10minutes.SetActive(false);
+
+        if (PlayerPrefs.GetInt("currenttime") == 0)
+        {
+            currentTime = 600;
+            onGift10minutes = false;
+        }
+        currentTime = startingTime;
+        GameStartScene.SetActive(true);
     }
     public void onLuckyWheel()
     {
@@ -650,14 +675,6 @@ public class CanvasManager : MonoBehaviour
         SceneManager.LoadScene("AllObjectMap");
     }
     private bool adsShowing = false;
-    void onBanner()
-    {
-        if (!GameManager.Instance.Data.User.PurchasedNoAds)
-        {
-            AdManager.Instance.ShowBanner();
-        }
-    }
-
     public void ShowDebug()
     {
         MaxSdk.ShowMediationDebugger();
@@ -761,6 +778,7 @@ public class CanvasManager : MonoBehaviour
     }
     private void OnCompleteAdsADSBonusVictory(int value)
     {
+        AnalyticManager.LogWatchAds("AdsBonusVictory", 1);
         adsShowing = false;
         double diamondCurrent = double.Parse(Save.Diamond.text);
         diamondCurrent += DiamondADS;
@@ -795,6 +813,7 @@ public class CanvasManager : MonoBehaviour
     }
     private void OnCompleteAds999Level(int value)
     {
+        AnalyticManager.LogWatchAds("+999Level", 1);
         adsShowing = false;
         characterController.myLevel += 999;
         characterController.SetSkin();
@@ -827,6 +846,7 @@ public class CanvasManager : MonoBehaviour
     }
     private void OnCompleteAdsUpdateOfflineReward(int value)
     {
+        AnalyticManager.LogWatchAds("UpdateOfflineReward", 1);
         adsShowing = false;
         int DistanceMaxNow = PlayerPrefs.GetInt("DistanceMax");
         PlayerPrefs.SetInt("DistanceMax", DistanceMaxNow += 5);
@@ -861,6 +881,7 @@ public class CanvasManager : MonoBehaviour
     }
     private void OnCompleteAdsClaimDoubleOfflineReward(int value)
     {
+        AnalyticManager.LogWatchAds("DoubleOfflineReward", 1);
         adsShowing = false;
         int diamondCurrent = System.Int32.Parse(PlayerPrefs.GetString("diamond"));
         diamondCurrent += System.Int32.Parse(Save.DiamondBonusOffline.ToString()) * 2;
@@ -868,6 +889,7 @@ public class CanvasManager : MonoBehaviour
         Save.ReadText();
         Save.PopupOfflineReward.SetActive(false);
         Save.GameStartScene.SetActive(true);
+        CanvasQualityKeyController();
         PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -898,6 +920,7 @@ public class CanvasManager : MonoBehaviour
     }
     private void OnCompleteAdsUpdateLevel(int value)
     {
+        AnalyticManager.LogWatchAds("UpdateLevel", 1);
         adsShowing = false;
         PlayerPrefs.SetInt("UpdateLevel", currentUpdateLevel + 1);
         SetTextUpdateLevel();
@@ -936,15 +959,18 @@ public class CanvasManager : MonoBehaviour
     }
     private void OnCompleteAdsGetSkinEnding(int value)
     {
+        AnalyticManager.LogWatchAds("GetSkinEnding", 1);
         adsShowing = false;
-        if (TypeItemNewSkinEnding == 1)
+        if (TypeShop == 0)
         {
-            PlayerPrefs.SetInt("ball " + indexItemNewSkinEnding, 1);
+            PlayerPrefs.SetInt("ball " + (indexSkin + 1), 1);
         }
-        else if (TypeItemNewSkinEnding == 2)
+        else if (TypeShop == 1)
         {
-            PlayerPrefs.SetInt("skin " + indexItemNewSkinEnding, 1);
+            PlayerPrefs.SetInt("skin " + (indexSkin + 1), 1);
         }
+        VictoryScene.SetActive(true);
+        CanvasNewSkinEnding.SetActive(false);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void WatchAdsAddPhanTramSkinEnding()
@@ -974,6 +1000,7 @@ public class CanvasManager : MonoBehaviour
     }
     private void OnCompleteAdsAddPhanTramSkinEnding(int value)
     {
+        AnalyticManager.LogWatchAds("AddPercentSkinEnding", 1);
         adsShowing = false;
         CanvasNewSkinEndingController();
     }

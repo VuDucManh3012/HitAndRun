@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 6109986710307812757}
   - component: {fileID: 6109986710307812758}
   - component: {fileID: 6109986710307812759}
-  - component: {fileID: 6109986710307812756}
+  - component: {fileID: 5030470309582401901}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: JumpAttack
@@ -88,7 +88,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -113,9 +112,8 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &6109986710307812756
-SphereCollider:
+--- !u!65 &5030470309582401901
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -125,8 +123,8 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 4.428384, y: 0.94431794, z: 3.8350935}
+  m_Center: {x: 0, y: -0.000000044703462, z: -0.00000011920927}
 --- !u!1001 &2447713095078083932
 PrefabInstance:
   m_ObjectHideFlags: 0
