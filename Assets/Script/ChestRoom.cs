@@ -39,6 +39,10 @@ public class ChestRoom : MonoBehaviour
         SetKeyText();
         SetImageSpecial();
     }
+    private void Update()
+    {
+        checkButtonAdsKey();
+    }
     public void checkButtonAdsKey()
     {
         if (System.Int32.Parse(PlayerPrefs.GetString("key")) == 0)
@@ -48,7 +52,6 @@ public class ChestRoom : MonoBehaviour
         else
         {
             ButtonAdsKey.SetActive(false);
-
         }
     }
     public void SetImageSpecial()
@@ -229,7 +232,7 @@ public class ChestRoom : MonoBehaviour
         {
             AnalyticManager.LogWatchAds("AddKey", 1);
             int currentKey = int.Parse(PlayerPrefs.GetString("key"));
-            currentKey += 1;
+            currentKey += 3;
             PlayerPrefs.SetString("key", currentKey.ToString());
             SetKeyText();
         }

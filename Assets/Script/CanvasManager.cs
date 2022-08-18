@@ -11,26 +11,32 @@ public class CanvasManager : MonoBehaviour
 
     [Header("GameStart")]
     public GameObject GameStartScene;
+    public CanvasGameStartController CanvasGameStartController;
 
     [Header("Save")]
     public Save Save;
 
     [Header("Gift10Minutes")]
+    public GameObject PopupGift;
+    public GameObject PopupRewardGift;
     public int startingTime = 600;
     public Text countdownText;
     public GameObject NoticeGift10Minutes;
+    public Text RewardGift10Minutes;
 
     [Header("CanvasOpenGift")]
-    public GameObject ResultGift10minutes;
     public GameObject Gift10minutesButNotEnough;
     public Text currentTimeGift10miutes;
     private int diamondInChest;
     public int currentTime;
-    private bool onGift10minutes;
 
     [Header("OfflineReward")]
-    public Text DistanceMaxOfflineReward;
-    public Text PriceUpdateOfflineReward;
+    public Text TextPriceUpdateOfflineLevel;
+    public Text TextInfoUpdateOfflineLevel;
+    private int DistanceMax = 40;
+    private int DistanceMin = 10;
+    public GameObject PopupRewardOffline;
+    public Text TextPopupRewardOffline;
 
     [Header("LuckyWheel")]
     public GameObject NoticeWheelLucky;
@@ -45,6 +51,7 @@ public class CanvasManager : MonoBehaviour
     public Slider SliderVictory;
     public Text TextX;
     public Text DiamondFound;
+    public GameObject BossBonus;
     public Text DiamondBonusADSText;
     private double DiamondADS;
     private double bonusX;
@@ -94,6 +101,9 @@ public class CanvasManager : MonoBehaviour
 
     [Header("CanVasPopUpRateUs")]
     private int StarRate = 5;
+
+    [Header("BackGroundNenToi")]
+    public GameObject BackGroundNenToi;
     public void FixedUpdate()
     {
         if (VictoryScene.active)
@@ -113,6 +123,10 @@ public class CanvasManager : MonoBehaviour
                 TextPhanTram.text = (TextFillAmountSkinEndingCurrent / 1 - TextFillAmountSkinEndingCurrent % 1).ToString() + " %";
             }
         }
+    }
+    public void SetRewardGift10Minutes(int value)
+    {
+        RewardGift10Minutes.text = "Earned : " + value.ToString();
     }
     public void SetStarRate(int Star)
     {
@@ -196,7 +210,7 @@ public class CanvasManager : MonoBehaviour
         }
         else if (TypeShop == 1)
         {
-            ImageSkin.sprite = ListSpriteImage[indexSkin + 6];
+            ImageSkin.sprite = ListSpriteImage[indexSkin + WeaponNoBuy.Count];
         }
 
         int CurrentProcess = PlayerPrefs.GetInt("phanTramNewSkinEndingCurrent");
@@ -294,7 +308,14 @@ public class CanvasManager : MonoBehaviour
             TextX.text = "x2";
             bonusX = 2;
         }
-        DiamondADS = double.Parse(DiamondFound.text) * bonusX;
+        if (BossBonus.active)
+        {
+            DiamondADS = (double.Parse(DiamondFound.text) + 300) * bonusX;
+        }
+        else
+        {
+            DiamondADS = double.Parse(DiamondFound.text) * bonusX;
+        }
         DiamondBonusADSText.text = DiamondADS.ToString();
     }
     public void ADSBonusButton()
@@ -329,31 +350,37 @@ public class CanvasManager : MonoBehaviour
     }
     public void DiamondOfflineRewardUpdate()
     {
-        int diamondCurrent = System.Int32.Parse(PlayerPrefs.GetString("diamond"));
-        int PriceUpdate = System.Int32.Parse(PriceUpdateOfflineReward.text);
-
-        if (diamondCurrent >= PriceUpdate)
+        int currentDiamond = System.Int32.Parse(PlayerPrefs.GetString("diamond"));
+        int currentPriceUpdateOfllineLevel = System.Int32.Parse(TextPriceUpdateOfflineLevel.text);
+        if (currentDiamond >= currentPriceUpdateOfllineLevel)
         {
-            int DistanceMaxNow = PlayerPrefs.GetInt("DistanceMax");
-            PlayerPrefs.SetInt("DistanceMax", DistanceMaxNow += 5);
+            //Cong them update
+            int currentUpdateLevel = PlayerPrefs.GetInt("LevelOfflineReward");
+            currentUpdateLevel += 1;
+            PlayerPrefs.SetInt("LevelOfflineReward", currentUpdateLevel);
             SetTextOfflineRewardUpdate();
-            diamondCurrent = diamondCurrent - PriceUpdate;
-            PlayerPrefs.SetString("diamond", diamondCurrent.ToString());
-            characterController.OnParticle(8);
+            //tru diamond
+            currentDiamond -= currentPriceUpdateOfllineLevel;
+            PlayerPrefs.SetString("diamond", currentDiamond.ToString());
+            Save.ReadText();
+            //Finish
+            characterController.Particle[8].SetActive(false);
+            characterController.Particle[8].SetActive(true);
+            CanvasGameStartController.CheckSceneStart();
         }
         else
         {
-
-            ///Ads
             WatchAdsUpdateOfflineReward();
         }
     }
     public void ClaimOfflineReward()
     {
+        //Cong Diamond
         int diamondCurrent = System.Int32.Parse(PlayerPrefs.GetString("diamond"));
-        diamondCurrent += System.Int32.Parse(Save.DiamondBonusOffline.ToString());
+        diamondCurrent += TotalDiamondRewardOffline;
         PlayerPrefs.SetString("diamond", diamondCurrent.ToString());
         Save.ReadText();
+        //Dong Popup
         Save.PopupOfflineReward.SetActive(false);
         Save.GameStartScene.SetActive(true);
         CanvasQualityKeyController();
@@ -361,24 +388,54 @@ public class CanvasManager : MonoBehaviour
     }
     public void ClaimDoubleOfflineReward()
     {
-
         ///Ads
         WatchAdsClaimDoubleOfflineReward();
     }
     public void SetTextOfflineRewardUpdate()
     {
-        if (PlayerPrefs.HasKey("DistanceMax"))
+        if (PlayerPrefs.HasKey("DateBefore"))
         {
-            int DistanceMax = PlayerPrefs.GetInt("DistanceMax");
-            int DistanceMaxIfUpdate = DistanceMax + 5;
-            int DiamondMaxIfUpdatex = DistanceMaxIfUpdate * 10;
-            DistanceMaxOfflineReward.text = DistanceMaxIfUpdate.ToString();
-            PriceUpdateOfflineReward.text = DiamondMaxIfUpdatex.ToString();
+            if (!PlayerPrefs.HasKey("LevelOfflineReward"))
+            {
+                PlayerPrefs.SetInt("LevelOfflineReward", 1);
+            }
+            int LevelOfflineReward = PlayerPrefs.GetInt("LevelOfflineReward");
+            int PriceUpdateOfflineLevel = LevelOfflineReward * 50;
+            int InfoUpdateOfflineLevel = LevelOfflineReward * 5 + 5;
+            TextPriceUpdateOfflineLevel.text = PriceUpdateOfflineLevel.ToString();
+            TextInfoUpdateOfflineLevel.text = InfoUpdateOfflineLevel.ToString();
         }
         else
         {
-            PlayerPrefs.SetInt("DistanceMax", 30);
+            PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
+            PlayerPrefs.SetInt("LevelOfflineReward", 1);
             SetTextOfflineRewardUpdate();
+        }
+    }
+    private int TotalDiamondRewardOffline;
+    public void CheckOfflineReward()
+    {
+        //Tinh tg offline
+        System.DateTime DateBefore = System.DateTime.Parse(PlayerPrefs.GetString("DateBefore"));
+        System.DateTime DateNow = System.DateTime.Now;
+        System.TimeSpan t = DateNow - DateBefore;
+        double Distance = Mathf.Abs(ToSingle(t.TotalMinutes));
+        Distance = Distance - Distance % 1;
+        //
+        if (Distance >= DistanceMin)
+        {
+            //hien popup
+            PopupRewardOffline.SetActive(true);
+            GameStartScene.SetActive(false);
+            CanVasQualityKey.SetActive(false);
+            BackGroundNenToi.SetActive(true);
+            //
+            if (Distance >= DistanceMax)
+            {
+                Distance = DistanceMax;
+            }
+            TotalDiamondRewardOffline = (int)Distance * (PlayerPrefs.GetInt("LevelOfflineReward") * 5);
+            TextPopupRewardOffline.text = "Earned : " + TotalDiamondRewardOffline.ToString();
         }
     }
     private int currentUpdateLevel;
@@ -402,6 +459,7 @@ public class CanvasManager : MonoBehaviour
             PlayerPrefs.SetString("diamond", currentdiamond.ToString());
             Save.ReadText();
             //
+            CanvasGameStartController.CheckSceneStart();
         }
         else
         {
@@ -421,7 +479,7 @@ public class CanvasManager : MonoBehaviour
         }
         else
         {
-            PlayerPrefs.SetInt("UpdateLevel", 0);
+            PlayerPrefs.SetInt("UpdateLevel", 1);
             SetTextUpdateLevel();
         }
     }
@@ -445,7 +503,7 @@ public class CanvasManager : MonoBehaviour
         {
             currentTime = PlayerPrefs.GetInt("currenttime");
         }
-        SetTextOfflineRewardUpdate();
+
         SetTextUpdateLevel();
         //check lan dau vao shop
         if (!PlayerPrefs.HasKey("FirstGoShopSkin"))
@@ -456,6 +514,13 @@ public class CanvasManager : MonoBehaviour
         {
             PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
         }
+        if (PlayerPrefs.HasKey("DateBefore"))
+        {
+            CheckOfflineReward();
+            PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
+        }
+        SetTextOfflineRewardUpdate();
+        AudioAssistant.instance.PlayMusic("Start", 0, 0);
     }
     // Update is called once per frame
     void Update()
@@ -501,7 +566,6 @@ public class CanvasManager : MonoBehaviour
         if (currentTime <= 0)
         {
             currentTime = 0;
-            onGift10minutes = true;
             countdownText.text = "00:00";
         }
         else
@@ -566,11 +630,11 @@ public class CanvasManager : MonoBehaviour
     public void Gift()
     {
         GameStartScene.SetActive(false);
+
         if (currentTime == 0)
         {
-            ResultGift10minutes.SetActive(true);
             diamondInChest = Random.RandomRange(100, 500);
-            ResultGift10minutes.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = "Earned :" + diamondInChest;
+            PopupGift.SetActive(true);
         }
         else
         {
@@ -584,14 +648,12 @@ public class CanvasManager : MonoBehaviour
     }
     public void CloseGift()
     {
-        ResultGift10minutes.SetActive(false);
         currentTime = startingTime;
         GameStartScene.SetActive(true);
     }
     public void ClaimGift()
     {
-        ResultGift10minutes.SetActive(false);
-
+        PopupGift.SetActive(false);
         //diamond ++
         if (PlayerPrefs.GetString("diamond") != "")
         {
@@ -604,9 +666,10 @@ public class CanvasManager : MonoBehaviour
         if (PlayerPrefs.GetInt("currenttime") == 0)
         {
             currentTime = 600;
-            onGift10minutes = false;
         }
         currentTime = startingTime;
+        PopupRewardGift.SetActive(true);
+        SetRewardGift10Minutes(diamondInChest);
     }
     public void WatchADSClaimX2Gift()
     {
@@ -635,14 +698,14 @@ public class CanvasManager : MonoBehaviour
     }
     public void OnCompleteAdsClaimX2Gift(int value)
     {
+        PopupGift.SetActive(false);
         AnalyticManager.LogWatchAds("ClaimX2Gift10Minutes", 1);
-        ResultGift10minutes.SetActive(false);
 
         //diamond ++
         if (PlayerPrefs.GetString("diamond") != "")
         {
             int diamond = int.Parse(PlayerPrefs.GetString("diamond"));
-            diamond += (diamondInChest*2);
+            diamond += (diamondInChest * 2);
             PlayerPrefs.SetString("diamond", diamond.ToString());
             Save.ReadText();
         }
@@ -650,18 +713,16 @@ public class CanvasManager : MonoBehaviour
         if (PlayerPrefs.GetInt("currenttime") == 0)
         {
             currentTime = 600;
-            onGift10minutes = false;
         }
         currentTime = startingTime;
+        PopupRewardGift.SetActive(true);
+        SetRewardGift10Minutes(diamondInChest * 2);
     }
     public void LoseItGift()
     {
-        ResultGift10minutes.SetActive(false);
-
         if (PlayerPrefs.GetInt("currenttime") == 0)
         {
             currentTime = 600;
-            onGift10minutes = false;
         }
         currentTime = startingTime;
         GameStartScene.SetActive(true);
@@ -673,6 +734,10 @@ public class CanvasManager : MonoBehaviour
     public void ChangeSceneTest()
     {
         SceneManager.LoadScene("AllObjectMap");
+    }
+    public static float ToSingle(double value)
+    {
+        return (float)value;
     }
     private bool adsShowing = false;
     public void ShowDebug()
@@ -846,12 +911,15 @@ public class CanvasManager : MonoBehaviour
     }
     private void OnCompleteAdsUpdateOfflineReward(int value)
     {
-        AnalyticManager.LogWatchAds("UpdateOfflineReward", 1);
-        adsShowing = false;
-        int DistanceMaxNow = PlayerPrefs.GetInt("DistanceMax");
-        PlayerPrefs.SetInt("DistanceMax", DistanceMaxNow += 5);
+        //Cong them update
+        int currentUpdateLevel = PlayerPrefs.GetInt("UpdateLevel");
+        currentUpdateLevel += 1;
+        PlayerPrefs.SetInt("UpdateLevel", currentUpdateLevel);
         SetTextOfflineRewardUpdate();
-        characterController.OnParticle(8);
+        //Finish
+        characterController.Particle[8].SetActive(false);
+        characterController.Particle[8].SetActive(true);
+        CanvasGameStartController.CheckSceneStart();
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void WatchAdsClaimDoubleOfflineReward()
@@ -884,9 +952,10 @@ public class CanvasManager : MonoBehaviour
         AnalyticManager.LogWatchAds("DoubleOfflineReward", 1);
         adsShowing = false;
         int diamondCurrent = System.Int32.Parse(PlayerPrefs.GetString("diamond"));
-        diamondCurrent += System.Int32.Parse(Save.DiamondBonusOffline.ToString()) * 2;
+        diamondCurrent += TotalDiamondRewardOffline * 2;
         PlayerPrefs.SetString("diamond", diamondCurrent.ToString());
         Save.ReadText();
+
         Save.PopupOfflineReward.SetActive(false);
         Save.GameStartScene.SetActive(true);
         CanvasQualityKeyController();
@@ -927,9 +996,9 @@ public class CanvasManager : MonoBehaviour
         characterController.myLevel += 1;
 
         //particle
-
         characterController.Particle[0].SetActive(false);
         characterController.Particle[0].SetActive(true);
+        CanvasGameStartController.CheckSceneStart();
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void WatchAdsGetSkinEnding()

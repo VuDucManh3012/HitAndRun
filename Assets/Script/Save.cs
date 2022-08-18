@@ -19,42 +19,6 @@ public class Save : MonoBehaviour
 
     public CanvasManager CanvasManager;
     public GameObject QualityKey;
-    public void ReadDimondOffline()
-    {
-        if (PlayerPrefs.HasKey("DateBefore"))
-        {
-            //Tinh tg offline
-            System.DateTime DateBefore = System.DateTime.Parse(PlayerPrefs.GetString("DateBefore"));
-            System.DateTime DateNow = System.DateTime.Now;
-            System.TimeSpan t = DateNow - DateBefore;
-            double Distance = Mathf.Abs(ToSingle(t.TotalMinutes));
-            Distance = Distance - Distance % 1;
-            //
-            if (Distance >= 10)
-            {
-                //hien popup
-                PopupOfflineReward.SetActive(true);
-                GameStartScene.SetActive(false);
-                QualityKey.SetActive(false);
-                //
-                if (PlayerPrefs.HasKey("DistanceMax"))
-                {
-                    int DistanceMax = PlayerPrefs.GetInt("DistanceMax");
-
-                    if (Distance >= DistanceMax)
-                    {
-                        DiamondBonusOffline = DistanceMax * 10;
-                    }
-                    else
-                    {
-
-                        DiamondBonusOffline = Distance * 10;
-                    }
-                    DiamondOfflineText.text = DiamondBonusOffline.ToString();
-                }
-            }
-        }
-    }
     public void Awake()
     {
         Start();
@@ -71,7 +35,6 @@ public class Save : MonoBehaviour
         GameStartScene.SetActive(true);
         CanvasManager.CanvasQualityKeyController();
         ReadText();
-        ReadDimondOffline();
     }
     [ContextMenu("AddKey")]
     public void AddKey()
@@ -95,7 +58,7 @@ public class Save : MonoBehaviour
     public void WriteText()
     {
         PlayerPrefs.SetString("diamond", Diamond.text);
-        PlayerPrefs.SetString("key", Key.text);
+        PlayerPrefs.SetString("key", PlayerPrefs.GetString("key"));
         PlayerPrefs.SetString("stage", Char.GetComponent<ControllerPlayer>().QualityStage.ToString());
     }
     public void WriteTextFirst()

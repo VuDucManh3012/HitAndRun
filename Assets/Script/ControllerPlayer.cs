@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using CnControls;
 using RocketTeam.Sdk.Services.Ads;
 using Cinemachine;
+using MoreMountains.NiceVibrations;
 public class ControllerPlayer : MonoBehaviour
 {
     Rigidbody myBody;
@@ -42,7 +43,7 @@ public class ControllerPlayer : MonoBehaviour
     public Text SeBonusText;
     public Text DiamondFoundText;
     private double diamondBonus;
-    public Text BossBonus;
+    public GameObject BossBonus;
 
     private Vector3 myposition;
 
@@ -467,20 +468,18 @@ public class ControllerPlayer : MonoBehaviour
             {
                 TotalDiamond = 50;
             }
-
             SeBonusText.text = TotalDiamond.ToString();
             diamondBonus = (DiamondFound * SeBonus) - (DiamondFound * SeBonus) % 1;
             if (BossEndingBonus)
             {
                 QualityDiamond += diamondBonus;
                 QualityDiamond += 300;
-                BossBonus.text = "Boss Bonus : 300";
+                BossBonus.SetActive(true);
             }
             else
             {
                 QualityDiamond += diamondBonus;
             }
-
             Save.Diamond.text = QualityDiamond.ToString();
         }
         PlusedSeBonus = true;
@@ -577,7 +576,7 @@ public class ControllerPlayer : MonoBehaviour
         unLimitDamage = true;
         SetJumpAttack360(false);
         yield return new WaitForSeconds(0.2f);
-        myAnim.SetInteger("AttackItem", 1); 
+        myAnim.SetInteger("AttackItem", 1);
         attackObject.transform.GetChild(0).gameObject.SetActive(true);
         yield return new WaitForSeconds(0.3f);
         attackObject.transform.GetChild(1).gameObject.SetActive(true);
@@ -585,7 +584,7 @@ public class ControllerPlayer : MonoBehaviour
     }
     public void SetAttackAnimTo0()
     {
-        myAnim.SetInteger("AttackItem", 0); 
+        myAnim.SetInteger("AttackItem", 0);
         unLimitDamage = false;
     }
     IEnumerator WaitToVictory(float second)
@@ -728,13 +727,15 @@ public class ControllerPlayer : MonoBehaviour
     public void ReBorn(int value)
     {
         AnalyticManager.LogWatchAds("AdsReborn", 1);
+        adsShowing = false;
+        GameOverScene.SetActive(false);
         unsetLevelText = false;
         myAnim.SetBool("Die", false);
         myLevel = 1;
         ChangeCam("CamRun");
         isMove = true;
-        //dich vi tri
 
+        //dich vi tri
         Transform Start, End;
         for (int i = 1; i <= SpawnMap.transform.childCount; i++)
         {
@@ -783,7 +784,6 @@ public class ControllerPlayer : MonoBehaviour
                 onRoad = true;
                 SetSpeed(SpeedRoad);
             }
-
         }
         else if (other.tag == "StageEnding")
         {
@@ -1015,6 +1015,8 @@ public class ControllerPlayer : MonoBehaviour
         }
         else if (other.tag == "Diamond")
         {
+            AudioAssistant.Shot(TYPE_SOUND.Diamond);
+            MMVibrationManager.Haptic(HapticTypes.Selection, false, true);
             QualityDiamond += 1;
             Destroy(other.gameObject);
             Save.Diamond.text = QualityDiamond.ToString();
@@ -1030,7 +1032,8 @@ public class ControllerPlayer : MonoBehaviour
                 PlayerPrefs.SetString("key", 0.ToString());
             }
             int keyCurrent = System.Int32.Parse(PlayerPrefs.GetString("key"));
-            keyCurrent += 1;
+            Debug.LogWarning(keyCurrent);
+            keyCurrent += 1; Debug.LogWarning(keyCurrent);
             PlayerPrefs.SetString("key", keyCurrent.ToString());
             AnimKey.SetActive(true);
         }

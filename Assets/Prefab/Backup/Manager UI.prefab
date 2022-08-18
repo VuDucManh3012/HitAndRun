@@ -18003,7 +18003,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7494322088233896254
 RectTransform:
   m_ObjectHideFlags: 0
@@ -30511,84 +30511,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &7494322088822995037
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7494322088822995036}
-  - component: {fileID: 7494322088822995026}
-  - component: {fileID: 7494322088822995027}
-  m_Layer: 0
-  m_Name: PriceUpdateOffline
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &7494322088822995036
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7494322088822995037}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 7494322089160519809}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.41428572, y: 0}
-  m_AnchorMax: {x: 0.942857, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &7494322088822995026
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7494322088822995037}
-  m_CullTransparentMesh: 1
---- !u!114 &7494322088822995027
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7494322088822995037}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 12800000, guid: 66dc96e55947ded4586de19e76af0f5a, type: 3}
-    m_FontSize: 12
-    m_FontStyle: 0
-    m_BestFit: 1
-    m_MinSize: 1
-    m_MaxSize: 40
-    m_Alignment: 4
-    m_AlignByGeometry: 1
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: 0
 --- !u!1 &7494322088829043979
 GameObject:
   m_ObjectHideFlags: 0
@@ -33240,13 +33162,17 @@ MonoBehaviour:
   GameOverScene: {fileID: 7494322089037299452}
   GameStartScene: {fileID: 7494322088233896255}
   Save: {fileID: 0}
+  PopupGift: {fileID: 0}
+  PopupRewardGift: {fileID: 0}
   startingTime: 600
   countdownText: {fileID: 7494322089613381151}
-  ResultGift10minutes: {fileID: 7494322088672188526}
+  NoticeGift10Minutes: {fileID: 0}
+  RewardGift10Minutes: {fileID: 0}
   Gift10minutesButNotEnough: {fileID: 7494322089726715606}
   currentTimeGift10miutes: {fileID: 7494322089979707909}
-  DistanceMaxOfflineReward: {fileID: 7494322089206803725}
-  PriceUpdateOfflineReward: {fileID: 7494322088822995027}
+  currentTime: 0
+  TextPriceUpdateOfflineLevel: {fileID: 0}
+  TextInfoUpdateOfflineLevel: {fileID: 0}
   NoticeWheelLucky: {fileID: 7494322089903735432}
   CanvasLuckyWheel: {fileID: 4938096500145536512}
   LevelUpdate: {fileID: 7494322089119083376}
@@ -33255,6 +33181,7 @@ MonoBehaviour:
   SliderVictory: {fileID: 7494322089584754694}
   TextX: {fileID: 7494322089278332504}
   DiamondFound: {fileID: 7494322088607595167}
+  BossBonus: {fileID: 0}
   DiamondBonusADSText: {fileID: 7494322090027269544}
   Character: {fileID: 0}
   characterController: {fileID: 0}
@@ -33268,6 +33195,12 @@ MonoBehaviour:
   - {fileID: 4938096501753210937}
   - {fileID: 4938096499961185872}
   - {fileID: 4938096501970738510}
+  SkinNoBuy: 
+  WeaponNoBuy: 
+  TypeShop: 0
+  indexSkin: 0
+  phanTramNewSkinEndingCurrent: 0
+  phanTramNewSkinEndingBefore: 0
   CanvasNewSkinEnding: {fileID: 4938096501037500321}
   ImageSkin: {fileID: 4938096501561558287}
   ImageMarkSkin: {fileID: 4938096501727254001}
@@ -34734,7 +34667,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7494322089037299443
 RectTransform:
   m_ObjectHideFlags: 0
@@ -37607,7 +37540,6 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 7494322088822995036}
   - {fileID: 7494322089840883030}
   m_Father: {fileID: 7494322089410374644}
   m_RootOrder: 1
@@ -50926,7 +50858,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7494322089160519809}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0.32857144, y: 1}

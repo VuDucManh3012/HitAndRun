@@ -244,6 +244,7 @@ public class Spin : MonoBehaviour
         adsShowing = false;
         //Spin
         AddSpinSlot(1);
+        RotateNow();
     }
     public void ReadText()
     {

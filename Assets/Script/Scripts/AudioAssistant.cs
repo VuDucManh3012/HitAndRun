@@ -149,8 +149,6 @@ public class AudioAssistant : SerializedMonoBehaviour
             yield break;
         }
 
-        yield return Yielders.Get(delayStartFadeOut);
-        countDownDelay = 0;
         if (!music.isPlaying) music.Play();
         while (countDownDelay < delay)
         {
@@ -159,7 +157,21 @@ public class AudioAssistant : SerializedMonoBehaviour
             yield return null;
         }
 
+        countDownDelay = 0;
         music.volume = musicVolume;
+
+        //yield return Yielders.Get(delayStartFadeOut);
+        yield return new WaitForSeconds(delayStartFadeOut);
+        
+        //if (!music.isPlaying) music.Play();
+        //while (countDownDelay < delay)
+        //{
+        //    music.volume = countDownDelay * musicVolume;
+        //    countDownDelay += timeUnScaleDentaTime;
+        //    yield return null;
+        //}
+
+        //music.volume = musicVolume;
     }
 
     public static void Shot(TYPE_SOUND typeSound)
