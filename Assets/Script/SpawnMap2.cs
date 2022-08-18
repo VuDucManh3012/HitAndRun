@@ -72,6 +72,12 @@ public class SpawnMap2 : MonoBehaviour
 
     [Header("MapHaveHole")]
     public List<GameObject> MapHole;
+    public List<GameObject> Hole0_50;
+    public List<GameObject> Hole50_100;
+    public List<GameObject> Hole100_150;
+    public List<GameObject> Hole150_200;
+    public List<GameObject> Hole200_250;
+    public List<GameObject> Hole250_300;
 
     [Header("ToSpawn")]
     public List<GameObject> ListMapFound;
@@ -598,43 +604,48 @@ public class SpawnMap2 : MonoBehaviour
         if (Random.Range(0, 10) <= 6)
         {
             Debug.LogWarning("Co the Thang");
-            if (ToTalLevelInMap > 400)
+            switch (ToTalLevelInMap / 50)
             {
-                random = Random.Range(0, MapHole.Count);
-                ListMapFound.Add(MapHole[random]);
-            }
-            else if (ToTalLevelInMap > 300)
-            {
-                random = Random.Range(0, MapHole.Count - 3);
-                ListMapFound.Add(MapHole[random]);
-            }
-            else if (ToTalLevelInMap > 200)
-            {
-                random = Random.Range(0, MapHole.Count - 6);
-                ListMapFound.Add(MapHole[random]);
-            }
-            else if (ToTalLevelInMap > 150)
-            {
-                random = Random.Range(0, MapHole.Count - 7);
-                ListMapFound.Add(MapHole[random]);
-            }
-            else if (ToTalLevelInMap > 100)
-            {
-                random = Random.Range(0, MapHole.Count - 8);
-                ListMapFound.Add(MapHole[random]);
-            }
-            else
-            {
-                random = Random.Range(0, MapHole.Count - 9);
-                ListMapFound.Add(MapHole[random]);
+                case 2:
+                    MapHole.AddRange(Hole250_300);
+                    break;
+                case 3:
+                    MapHole.AddRange(Hole200_250);
+                    break;
+                case 4:
+                    MapHole.AddRange(Hole200_250);
+                    break;
+                case 5:
+                    MapHole.AddRange(Hole100_150);
+                    break;
+                case 6:
+                    MapHole.AddRange(Hole50_100);
+                    break;
+                case 7:
+                    MapHole.AddRange(Hole0_50);
+                    break;
+                default:
+                    MapHole.AddRange(Hole0_50);
+                    MapHole.AddRange(Hole50_100);
+                    MapHole.AddRange(Hole100_150);
+                    MapHole.AddRange(Hole150_200);
+                    MapHole.AddRange(Hole200_250);
+                    MapHole.AddRange(Hole250_300);
+                    break;
             }
         }
         else
         {
             Debug.LogWarning("Random");
-            random = Random.Range(0, MapHole.Count);
-            ListMapFound.Add(MapHole[random]);
+            MapHole.AddRange(Hole0_50);
+            MapHole.AddRange(Hole50_100);
+            MapHole.AddRange(Hole100_150);
+            MapHole.AddRange(Hole150_200);
+            MapHole.AddRange(Hole200_250);
+            MapHole.AddRange(Hole250_300);
         }
+        random = Random.Range(0, MapHole.Count);
+        ListMapFound.Add(MapHole[random]);
     }
     void TotalLevelInMap()
     {

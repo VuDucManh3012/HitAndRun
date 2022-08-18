@@ -24,8 +24,22 @@ public class Enemy : MonoBehaviour
             unDamage = true;
         }
         levelText.SetActive(false);
-        upperLevel = transform.Find("UpperLevel").gameObject;
-        lowerLevel = transform.Find("LowerLevel").gameObject;
+        try
+        {
+            upperLevel = transform.Find("UpperLevel").gameObject;
+        }
+        catch
+        {
+
+        }
+        try
+        {
+            lowerLevel = transform.Find("LowerLevel").gameObject;
+        }
+        catch
+        {
+
+        }
         if (Enemy1)
         {
             Animator myanim = GetComponentInChildren<Animator>();
@@ -34,12 +48,11 @@ public class Enemy : MonoBehaviour
             {
                 levelText.SetActive(true);
                 levelText.GetComponent<TextMeshPro>().text = "LV " + level.ToString();
-                upperLevel.SetActive(true);
+                SetUpperLower(false, true);
             }
             else
             {
-                upperLevel.SetActive(false);
-                lowerLevel.SetActive(false);
+                SetUpperLower(false, false);
             }
         }
         else if (Enemy2)
@@ -48,29 +61,25 @@ public class Enemy : MonoBehaviour
             levelText.GetComponent<TextMeshPro>().text = "LV " + level.ToString();
             if (EnemyEnding)
             {
-                upperLevel.SetActive(true);
-                lowerLevel.SetActive(false);
+                SetUpperLower(false, true);
             }
             else
             {
-                upperLevel.SetActive(false);
-                lowerLevel.SetActive(true);
+                SetUpperLower(true, false);
             }
         }
         else if (Enemy3)
         {
             levelText.SetActive(true);
             levelText.GetComponent<TextMeshPro>().text = "LV " + level.ToString();
-            upperLevel.SetActive(true);
-            lowerLevel.SetActive(false);
+            SetUpperLower(false, true);
         }
     }
     public void ChangeStatusLevelUpper()
     {
         if (Enemy1 && EnemyEnding)
         {
-            upperLevel.SetActive(true);
-            lowerLevel.SetActive(false);
+            SetUpperLower(false, true);
             Animator myanim = GetComponentInChildren<Animator>();
             myanim.SetBool("LevelUpper", false);
         }
@@ -81,15 +90,13 @@ public class Enemy : MonoBehaviour
         }
         else if (Enemy2 && EnemyEnding)
         {
-            upperLevel.SetActive(true);
-            lowerLevel.SetActive(false);
+            SetUpperLower(false, true);
             Animator myanim = GetComponent<Animator>();
             myanim.SetBool("LevelUpper", false);
         }
         else if (Enemy3)
         {
-            upperLevel.SetActive(true);
-            lowerLevel.SetActive(false);
+            SetUpperLower(false, true);
             Animator myanim = GetComponent<Animator>();
             myanim.SetBool("LevelUpper", false);
         }
@@ -98,8 +105,7 @@ public class Enemy : MonoBehaviour
     {
         if (Enemy1 && EnemyEnding)
         {
-            upperLevel.SetActive(false);
-            lowerLevel.SetActive(true);
+            SetUpperLower(true, false);
             try
             {
                 Animator myanim = GetComponentInChildren<Animator>();
@@ -113,27 +119,44 @@ public class Enemy : MonoBehaviour
         }
         else if (Enemy1 && !EnemyEnding)
         {
-            upperLevel.SetActive(false);
-            lowerLevel.SetActive(false);
+            SetUpperLower(false, false);
         }
         else if (Enemy2 && EnemyEnding)
         {
-            upperLevel.SetActive(false);
-            lowerLevel.SetActive(true);
+            SetUpperLower(true, false);
             Animator myanim = GetComponent<Animator>();
             myanim.SetBool("LevelUpper", true);
         }
         else if (Enemy2 && !EnemyEnding)
         {
-            upperLevel.SetActive(false);
-            lowerLevel.SetActive(true);
+            SetUpperLower(true, false);
         }
         else if (Enemy3)
         {
-            upperLevel.SetActive(false);
-            lowerLevel.SetActive(true);
+            SetUpperLower(true, false);
             Animator myanim = GetComponent<Animator>();
             myanim.SetBool("LevelUpper", true);
         }
     }
+    public void SetUpperLower(bool Lower, bool Upper)
+    {
+
+        try
+        {
+
+            lowerLevel.SetActive(Lower);
+        }
+        catch
+        {
+
+        }
+        try
+        {
+            upperLevel.SetActive(Upper);
+        }
+        catch
+        {
+        }
+    }
+
 }

@@ -49,7 +49,6 @@ public class SoundConfig : SerializedScriptableObject
 #if UNITY_EDITOR
     [FolderPath]
     public string path = "Assets/Sounds";
-
     [Button]
     public void GenerateSFX()
     {

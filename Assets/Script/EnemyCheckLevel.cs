@@ -27,7 +27,7 @@ public class EnemyCheckLevel : MonoBehaviour
                 {
                     ListEnemyNeedCheck.Add(ListMap[i].transform.GetChild(i2).gameObject);
                 }
-                else if (ListMap[i].transform.GetChild(i2).tag == "Enemy3" && ListMap[i].transform.GetChild(i2).transform.GetComponent<Enemy>().level >= 40)
+                else if (ListMap[i].transform.GetChild(i2).tag == "Enemy3")
                 {
                     ListEnemyNeedCheck.Add(ListMap[i].transform.GetChild(i2).gameObject);
                 }

@@ -897,7 +897,7 @@ public class ControllerPlayer : MonoBehaviour
                     SetAttack();
                     Destroy(other.transform.Find("EnemyModel").gameObject);
                     Destroy(other.transform.Find("TextLevel").gameObject);
-                    other.transform.Find("EnemyRagdoll").gameObject.SetActive(true);
+                    Destroy(other.transform.Find("LowerLevel").gameObject);
                     myLevel += other.GetComponent<Enemy>().levelBonus;
                     FloatingTextAnimator.Play("FloatingText");
                     FloatingTextUp.GetComponent<TextMeshPro>().text = "+" + other.GetComponent<Enemy>().levelBonus + " level";
@@ -923,7 +923,6 @@ public class ControllerPlayer : MonoBehaviour
                         SetAttack();
                         Destroy(other.transform.Find("EnemyModel").gameObject);
                         Destroy(other.transform.Find("TextLevel").gameObject);
-                        other.transform.Find("EnemyRagdoll").gameObject.SetActive(true);
                         myLevel += other.GetComponent<Enemy>().levelBonus;
                         FloatingTextAnimator.Play("FloatingText");
                         FloatingTextUp.GetComponent<TextMeshPro>().text = "+" + other.GetComponent<Enemy>().levelBonus + " level";
@@ -966,6 +965,7 @@ public class ControllerPlayer : MonoBehaviour
                     //
                     Destroy(other.transform.Find("EnemyModel").gameObject);
                     Destroy(other.transform.Find("TextLevel").gameObject);
+                    Destroy(other.transform.Find("LowerLevel").gameObject);
                     other.transform.Find("EnemyRagdoll").gameObject.SetActive(true);
                     myLevel += other.GetComponent<Enemy>().levelBonus;
                     FloatingTextAnimator.Play("FloatingText");
@@ -1118,24 +1118,7 @@ public class ControllerPlayer : MonoBehaviour
         {
             transform.position = Vector3.Lerp(transform.position, new Vector3(other.transform.position.x, transform.position.y, transform.position.z), 0.2f);
         }
-        else if (other.tag == "Enemy")
-        {
-            if (myLevel <= 0 && !deletedLowerEnemy)
-            {
-                Destroy(other.transform.Find("LowerLevel").gameObject);
-                deletedLowerEnemy = true;
-            }
-        }
-        else if (other.tag == "Enemy3")
-        {
-            if (myLevel <= 0 && !deletedLowerEnemy)
-            {
-                Destroy(other.transform.Find("LowerLevel").gameObject);
-                deletedLowerEnemy = true;
-            }
-        }
     }
-    private bool deletedLowerEnemy;
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == "Bridge")
