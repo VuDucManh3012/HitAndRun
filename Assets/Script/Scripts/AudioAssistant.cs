@@ -65,7 +65,15 @@ public class AudioAssistant : SerializedMonoBehaviour
         music.volume = settingData.MusicVolume;
         normalMusicVolume = settingData.MusicVolume;
     }
+    public void UpdateSoundSetting2(float sfxVolumn , float musicVolumn)
+    {
+        if (GameManager.Instance == null) return;
+        var settingData = GameManager.Instance.Data.Setting;
 
+        sfx.volume = sfxVolumn;
+        music.volume = musicVolumn;
+        normalMusicVolume = sfxVolumn;
+    }
 
     public string currentTrack;
 

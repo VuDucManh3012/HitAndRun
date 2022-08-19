@@ -550,7 +550,7 @@ public class ControllerPlayer : MonoBehaviour
             myBody.velocity = new Vector3(0, 12f, 0);
             SetSpeed(SpeedJump + 1);
             StartCoroutine(setUnDead());
-            StartCoroutine(setOnJump()); 
+            StartCoroutine(setOnJump());
             AudioAssistant.Shot(TYPE_SOUND.Jump);
             HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
@@ -607,13 +607,14 @@ public class ControllerPlayer : MonoBehaviour
         ChangeCam("CamStart");
         WeaponLeft.SetActive(false);
         WeaponRight.SetActive(false);
+        AudioAssistant.Shot(TYPE_SOUND.WinEnding);
+        HCVibrate.Haptic(HapticTypes.RigidImpact);
         yield return new WaitForSeconds(3);
         UpdateDiamond();
         ActiveCanvasVictory();
         //AudioAssistant.Instance.PlayMusic("WinEnding");
 
-        AudioAssistant.Shot(TYPE_SOUND.WinEnding);
-        HCVibrate.Haptic(HapticTypes.SoftImpact);
+
         transform.rotation = new Quaternion(0, 1, 0, 0);
     }
     public void pushOpposite()
@@ -678,10 +679,15 @@ public class ControllerPlayer : MonoBehaviour
 
             QualityDiamond -= DiamondFound;
             GameOverScene.SetActive(true);
-       
+
             //AudioAssistant.Instance.PlayMusic("Lose",0,0);
-            AudioAssistant.Shot(TYPE_SOUND.Lose);
-            HCVibrate.Haptic(HapticTypes.SoftImpact);
+            if (!OnAudio)
+            {
+                AudioAssistant.Shot(TYPE_SOUND.Lose);
+                HCVibrate.Haptic(HapticTypes.SoftImpact);
+                OnAudio = true;
+            }
+
         }
     }
     IEnumerator VictoryInStageEnding()
@@ -690,8 +696,13 @@ public class ControllerPlayer : MonoBehaviour
         ActiveCanvasVictory();
 
         //AudioAssistant.Instance.PlayMusic("WinNormal");
-        AudioAssistant.Shot(TYPE_SOUND.WinBinhThuong);
-        HCVibrate.Haptic(HapticTypes.SoftImpact);
+        if (!OnAudio)
+        {
+            AudioAssistant.Shot(TYPE_SOUND.WinBinhThuong);
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
+            OnAudio = true;
+        }
+
     }
     public bool ActiveCanvasVictoy;
     public void ActiveCanvasVictory()
@@ -716,6 +727,7 @@ public class ControllerPlayer : MonoBehaviour
             ActiveCanvasVictoy = true;
         }
     }
+    private bool OnAudio = false;
     private void checkDead()
     {
         if (myLevel <= 0)
@@ -742,8 +754,13 @@ public class ControllerPlayer : MonoBehaviour
                 GameOverScene.SetActive(true);
                 isMove = false;
                 //AudioAssistant.Instance.PlayMusic("Lose", 1f, 0);
-                AudioAssistant.Shot(TYPE_SOUND.Lose);
-                HCVibrate.Haptic(HapticTypes.SoftImpact);
+                if (!OnAudio)
+                {
+                    AudioAssistant.Shot(TYPE_SOUND.Lose);
+                    HCVibrate.Haptic(HapticTypes.SoftImpact);
+                    OnAudio = true;
+                }
+
             }
         }
     }
@@ -759,7 +776,7 @@ public class ControllerPlayer : MonoBehaviour
         myLevel = 1;
         ChangeCam("CamRun");
         isMove = true;
-
+        OnAudio = false;
         //dich vi tri
         Transform Start, End;
         for (int i = 1; i <= SpawnMap.transform.childCount; i++)
@@ -809,10 +826,8 @@ public class ControllerPlayer : MonoBehaviour
         }
         else if (other.tag == "EndingBoard")
         {
-            other.transform.GetComponent<Renderer>().material = WhiteBoard; 
+            other.transform.GetComponent<Renderer>().material = WhiteBoard;
             //AudioAssistant.Instance.PlayMusic("WinEnding");
-            AudioAssistant.Shot(TYPE_SOUND.WinEnding);
-            HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
         else if (other.tag == "ButtonOpenGate")
         {
@@ -847,9 +862,6 @@ public class ControllerPlayer : MonoBehaviour
         else if (other.tag == "FireWork")
         {
             other.transform.GetChild(0).gameObject.SetActive(true);
-            //AudioAssistant.Instance.PlayMusic("WinEnding");
-            AudioAssistant.Shot(TYPE_SOUND.WinEnding);
-            HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
         else if (other.tag == "JumpLow")
         {
@@ -1079,7 +1091,7 @@ public class ControllerPlayer : MonoBehaviour
         else if (other.tag == "Diamond")
         {
             AudioAssistant.Shot(TYPE_SOUND.Diamond);
-            HCVibrate.Haptic(HapticTypes.SoftImpact);
+            HCVibrate.Haptic(HapticTypes.RigidImpact);
             QualityDiamond += 1;
             Destroy(other.gameObject);
             Save.Diamond.text = QualityDiamond.ToString();

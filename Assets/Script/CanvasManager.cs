@@ -546,6 +546,8 @@ public class CanvasManager : MonoBehaviour
         ////audio
         AudioAssistant.Instance.PlayMusic("Start");
         AudioAssistant.Instance.PlayMusic("Start");
+        //
+        SetValueSliderSetting();
     }
     // Update is called once per frame
     void Update()
@@ -974,6 +976,7 @@ public class CanvasManager : MonoBehaviour
         PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
         PlayerPrefs.SetInt("ClaimedOfflineReward", 1);
         PopupRewardOffline.SetActive(false);
+        BackGroundNenToi.SetActive(false);
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void WatchAdsUpdateLevel()
@@ -1131,18 +1134,31 @@ public class CanvasManager : MonoBehaviour
     }
     public void ChangeVolumnMusic()
     {
-        var settingData = GameManager.Instance.Data.Setting;
-        settingData.MusicVolume = (int)MusicVolumn.value;
-        AudioAssistant.Instance.UpdateSoundSetting();
+        AudioAssistant.Instance.UpdateSoundSetting2(SoundVolumn.value,MusicVolumn.value);
+        PlayerPrefs.SetFloat("MusicVolumn", MusicVolumn.value);
     }
     public void ChangeVolumnSfx()
     {
-        var settingData = GameManager.Instance.Data.Setting;
-        settingData.SoundVolume = (int)SoundVolumn.value;
-        AudioAssistant.Instance.UpdateSoundSetting();
+        AudioAssistant.Instance.UpdateSoundSetting2(SoundVolumn.value, MusicVolumn.value);
+        PlayerPrefs.SetFloat("SfxVolumn", SoundVolumn.value);
     }
     public void PLayMusicStart()
     {
         AudioAssistant.Instance.PlayMusic("Start");
+    }
+    public void SetValueSliderSetting()
+    {
+        if (!PlayerPrefs.HasKey("SfxVolumn"))
+        {
+            PlayerPrefs.SetFloat("SfxVolumn", 0.5f);
+        }
+        if (!PlayerPrefs.HasKey("MusicVolumn"))
+        {
+            PlayerPrefs.SetFloat("MusicVolumn", 0.5f);
+        }
+
+        SoundVolumn.value = PlayerPrefs.GetFloat("SfxVolumn");
+        MusicVolumn.value = PlayerPrefs.GetFloat("MusicVolumn");
+        AudioAssistant.Instance.UpdateSoundSetting2(SoundVolumn.value, MusicVolumn.value);
     }
 }

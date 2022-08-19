@@ -150,6 +150,7 @@ public class ChestRoom : MonoBehaviour
                 int adsPoint = PlayerPrefs.GetInt("weaponSpecial" + currentItemSpecial) + 2;
                 PlayerPrefs.SetInt("weaponSpecial" + currentItemSpecial, adsPoint);
                 CanvasNewSkin.SetActive(true);
+                transform.GetChild(0).gameObject.SetActive(false);
                 ImageNewSkin.sprite = ListImageSpecialGift[currentItemSpecial];
             }
         }
