@@ -29,7 +29,8 @@ public enum TYPE_SOUND
     Jump = 8,
     Punch = 9,
     Glass = 10,
-    WallBrick = 11
+    WallBrick = 11,
+    SpendMoney = 12
 }
 
 public enum POOL

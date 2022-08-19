@@ -1,7 +1,11 @@
 ﻿using System;
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+
+using DG.Tweening;
+using UniRx;
+
 using Sirenix.OdinInspector;
 using Random = UnityEngine.Random;
 
@@ -9,7 +13,7 @@ using Random = UnityEngine.Random;
 [RequireComponent(typeof(AudioSource))]
 public class AudioAssistant : SerializedMonoBehaviour
 {
-    public static AudioAssistant instance;
+    public static AudioAssistant Instance { get; private set; }
 
     [SerializeField]
     AudioSource music;
@@ -17,15 +21,29 @@ public class AudioAssistant : SerializedMonoBehaviour
     [SerializeField]
     AudioSource sfx;
 
+    [SerializeField]
+    private AudioSource pitchedAudioSource;
+
+    [SerializeField]
+    private Vector2 pitchLevelMinMax;
+
+
     private SoundConfig soundCfg;
     static List<TYPE_SOUND> mixBuffer = new List<TYPE_SOUND>(32);
     static float mixBufferClearDelay = 0.05f;
     static float timeUnScaleDentaTime = 0.02f;
 
+
+    private float normalMusicVolume;
+
+    private object pitchedSoundHandle = new object();
+
+
     private void OnEnable()
     {
         InitConstant();
         EventGlobalManager.Instance.OnUpdateSetting.AddListener(UpdateSoundSetting);
+        UpdateSoundSetting();
     }
 
     private void OnDestroy()
@@ -34,48 +52,30 @@ public class AudioAssistant : SerializedMonoBehaviour
             return;
 
         EventGlobalManager.Instance.OnUpdateSetting.RemoveListener(UpdateSoundSetting);
+
+        StopPitchedSound(true);
     }
 
-    private void UpdateSoundSetting()
+    public void UpdateSoundSetting()
     {
-        if (GameManager.Instance != null
-            && GameManager.Instance.Data != null
-            && GameManager.Instance.Data.Setting.Sound == 0)
-        {
-            sfx.volume = 0;
-            music.volume = 0;
-        }
-        else
-        {
-            sfx.volume = soundCfg.VolumeSFX;
-            music.volume = soundCfg.VolumeBGM;
-        }
+        if (GameManager.Instance == null) return;
+        var settingData = GameManager.Instance.Data.Setting;
+
+        sfx.volume = settingData.SoundVolume;
+        music.volume = settingData.MusicVolume;
+        normalMusicVolume = settingData.MusicVolume;
     }
 
-    public float musicVolume
-    {
-        get
-        {
-            if (GameManager.Instance.Data.Setting.Sound == 0)
-            {
-                return 0;
-            }
-            else
-            {
-                return soundCfg.VolumeBGM;
-            }
-        }
-    }
 
     public string currentTrack;
 
     public void InitConstant()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
         }
-        else if (instance != this)
+        else if (Instance != this)
             Destroy(gameObject);
 
         soundCfg = ConfigManager.Instance.Audio;
@@ -119,13 +119,13 @@ public class AudioAssistant : SerializedMonoBehaviour
             to = listTrack[random].track;
         }
 
-        if (instance != null && to != null)
-            StartCoroutine(instance.CrossFade(to, delay, delayStartFadeOut));
+        if (Instance != null && to != null)
+            StartCoroutine(Instance.CrossFade(to, delay, delayStartFadeOut));
     }
 
     public void PlayRandomMusic()
     {
-        PlayMusic(soundCfg.ListBgm.PickRandom().name);
+        PlayMusic(soundCfg.ListBgm.GetRandom().name);
     }
 
     // A smooth transition from one to another music
@@ -136,7 +136,7 @@ public class AudioAssistant : SerializedMonoBehaviour
         {
             while (countDownDelay > 0)
             {
-                music.volume = countDownDelay * musicVolume;
+                music.volume = countDownDelay * normalMusicVolume;
                 countDownDelay -= timeUnScaleDentaTime;
                 yield return null;
             }
@@ -149,38 +149,27 @@ public class AudioAssistant : SerializedMonoBehaviour
             yield break;
         }
 
+        yield return Yielders.Get(delayStartFadeOut);
+        countDownDelay = 0;
         if (!music.isPlaying) music.Play();
         while (countDownDelay < delay)
         {
-            music.volume = countDownDelay * musicVolume;
+            music.volume = countDownDelay * normalMusicVolume;
             countDownDelay += timeUnScaleDentaTime;
             yield return null;
         }
 
-        countDownDelay = 0;
-        music.volume = musicVolume;
-
-        //yield return Yielders.Get(delayStartFadeOut);
-        yield return new WaitForSeconds(delayStartFadeOut);
-        
-        //if (!music.isPlaying) music.Play();
-        //while (countDownDelay < delay)
-        //{
-        //    music.volume = countDownDelay * musicVolume;
-        //    countDownDelay += timeUnScaleDentaTime;
-        //    yield return null;
-        //}
-
-        //music.volume = musicVolume;
+        music.volume = normalMusicVolume;
     }
+
 
     public static void Shot(TYPE_SOUND typeSound)
     {
         if (typeSound != TYPE_SOUND.NONE && !mixBuffer.Contains(typeSound))
         {
             mixBuffer.Add(typeSound);
-            if (instance != null && instance.sfx != null && instance.soundCfg.GetAudio(typeSound) != null)
-                instance.sfx.PlayOneShot(instance.soundCfg.GetAudio(typeSound));
+            if (Instance != null && Instance.sfx != null && Instance.soundCfg.GetAudio(typeSound) != null)
+                Instance.sfx.PlayOneShot(Instance.soundCfg.GetAudio(typeSound));
         }
     }
 
@@ -191,7 +180,7 @@ public class AudioAssistant : SerializedMonoBehaviour
 
     public void FadeInMusic()
     {
-        music.volume = musicVolume;
+        music.volume = normalMusicVolume;
     }
 
     public void Pause()
@@ -202,5 +191,46 @@ public class AudioAssistant : SerializedMonoBehaviour
     public void PlayAgain()
     {
         music.UnPause();
+    }
+
+    public void SetPitch(float value)
+    {
+        pitchedAudioSource.pitch = Mathf.Lerp(pitchLevelMinMax.x, pitchLevelMinMax.y, value);
+    }
+
+    public IDisposable StartPitchedSound(TYPE_SOUND soundType)
+    {
+        if (soundType == TYPE_SOUND.NONE)
+        {
+            return Disposable.Empty;
+        }
+
+        var audioClip = soundCfg.GetAudio(soundType);
+
+        SetPitch(0.0f);
+
+        pitchedAudioSource.Stop();
+        pitchedAudioSource.loop = true;
+        pitchedAudioSource.clip = audioClip;
+        pitchedAudioSource.Play();
+
+        DOVirtual.Float(0.0f, 1.0f, 5.0f, SetPitch).SetTarget(pitchedSoundHandle);
+
+        return Disposable.Create(() =>
+        {
+            StopPitchedSound();
+        });
+    }
+
+    public void StopPitchedSound(bool immediately = false)
+    {
+        DOTween.Kill(pitchedSoundHandle);
+
+        pitchedAudioSource.loop = false;
+
+        if (immediately)
+        {
+            pitchedAudioSource.Stop();
+        }
     }
 }

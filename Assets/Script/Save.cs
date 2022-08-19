@@ -12,10 +12,7 @@ public class Save : MonoBehaviour
     public Text Stage;
     public GameObject Char;
 
-    public Text DiamondOfflineText;
-    public GameObject PopupOfflineReward;
     public GameObject GameStartScene;
-    public double DiamondBonusOffline;
 
     public CanvasManager CanvasManager;
     public GameObject QualityKey;
@@ -30,8 +27,6 @@ public class Save : MonoBehaviour
             WriteTextFirst();
         }
         ReadText();
-        DiamondBonusOffline = 0;
-        PopupOfflineReward.SetActive(false);
         GameStartScene.SetActive(true);
         CanvasManager.CanvasQualityKeyController();
         ReadText();

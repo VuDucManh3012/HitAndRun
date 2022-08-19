@@ -94,7 +94,7 @@ public class SpawnMap2 : MonoBehaviour
     // Start is called before the first frame update
     public void Start()
     {
-
+        Random.InitState(System.Int32.Parse(PlayerPrefs.GetString("stage")));
         if (PlayerPrefs.HasKey("stage"))
         {
             stage = System.Int32.Parse(PlayerPrefs.GetString("stage"));

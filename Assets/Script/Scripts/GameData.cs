@@ -31,7 +31,8 @@ public class GameData
         public int Sound = 1;
         public int Haptic = 1;
         public int HighPerformance = 1;
-
+        public int SoundVolume = 1;
+        public int MusicVolume = 1;
         public bool EnablePN = false;
         public bool RequestedPN = false;
         public bool iOSTrackingRequested = false;

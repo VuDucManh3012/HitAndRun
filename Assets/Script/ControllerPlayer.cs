@@ -9,6 +9,7 @@ using CnControls;
 using RocketTeam.Sdk.Services.Ads;
 using Cinemachine;
 using MoreMountains.NiceVibrations;
+using HyperCatSdk;
 public class ControllerPlayer : MonoBehaviour
 {
     Rigidbody myBody;
@@ -529,6 +530,8 @@ public class ControllerPlayer : MonoBehaviour
             SetSpeed(SpeedJump);
             myBody.velocity = new Vector3(0, 24f, 0);
             StartCoroutine(setOnJump());
+            AudioAssistant.Shot(TYPE_SOUND.Jump);
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
             //if(transform.position.x > 2)
             //{
             //    transform.localEulerAngles = new Vector3(0, 0, 45);
@@ -547,7 +550,9 @@ public class ControllerPlayer : MonoBehaviour
             myBody.velocity = new Vector3(0, 12f, 0);
             SetSpeed(SpeedJump + 1);
             StartCoroutine(setUnDead());
-            StartCoroutine(setOnJump());
+            StartCoroutine(setOnJump()); 
+            AudioAssistant.Shot(TYPE_SOUND.Jump);
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
     }
     IEnumerator setUnDead()
@@ -599,21 +604,31 @@ public class ControllerPlayer : MonoBehaviour
         OffParticle(5);
         transform.localRotation = Quaternion.Euler(new Vector3(0, 180, 0));
         FireWorkEnemyEnding.SetActive(true);
-        yield return new WaitForSeconds(5);
+        ChangeCam("CamStart");
+        WeaponLeft.SetActive(false);
+        WeaponRight.SetActive(false);
+        yield return new WaitForSeconds(3);
         UpdateDiamond();
         ActiveCanvasVictory();
+        //AudioAssistant.Instance.PlayMusic("WinEnding");
 
+        AudioAssistant.Shot(TYPE_SOUND.WinEnding);
+        HCVibrate.Haptic(HapticTypes.SoftImpact);
         transform.rotation = new Quaternion(0, 1, 0, 0);
     }
     public void pushOpposite()
     {
         myBody.AddForce(new Vector3(0, 0, -10), ForceMode.Impulse);
         StartCoroutine(setUnDead());
+        AudioAssistant.Shot(TYPE_SOUND.PushOppsite);
+        HCVibrate.Haptic(HapticTypes.SoftImpact);
     }
     public void pushOppsiteEnemy()
     {
         myBody.AddForce(new Vector3(0, 0, -23), ForceMode.VelocityChange);
         StartCoroutine(setUnDead());
+        AudioAssistant.Shot(TYPE_SOUND.PushOppsite);
+        HCVibrate.Haptic(HapticTypes.SoftImpact);
     }
     private bool buttonHoleGet = false;
     IEnumerator WaitX2Hole()
@@ -663,12 +678,20 @@ public class ControllerPlayer : MonoBehaviour
 
             QualityDiamond -= DiamondFound;
             GameOverScene.SetActive(true);
+       
+            //AudioAssistant.Instance.PlayMusic("Lose",0,0);
+            AudioAssistant.Shot(TYPE_SOUND.Lose);
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
     }
     IEnumerator VictoryInStageEnding()
     {
         yield return new WaitForSeconds(3f);
         ActiveCanvasVictory();
+
+        //AudioAssistant.Instance.PlayMusic("WinNormal");
+        AudioAssistant.Shot(TYPE_SOUND.WinBinhThuong);
+        HCVibrate.Haptic(HapticTypes.SoftImpact);
     }
     public bool ActiveCanvasVictoy;
     public void ActiveCanvasVictory()
@@ -689,7 +712,6 @@ public class ControllerPlayer : MonoBehaviour
                 {
                     CanvasManager.CanvasNewSkinEndingController();
                 }
-
             }
             ActiveCanvasVictoy = true;
         }
@@ -719,6 +741,9 @@ public class ControllerPlayer : MonoBehaviour
                 QualityDiamond -= DiamondFound;
                 GameOverScene.SetActive(true);
                 isMove = false;
+                //AudioAssistant.Instance.PlayMusic("Lose", 1f, 0);
+                AudioAssistant.Shot(TYPE_SOUND.Lose);
+                HCVibrate.Haptic(HapticTypes.SoftImpact);
             }
         }
     }
@@ -747,6 +772,8 @@ public class ControllerPlayer : MonoBehaviour
                 break;
             }
         }
+        AudioAssistant.Instance.PlayMusic("Start");
+        HCVibrate.Haptic(HapticTypes.SoftImpact);
     }
     public void StartGame()
     {
@@ -763,19 +790,35 @@ public class ControllerPlayer : MonoBehaviour
             isMove = false;
             transform.position = new Vector3(other.transform.position.x, transform.position.y, transform.position.z);
             SetSpeed(SpeedRoad);
+            AudioAssistant.Shot(TYPE_SOUND.Diamond);
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
         else if (other.tag == "Glass")
         {
             other.transform.parent.Find("Brick").gameObject.SetActive(true);
             other.gameObject.SetActive(false);
+            AudioAssistant.Shot(TYPE_SOUND.Glass);
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
+        }
+        else if (other.tag == "WallBrick")
+        {
+            other.transform.parent.Find("Brick").gameObject.SetActive(true);
+            other.gameObject.SetActive(false);
+            AudioAssistant.Shot(TYPE_SOUND.WallBrick);
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
         else if (other.tag == "EndingBoard")
         {
-            other.transform.GetComponent<Renderer>().material = WhiteBoard;
+            other.transform.GetComponent<Renderer>().material = WhiteBoard; 
+            //AudioAssistant.Instance.PlayMusic("WinEnding");
+            AudioAssistant.Shot(TYPE_SOUND.WinEnding);
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
         else if (other.tag == "ButtonOpenGate")
         {
             other.transform.parent.Find("Gate").GetComponent<Gate>().enabled = true;
+            AudioAssistant.Shot(TYPE_SOUND.Jump);
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
         else if (other.tag == "Road")
         {
@@ -804,6 +847,9 @@ public class ControllerPlayer : MonoBehaviour
         else if (other.tag == "FireWork")
         {
             other.transform.GetChild(0).gameObject.SetActive(true);
+            //AudioAssistant.Instance.PlayMusic("WinEnding");
+            AudioAssistant.Shot(TYPE_SOUND.WinEnding);
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
         else if (other.tag == "JumpLow")
         {
@@ -869,11 +915,14 @@ public class ControllerPlayer : MonoBehaviour
                 }
 
                 SetSpeed(SpeedRoad);
+
+                HCVibrate.Haptic(HapticTypes.SoftImpact);
             }
         }
         else if (other.tag == "BoxingGloves")
         {
             other.transform.parent.transform.Find("Boxing_Gloves").transform.GetComponent<Animator>().enabled = true;
+            AudioAssistant.Shot(TYPE_SOUND.Punch);
         }
         else if (other.tag == "Flag")
         {
@@ -907,6 +956,8 @@ public class ControllerPlayer : MonoBehaviour
                         FloatingTextUp.SetActive(true);
                         OnParticle(4); OnParticle(6);
                     }
+                    AudioAssistant.Shot(TYPE_SOUND.Enemy);
+                    HCVibrate.Haptic(HapticTypes.SoftImpact);
                 }
                 else
                 {
@@ -932,6 +983,8 @@ public class ControllerPlayer : MonoBehaviour
                             FloatingTextUp.SetActive(true);
                             OnParticle(4); OnParticle(6);
                         }
+                        AudioAssistant.Shot(TYPE_SOUND.Enemy);
+                        HCVibrate.Haptic(HapticTypes.SoftImpact);
                     }
                 }
             }
@@ -950,6 +1003,8 @@ public class ControllerPlayer : MonoBehaviour
                     FloatingTextUp.SetActive(true);
                     OnParticle(4); OnParticle(6);
                 }
+                AudioAssistant.Shot(TYPE_SOUND.Enemy);
+                HCVibrate.Haptic(HapticTypes.SoftImpact);
             }
             CheckLevelEnemy();
         }
@@ -976,6 +1031,8 @@ public class ControllerPlayer : MonoBehaviour
                         FloatingTextUp.SetActive(true);
                         OnParticle(4); OnParticle(6);
                     }
+                    AudioAssistant.Shot(TYPE_SOUND.Enemy);
+                    HCVibrate.Haptic(HapticTypes.SoftImpact);
                 }
                 else
                 {
@@ -986,6 +1043,10 @@ public class ControllerPlayer : MonoBehaviour
                         SetDieTrue();
                         SetSpeed(0);
                         myLevel -= 10000;
+                        //AudioAssistant.Instance.PlayMusic("WinNormal");
+
+                        AudioAssistant.Shot(TYPE_SOUND.WinBinhThuong);
+                        HCVibrate.Haptic(HapticTypes.SoftImpact);
                     }
                     else
                     {
@@ -1009,6 +1070,8 @@ public class ControllerPlayer : MonoBehaviour
                     OnParticle(4);
                     OnParticle(6);
                 }
+                AudioAssistant.Shot(TYPE_SOUND.Enemy);
+                HCVibrate.Haptic(HapticTypes.SoftImpact);
 
             }
             CheckLevelEnemy();
@@ -1016,7 +1079,7 @@ public class ControllerPlayer : MonoBehaviour
         else if (other.tag == "Diamond")
         {
             AudioAssistant.Shot(TYPE_SOUND.Diamond);
-            MMVibrationManager.Haptic(HapticTypes.Selection, false, true);
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
             QualityDiamond += 1;
             Destroy(other.gameObject);
             Save.Diamond.text = QualityDiamond.ToString();
@@ -1036,6 +1099,8 @@ public class ControllerPlayer : MonoBehaviour
             keyCurrent += 1; Debug.LogWarning(keyCurrent);
             PlayerPrefs.SetString("key", keyCurrent.ToString());
             AnimKey.SetActive(true);
+            AudioAssistant.Shot(TYPE_SOUND.Diamond);
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
         else if (other.tag == "EnemyStageEnding")
         {
@@ -1072,6 +1137,7 @@ public class ControllerPlayer : MonoBehaviour
             SetSpeed(0);
             StartCoroutine(WaitX2Hole());
             //
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
         else if (other.tag == "JumpAttack")
         {

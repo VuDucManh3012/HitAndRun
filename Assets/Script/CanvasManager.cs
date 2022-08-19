@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using RocketTeam.Sdk.Services.Ads;
+using HyperCatSdk;
+using MoreMountains.NiceVibrations;
 public class CanvasManager : MonoBehaviour
 {
     [Header("GameOver")]
@@ -104,6 +106,15 @@ public class CanvasManager : MonoBehaviour
 
     [Header("BackGroundNenToi")]
     public GameObject BackGroundNenToi;
+
+    [Header("Haptic")]
+    public GameObject ButtonOnHaptic;
+    public GameObject ButtonOffHaptic;
+
+    [Header("Music&Sound")]
+    public Slider MusicVolumn;
+    public Slider SoundVolumn;
+
     public void FixedUpdate()
     {
         if (VictoryScene.active)
@@ -367,6 +378,7 @@ public class CanvasManager : MonoBehaviour
             characterController.Particle[8].SetActive(false);
             characterController.Particle[8].SetActive(true);
             CanvasGameStartController.CheckSceneStart();
+            AudioSpendMoney();
         }
         else
         {
@@ -381,10 +393,10 @@ public class CanvasManager : MonoBehaviour
         PlayerPrefs.SetString("diamond", diamondCurrent.ToString());
         Save.ReadText();
         //Dong Popup
-        Save.PopupOfflineReward.SetActive(false);
         Save.GameStartScene.SetActive(true);
         CanvasQualityKeyController();
         PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
+        PlayerPrefs.SetInt("ClaimedOfflineReward", 1);
     }
     public void ClaimDoubleOfflineReward()
     {
@@ -415,28 +427,32 @@ public class CanvasManager : MonoBehaviour
     private int TotalDiamondRewardOffline;
     public void CheckOfflineReward()
     {
-        //Tinh tg offline
-        System.DateTime DateBefore = System.DateTime.Parse(PlayerPrefs.GetString("DateBefore"));
-        System.DateTime DateNow = System.DateTime.Now;
-        System.TimeSpan t = DateNow - DateBefore;
-        double Distance = Mathf.Abs(ToSingle(t.TotalMinutes));
-        Distance = Distance - Distance % 1;
-        //
-        if (Distance >= DistanceMin)
+        if (PlayerPrefs.GetInt("ClaimedOfflineReward") == 0)
         {
-            //hien popup
-            PopupRewardOffline.SetActive(true);
-            GameStartScene.SetActive(false);
-            CanVasQualityKey.SetActive(false);
-            BackGroundNenToi.SetActive(true);
+            //Tinh tg offline
+            System.DateTime DateBefore = System.DateTime.Parse(PlayerPrefs.GetString("DateBefore"));
+            System.DateTime DateNow = System.DateTime.Now;
+            System.TimeSpan t = DateNow - DateBefore;
+            double Distance = Mathf.Abs(ToSingle(t.TotalMinutes));
+            Distance = Distance - Distance % 1;
             //
-            if (Distance >= DistanceMax)
+            if (Distance >= DistanceMin)
             {
-                Distance = DistanceMax;
+                //hien popup
+                PopupRewardOffline.SetActive(true);
+                GameStartScene.SetActive(false);
+                CanVasQualityKey.SetActive(false);
+                BackGroundNenToi.SetActive(true);
+                //
+                if (Distance >= DistanceMax)
+                {
+                    Distance = DistanceMax;
+                }
+                TotalDiamondRewardOffline = (int)Distance * (PlayerPrefs.GetInt("LevelOfflineReward") * 5);
+                TextPopupRewardOffline.text = "Earned : " + TotalDiamondRewardOffline.ToString();
             }
-            TotalDiamondRewardOffline = (int)Distance * (PlayerPrefs.GetInt("LevelOfflineReward") * 5);
-            TextPopupRewardOffline.text = "Earned : " + TotalDiamondRewardOffline.ToString();
         }
+
     }
     private int currentUpdateLevel;
     public void Updatelevel()
@@ -460,6 +476,7 @@ public class CanvasManager : MonoBehaviour
             Save.ReadText();
             //
             CanvasGameStartController.CheckSceneStart();
+            AudioSpendMoney();
         }
         else
         {
@@ -516,11 +533,19 @@ public class CanvasManager : MonoBehaviour
         }
         if (PlayerPrefs.HasKey("DateBefore"))
         {
+            if (!PlayerPrefs.HasKey("ClaimedOfflineReward"))
+            {
+                PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
+            }
             CheckOfflineReward();
             PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
         }
         SetTextOfflineRewardUpdate();
-        AudioAssistant.instance.PlayMusic("Start", 0, 0);
+        //haptic
+        checkHaptic();
+        ////audio
+        AudioAssistant.Instance.PlayMusic("Start");
+        AudioAssistant.Instance.PlayMusic("Start");
     }
     // Update is called once per frame
     void Update()
@@ -558,6 +583,7 @@ public class CanvasManager : MonoBehaviour
         PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
         PlayerPrefs.SetInt("FirstGoShopSkin", 0);
         PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
+        PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
     }
     private float TimeTick;
     private int MaxTick = 1;
@@ -746,50 +772,38 @@ public class CanvasManager : MonoBehaviour
     }
     void InterInVictory()
     {
-        if (PlayerPrefs.GetInt("FirstGoShopSkin") == 0)
+        if (!GameManager.NetworkAvailable)
         {
-            if (PlayerPrefs.GetInt("FirstGoShopWeapon") == 0)
-            {
-                if (!GameManager.NetworkAvailable)
-                {
-                    PopupNoInternet.Show();
-                    return;
-                }
+            PopupNoInternet.Show();
+            return;
+        }
 
-                if (adsShowing)
-                    return;
+        if (adsShowing)
+            return;
 
 
-                if (GameManager.EnableAds)
-                {
-                    AdManager.Instance.ShowInterstitial("Victory", 1);
-                }
-                PlayerPrefs.SetInt("FirstGoShopWeapon", 1);
-            }
-            PlayerPrefs.SetInt("FirstGoShopSkin", 1);
+        if (GameManager.EnableAds)
+        {
+            AdManager.Instance.ShowInterstitial("Victory", 1);
         }
     }
     public void InterInFirstBackShopSkin()
     {
         if (PlayerPrefs.GetInt("FirstGoShopSkin") == 0)
         {
-            if (PlayerPrefs.GetInt("FirstGoShopWeapon") == 0)
+            if (!GameManager.NetworkAvailable)
             {
-                if (!GameManager.NetworkAvailable)
-                {
-                    PopupNoInternet.Show();
-                    return;
-                }
+                PopupNoInternet.Show();
+                return;
+            }
 
-                if (adsShowing)
-                    return;
+            if (adsShowing)
+                return;
 
 
-                if (GameManager.EnableAds)
-                {
-                    AdManager.Instance.ShowInterstitial("BackShopSkin", 1);
-                }
-                PlayerPrefs.SetInt("FirstGoShopWeapon", 1);
+            if (GameManager.EnableAds)
+            {
+                AdManager.Instance.ShowInterstitial("BackShopSkin", 1);
             }
             PlayerPrefs.SetInt("FirstGoShopSkin", 1);
         }
@@ -955,11 +969,11 @@ public class CanvasManager : MonoBehaviour
         diamondCurrent += TotalDiamondRewardOffline * 2;
         PlayerPrefs.SetString("diamond", diamondCurrent.ToString());
         Save.ReadText();
-
-        Save.PopupOfflineReward.SetActive(false);
         Save.GameStartScene.SetActive(true);
         CanvasQualityKeyController();
         PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
+        PlayerPrefs.SetInt("ClaimedOfflineReward", 1);
+        PopupRewardOffline.SetActive(false);
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void WatchAdsUpdateLevel()
@@ -1072,5 +1086,63 @@ public class CanvasManager : MonoBehaviour
         AnalyticManager.LogWatchAds("AddPercentSkinEnding", 1);
         adsShowing = false;
         CanvasNewSkinEndingController();
+    }
+    public void AudioSpendMoney()
+    {
+        AudioAssistant.Shot(TYPE_SOUND.SpendMoney);
+        HCVibrate.Haptic(HapticTypes.SoftImpact);
+    }
+    public void AudioButton()
+    {
+        AudioAssistant.Shot(TYPE_SOUND.BUTTON);
+        HCVibrate.Haptic(HapticTypes.SoftImpact);
+    }
+    public void OnHaptic()
+    {
+        GameManager.Instance.Data.Setting.Haptic = 1;
+        PlayerPrefs.SetInt("HapticStatus", 1);
+        checkHaptic();
+    }
+    public void OffHaptic()
+    {
+        GameManager.Instance.Data.Setting.Haptic = 0;
+        PlayerPrefs.SetInt("HapticStatus", 0);
+        checkHaptic();
+    }
+    public void checkHaptic()
+    {
+        if (!PlayerPrefs.HasKey("HapticStatus"))
+        {
+            PlayerPrefs.SetInt("HapticStatus", 1);
+        }
+        if (PlayerPrefs.GetInt("HapticStatus") == 0)
+        {
+            //DangTat
+            ButtonOnHaptic.SetActive(true);
+            ButtonOffHaptic.SetActive(false);
+            GameManager.Instance.Data.Setting.Haptic = 0;
+        }
+        else
+        {
+            ButtonOnHaptic.SetActive(false);
+            ButtonOffHaptic.SetActive(true);
+            GameManager.Instance.Data.Setting.Haptic = 1;
+        }
+    }
+    public void ChangeVolumnMusic()
+    {
+        var settingData = GameManager.Instance.Data.Setting;
+        settingData.MusicVolume = (int)MusicVolumn.value;
+        AudioAssistant.Instance.UpdateSoundSetting();
+    }
+    public void ChangeVolumnSfx()
+    {
+        var settingData = GameManager.Instance.Data.Setting;
+        settingData.SoundVolume = (int)SoundVolumn.value;
+        AudioAssistant.Instance.UpdateSoundSetting();
+    }
+    public void PLayMusicStart()
+    {
+        AudioAssistant.Instance.PlayMusic("Start");
     }
 }
