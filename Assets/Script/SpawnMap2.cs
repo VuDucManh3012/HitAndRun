@@ -151,7 +151,7 @@ public class SpawnMap2 : MonoBehaviour
                 //
                 Vector3 myPosition = ListDiamond[index].transform.position;
                 ListDiamond[index].SetActive(false);
-                Instantiate(Key, myPosition, Quaternion.Euler(-90, 0, 0));
+                Instantiate(Key, new Vector3(myPosition.x, myPosition.y - 1, myPosition.z), Quaternion.Euler(-90, 0, 0));
             }
         }
     }

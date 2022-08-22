@@ -10,9 +10,14 @@ public class CanvasGameStartController : MonoBehaviour
     public GameObject LevelUpdateNoEnoughDiamond;
     public GameObject OfflineUpdateEnoughDiamond;
     public GameObject OfflineUpdateNoEnoughDiamond;
-    public GameObject NoAds;
     public List<GameObject> ListObjectHidden;
     private bool Hiddened;
+    [Header("RateUs")]
+    public GameObject ButtonRateUs;
+    [Header("Noads")]
+    public GameObject ButtonNoAds;
+    [Header("CanvasTouchPad")]
+    public GameObject CanvasTouchPad;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +35,19 @@ public class CanvasGameStartController : MonoBehaviour
             }
             Hiddened = true;
         }
+        if (PlayerPrefs.HasKey("Rated"))
+        {
+            ButtonRateUs.SetActive(false);
+        }
+        else
+        {
+            ButtonRateUs.SetActive(true);
+        }
+        if (GameManager.Instance.Data.User.PurchasedNoAds)
+        {
+            ButtonNoAds.SetActive(false);
+        }
+        CanvasTouchPad.SetActive(true);
     }
     public void CheckSceneStart()
     {

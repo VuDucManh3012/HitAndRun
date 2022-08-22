@@ -5,7 +5,7 @@ using UnityEngine;
 public class BlackHole : MonoBehaviour
 {
     public Transform start;
-
+    public int levelHole;
     private void Start()
     {
         try
@@ -16,7 +16,6 @@ public class BlackHole : MonoBehaviour
         {
 
         }
-
     }
     // Update is called once per frame
     void Update()

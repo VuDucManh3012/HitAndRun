@@ -20,7 +20,7 @@ public class ControllerPlayer : MonoBehaviour
 
     public float SpeedLeftRight;
 
-    private bool isMove = true;
+    public bool isMove = true;
 
     public float maxX;
 
@@ -137,6 +137,9 @@ public class ControllerPlayer : MonoBehaviour
 
     [Header("AnimKey")]
     public GameObject AnimKey;
+
+    [Header("CanvasTouchPad")]
+    public GameObject CanvasTouchPad;
     private void Awake()
     {
         myLevel = 1;
@@ -177,8 +180,14 @@ public class ControllerPlayer : MonoBehaviour
         CheckLevelEnemy();
 
         myAnim.SetInteger("Ending", Random.Range(0, 5));
-    }
 
+        activeLF = false;
+        Plus999 = false;
+    }
+    public void SetPlus999()
+    {
+        Plus999 = true;
+    }
     void FixedUpdate()
     {
         LeftRight();
@@ -216,7 +225,22 @@ public class ControllerPlayer : MonoBehaviour
             {
                 transform.rotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, 0, 0), 0.1f);
             }
-
+        }
+        if (!activeLF)
+        {
+            ActiveLeftRight();
+        }
+    }
+    public bool activeLF;
+    private float XFrame1;
+    private float XFrame2;
+    private void ActiveLeftRight()
+    {
+        XFrame1 = CnInputManager.GetAxis("Horizontal");
+        if (XFrame1 != 0)
+        {
+            StartGame();
+            activeLF = true;
         }
     }
     public int JumpHighLeft;
@@ -362,10 +386,9 @@ public class ControllerPlayer : MonoBehaviour
     }
     private void LeftRight()
     {
-        if (startgame && isMove == true)
+        if (startgame && isMove)
         {
             SetRunTrue();
-
             transform.position = new Vector3(Mathf.Clamp(transform.position.x + CnInputManager.GetAxis("Horizontal") * SpeedLeftRight * Time.deltaTime, -maxX, maxX), transform.position.y, transform.position.z);
         }
     }
@@ -791,15 +814,28 @@ public class ControllerPlayer : MonoBehaviour
         }
         AudioAssistant.Instance.PlayMusic("Start");
         HCVibrate.Haptic(HapticTypes.SoftImpact);
+        StartCoroutine(AfterReborn());
+    }
+    IEnumerator AfterReborn()
+    {
+        OnParticle(9);
+        isUnDead = true;
+        yield return new WaitForSeconds(2);
+        OffParticle(9);
+        isUnDead = false;
     }
     public void StartGame()
     {
         startgame = true;
         GameStartScene.SetActive(false);
-        Plus999Level.SetActive(true);
+        if (!Plus999)
+        {
+            Plus999Level.SetActive(true);
+        }
         ChangeCam("CamRun");
         SetSpeed(SpeedRoad);
     }
+    public bool Plus999 = false;
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Bridge")
@@ -1062,8 +1098,11 @@ public class ControllerPlayer : MonoBehaviour
                     }
                     else
                     {
-                        hurt();
-                        pushOppsiteEnemy();
+                        if (isUnDead == false)
+                        {
+                            hurt();
+                            pushOppsiteEnemy();
+                        }
                     }
                 }
             }
@@ -1143,6 +1182,9 @@ public class ControllerPlayer : MonoBehaviour
         {
             //bat canvas
             CanvasX2Hole.SetActive(true);
+            //Tat di chuyen
+            activeLF = true;
+            CanvasTouchPad.SetActive(false);
             //settext
             CanvasX2Hole.transform.Find("BackGround").Find("Diamond").Find("Text").gameObject.GetComponent<Text>().text = DiamondBonusInHole.ToString();
             //bam gio tat canvas
@@ -1240,17 +1282,25 @@ public class ControllerPlayer : MonoBehaviour
         }
         else if (other.tag == "StartBlackHole")
         {
-            myposition = transform.position;
-            myposition.z += 1;
-            transform.position = other.GetComponent<BlackHole>().start.position;
-            ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.position.y + 2;
-            ObjectFollowCharacter.transform.position = transform.position;
-            DiamondBonusInHole = 0;
-            //Cam
-            OffCam();
-            CamInHole = other.transform.parent.parent.Find("BlackHole").Find("CamInHole").gameObject;
-            CamInHole.SetActive(true);
-            CamInHole.GetComponent<CinemachineVirtualCamera>().Follow = ObjectFollowCharacter.transform;
+            if(other.GetComponent<BlackHole>().levelHole <= myLevel)
+            {
+                myposition = transform.position;
+                myposition.z += 1;
+                transform.position = other.GetComponent<BlackHole>().start.position;
+                ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.position.y + 2;
+                ObjectFollowCharacter.transform.position = transform.position;
+                DiamondBonusInHole = 0;
+                //Cam
+                OffCam();
+                CamInHole = other.transform.parent.parent.Find("BlackHole").Find("CamInHole").gameObject;
+                CamInHole.SetActive(true);
+                CamInHole.GetComponent<CinemachineVirtualCamera>().Follow = ObjectFollowCharacter.transform;
+            }
+            else
+            {
+                pushOppsiteEnemy();
+                other.transform.parent.gameObject.SetActive(false);
+            }
         }
         else if (other.tag == "Road")
         {
@@ -1294,9 +1344,18 @@ public class ControllerPlayer : MonoBehaviour
         isMove = true;
         SetSpeed(SpeedRoad);
         DiamondBonusInHole = 0;
+
+        ActiveLF();
     }
     public bool adsShowing = false;
     /// ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// KhoiPhucLeftRight
+    public void ActiveLF()
+    {
+        activeLF = false;
+        CanvasTouchPad.SetActive(true);
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void WatchAdsX2Hole()
     {
 
@@ -1338,6 +1397,8 @@ public class ControllerPlayer : MonoBehaviour
         Save.Diamond.text = QualityDiamond.ToString();
         DiamondFound += DiamondBonusInHole;
         DiamondBonusInHole = 0;
+
+        ActiveLF();
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void WatchAdsAFK25s()

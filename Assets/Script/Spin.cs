@@ -51,6 +51,9 @@ public class Spin : MonoBehaviour
     public GameObject CanvasPopUpProcess;
     public List<int> SkinNoBuy;
     public List<int> WeaponNoBuy;
+
+    private bool OnAnimSliderProcess = false;
+
     /*
     PlayPref : SpinSlot-so vong quay , TimeNextSpin-tgian +1 vong quay tiep theo , WheelProcess-tien do vong quay hien tai
     */
@@ -75,6 +78,22 @@ public class Spin : MonoBehaviour
     void FixedUpdate()
     {
         CheckTimeSpin();
+        if (OnAnimSliderProcess)
+        {
+            AnimProcess();
+        }
+    }
+    void AnimProcess()
+    {
+        ProcessSlider.value = ProcessCurrent;
+        ProcessCurrent += 0.05f;
+        if (ProcessCurrent >= ProcessEnding)
+        {
+            Debug.Log("aaaa");
+            OnAnimSliderProcess = false;
+            AddProcess();
+            SetProcess();
+        }
     }
     void SetPositionData()
     {
@@ -189,6 +208,8 @@ public class Spin : MonoBehaviour
         }
         AfterProcess();
     }
+    private float ProcessCurrent;
+    private float ProcessEnding;
     public void AfterProcess()
     {
 
@@ -197,10 +218,11 @@ public class Spin : MonoBehaviour
         AddDiamond(0);
         ReadText();
         //
+        ProcessEnding = PlayerPrefs.GetInt("WheelProcess") + 1;
+        ProcessCurrent = PlayerPrefs.GetInt("WheelProcess");
+        OnAnimSliderProcess = true;
         //Add Process
-        AddProcess();
-        SetProcess();
-        CheckProcess();
+
         //
 
     }
@@ -324,14 +346,14 @@ public class Spin : MonoBehaviour
             if (Random.Range(0, 2) == 1)
             {
                 int ran = Random.Range(0, SkinNoBuy.Count);
-                PlayerPrefs.SetInt("skin " + ran, 1); 
+                PlayerPrefs.SetInt("skin " + ran, 1);
                 CanvasPopUpProcess.SetActive(true);
                 CanvasPopUpProcess.GetComponent<CanvasPopupProcess>().ChangeSkin(ran);
             }
             else
             {
                 int ran = Random.Range(0, WeaponNoBuy.Count);
-                PlayerPrefs.SetInt("ball " + ran, 1); 
+                PlayerPrefs.SetInt("ball " + ran, 1);
                 CanvasPopUpProcess.SetActive(true);
                 CanvasPopUpProcess.GetComponent<CanvasPopupProcess>().ChangeSkin(ran + 6);
             }

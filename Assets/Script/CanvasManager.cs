@@ -20,7 +20,6 @@ public class CanvasManager : MonoBehaviour
 
     [Header("Gift10Minutes")]
     public GameObject PopupGift;
-    public GameObject PopupRewardGift;
     public int startingTime = 600;
     public Text countdownText;
     public GameObject NoticeGift10Minutes;
@@ -102,6 +101,9 @@ public class CanvasManager : MonoBehaviour
     public GameObject ButtonGetIt;
 
     [Header("CanVasPopUpRateUs")]
+    public GameObject CanvasPopupRate;
+    public GameObject ButtonRateUs;
+    public GameObject PopupThankForRate;
     private int StarRate = 5;
 
     [Header("BackGroundNenToi")]
@@ -115,6 +117,8 @@ public class CanvasManager : MonoBehaviour
     public Slider MusicVolumn;
     public Slider SoundVolumn;
 
+    [Header("CanvasTouchPad")]
+    public GameObject CanvasTouchPad;
     public void FixedUpdate()
     {
         if (VictoryScene.active)
@@ -134,6 +138,7 @@ public class CanvasManager : MonoBehaviour
                 TextPhanTram.text = (TextFillAmountSkinEndingCurrent / 1 - TextFillAmountSkinEndingCurrent % 1).ToString() + " %";
             }
         }
+        OnLoadScene();
     }
     public void SetRewardGift10Minutes(int value)
     {
@@ -344,20 +349,27 @@ public class CanvasManager : MonoBehaviour
     {
         Time.timeScale = 1;
         SetTimeCountDown();
-        Scene scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.name);
+        Loadscene = true;
     }
     public void Continues()
     {
-        InterInVictory();
         //BossEnding
         int currentBoss = PlayerPrefs.GetInt("IntBossToSpawn") + 1;
         PlayerPrefs.SetInt("IntBossToSpawn", currentBoss);
         //
         Save.WriteText();
         SetTimeCountDown();
-        Scene scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.name);
+        Loadscene = true;
+        PlayerPrefs.SetInt("InterVictory", 1);
+    }
+    public bool Loadscene = false;
+    public bool ScreenVictoryActive;
+    private void OnLoadScene()
+    {
+        if (Loadscene)
+        {
+            SceneManager.LoadScene(1);
+        }
     }
     public void DiamondOfflineRewardUpdate()
     {
@@ -451,6 +463,7 @@ public class CanvasManager : MonoBehaviour
                 TotalDiamondRewardOffline = (int)Distance * (PlayerPrefs.GetInt("LevelOfflineReward") * 5);
                 TextPopupRewardOffline.text = "Earned : " + TotalDiamondRewardOffline.ToString();
             }
+            PlayerPrefs.SetInt("ClaimedOfflineReward", 1);
         }
 
     }
@@ -509,6 +522,7 @@ public class CanvasManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Loadscene = false;
         GameOverScene.SetActive(false);
         VictoryScene.SetActive(false);
         CanvasLuckyWheel.GetComponentInChildren<Spin>().Start();
@@ -537,8 +551,12 @@ public class CanvasManager : MonoBehaviour
             {
                 PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
             }
-            CheckOfflineReward();
-            PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
+            else
+            {
+                CheckOfflineReward();
+                PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
+            }
+
         }
         SetTextOfflineRewardUpdate();
         //haptic
@@ -548,6 +566,30 @@ public class CanvasManager : MonoBehaviour
         AudioAssistant.Instance.PlayMusic("Start");
         //
         SetValueSliderSetting();
+        if (PlayerPrefs.GetInt("InterVictory") == 1)
+        {
+            InterInVictory();
+        }
+        //checkRated
+        bool Rated = PlayerPrefs.HasKey("Rated");
+        int stage;
+        try
+        {
+            stage = System.Int32.Parse(PlayerPrefs.GetString("stage"));
+        }
+        catch
+        {
+            stage = 1;
+        }
+
+        if (!Rated && (stage == 3 || stage % 15==0))
+        {
+            CanvasPopupRate.SetActive(true);
+            GameStartScene.SetActive(false);
+            CanVasQualityKey.SetActive(false);
+        }
+        checkRate();
+        //
     }
     // Update is called once per frame
     void Update()
@@ -562,6 +604,35 @@ public class CanvasManager : MonoBehaviour
             NoticeGift10Minutes.SetActive(false);
         }
         CheckSlotSpin();
+        if (ScreenVictoryActive)
+        {
+            VictoryScene.SetActive(true);
+        }
+    }
+    private void checkRate()
+    {
+        if (!PlayerPrefs.HasKey("Rated"))
+        {
+            ButtonRateUs.SetActive(true);
+        }
+        else
+        {
+            ButtonRateUs.SetActive(false);
+        }
+    }
+    public void RateUs()
+    {
+        if (StarRate >= 4)
+        {
+            Application.OpenURL(@"https://play.google.com/store/apps/details?id=" + GameManager.Instance.NoAdsId);
+        }
+        else
+        {
+            PopupThankForRate.SetActive(true);
+            CanvasPopupRate.SetActive(false);
+            GameStartScene.SetActive(true);
+        }
+        PlayerPrefs.SetInt("Rated", 1);
     }
     public void CheckSlotSpin()
     {
@@ -586,6 +657,7 @@ public class CanvasManager : MonoBehaviour
         PlayerPrefs.SetInt("FirstGoShopSkin", 0);
         PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
         PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
+        PlayerPrefs.SetInt("InterVictory", 0);
     }
     private float TimeTick;
     private int MaxTick = 1;
@@ -662,6 +734,7 @@ public class CanvasManager : MonoBehaviour
         if (currentTime == 0)
         {
             diamondInChest = Random.RandomRange(100, 500);
+            RewardGift10Minutes.text = diamondInChest.ToString();
             PopupGift.SetActive(true);
         }
         else
@@ -696,8 +769,7 @@ public class CanvasManager : MonoBehaviour
             currentTime = 600;
         }
         currentTime = startingTime;
-        PopupRewardGift.SetActive(true);
-        SetRewardGift10Minutes(diamondInChest);
+        GameStartScene.SetActive(true);
     }
     public void WatchADSClaimX2Gift()
     {
@@ -743,8 +815,7 @@ public class CanvasManager : MonoBehaviour
             currentTime = 600;
         }
         currentTime = startingTime;
-        PopupRewardGift.SetActive(true);
-        SetRewardGift10Minutes(diamondInChest * 2);
+        GameStartScene.SetActive(true);
     }
     public void LoseItGift()
     {
@@ -774,12 +845,6 @@ public class CanvasManager : MonoBehaviour
     }
     void InterInVictory()
     {
-        if (!GameManager.NetworkAvailable)
-        {
-            PopupNoInternet.Show();
-            return;
-        }
-
         if (adsShowing)
             return;
 
@@ -864,7 +929,14 @@ public class CanvasManager : MonoBehaviour
         double diamondCurrent = double.Parse(Save.Diamond.text);
         diamondCurrent += DiamondADS;
         Save.Diamond.text = diamondCurrent.ToString();
-        Continues();
+        PlayerPrefs.SetInt("InterVictory", 0);
+        //BossEnding
+        int currentBoss = PlayerPrefs.GetInt("IntBossToSpawn") + 1;
+        PlayerPrefs.SetInt("IntBossToSpawn", currentBoss);
+        //
+        Save.WriteText();
+        SetTimeCountDown();
+        Loadscene = true;
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void WatchAds999Level()
@@ -1134,7 +1206,7 @@ public class CanvasManager : MonoBehaviour
     }
     public void ChangeVolumnMusic()
     {
-        AudioAssistant.Instance.UpdateSoundSetting2(SoundVolumn.value,MusicVolumn.value);
+        AudioAssistant.Instance.UpdateSoundSetting2(SoundVolumn.value, MusicVolumn.value);
         PlayerPrefs.SetFloat("MusicVolumn", MusicVolumn.value);
     }
     public void ChangeVolumnSfx()
