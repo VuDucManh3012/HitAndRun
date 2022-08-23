@@ -233,15 +233,19 @@ public class ControllerPlayer : MonoBehaviour
     }
     public bool activeLF;
     private float XFrame1;
-    private float XFrame2;
     private void ActiveLeftRight()
     {
-        XFrame1 = CnInputManager.GetAxis("Horizontal");
+
         if (XFrame1 != 0)
         {
             StartGame();
             activeLF = true;
         }
+        XFrame1 = CnInputManager.GetAxis("Horizontal");
+    }
+    public void Test()
+    {
+        XFrame1 = 1;
     }
     public int JumpHighLeft;
     [ContextMenu("Addforce")]
@@ -692,17 +696,19 @@ public class ControllerPlayer : MonoBehaviour
             myLevel -= 10;
         }
     }
+    private bool checkedY;
     private void checkY()
     {
-        if (transform.position.y <= -20 && !startStageEnding)
+        if (transform.position.y <= -20 && !startStageEnding && !checkedY)
         {
+            checkedY = true;
             myLevel = 0;
             SetDieTrue();
             SetSpeed(0);
 
             QualityDiamond -= DiamondFound;
             GameOverScene.SetActive(true);
-
+            transform.position = new Vector3(0, 10, 0);
             //AudioAssistant.Instance.PlayMusic("Lose",0,0);
             if (!OnAudio)
             {
@@ -710,7 +716,6 @@ public class ControllerPlayer : MonoBehaviour
                 HCVibrate.Haptic(HapticTypes.SoftImpact);
                 OnAudio = true;
             }
-
         }
     }
     IEnumerator VictoryInStageEnding()
@@ -753,7 +758,7 @@ public class ControllerPlayer : MonoBehaviour
     private bool OnAudio = false;
     private void checkDead()
     {
-        if (myLevel <= 0)
+        if (myLevel < 0)
         {
             SetSpeed(0);
             ChangeCam("CamDead");
@@ -783,7 +788,6 @@ public class ControllerPlayer : MonoBehaviour
                     HCVibrate.Haptic(HapticTypes.SoftImpact);
                     OnAudio = true;
                 }
-
             }
         }
     }
@@ -792,6 +796,7 @@ public class ControllerPlayer : MonoBehaviour
     public void ReBorn(int value)
     {
         AnalyticManager.LogWatchAds("AdsReborn", 1);
+        QualityDiamond += DiamondFound;
         adsShowing = false;
         GameOverScene.SetActive(false);
         unsetLevelText = false;
@@ -815,6 +820,7 @@ public class ControllerPlayer : MonoBehaviour
         AudioAssistant.Instance.PlayMusic("Start");
         HCVibrate.Haptic(HapticTypes.SoftImpact);
         StartCoroutine(AfterReborn());
+        checkedY = false;
     }
     IEnumerator AfterReborn()
     {
@@ -1146,8 +1152,7 @@ public class ControllerPlayer : MonoBehaviour
                 PlayerPrefs.SetString("key", 0.ToString());
             }
             int keyCurrent = System.Int32.Parse(PlayerPrefs.GetString("key"));
-            Debug.LogWarning(keyCurrent);
-            keyCurrent += 1; Debug.LogWarning(keyCurrent);
+            keyCurrent += 1;
             PlayerPrefs.SetString("key", keyCurrent.ToString());
             AnimKey.SetActive(true);
             AudioAssistant.Shot(TYPE_SOUND.Diamond);
@@ -1282,7 +1287,7 @@ public class ControllerPlayer : MonoBehaviour
         }
         else if (other.tag == "StartBlackHole")
         {
-            if(other.GetComponent<BlackHole>().levelHole <= myLevel)
+            if (other.GetComponent<BlackHole>().levelHole <= myLevel)
             {
                 myposition = transform.position;
                 myposition.z += 1;

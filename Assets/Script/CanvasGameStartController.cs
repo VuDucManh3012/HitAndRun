@@ -18,6 +18,8 @@ public class CanvasGameStartController : MonoBehaviour
     public GameObject ButtonNoAds;
     [Header("CanvasTouchPad")]
     public GameObject CanvasTouchPad;
+    [Header("CanvasPopupOfflineReward")]
+    public GameObject CanvasPopupOfflineReward;
     // Start is called before the first frame update
     void Start()
     {
@@ -48,6 +50,10 @@ public class CanvasGameStartController : MonoBehaviour
             ButtonNoAds.SetActive(false);
         }
         CanvasTouchPad.SetActive(true);
+        if (CanvasPopupOfflineReward.active)
+        {
+            transform.gameObject.SetActive(false);
+        }
     }
     public void CheckSceneStart()
     {

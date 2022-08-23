@@ -582,7 +582,7 @@ public class CanvasManager : MonoBehaviour
             stage = 1;
         }
 
-        if (!Rated && (stage == 3 || stage % 15==0))
+        if (!Rated && (stage == 3 || stage % 15 == 0))
         {
             CanvasPopupRate.SetActive(true);
             GameStartScene.SetActive(false);
@@ -649,15 +649,6 @@ public class CanvasManager : MonoBehaviour
         {
             NoticeWheelLucky.SetActive(false);
         }
-    }
-    private void OnApplicationQuit()
-    {
-        SetTimeCountDown();
-        PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
-        PlayerPrefs.SetInt("FirstGoShopSkin", 0);
-        PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
-        PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
-        PlayerPrefs.SetInt("InterVictory", 0);
     }
     private float TimeTick;
     private int MaxTick = 1;
@@ -1121,10 +1112,12 @@ public class CanvasManager : MonoBehaviour
         adsShowing = false;
         if (TypeShop == 0)
         {
+            Debug.LogWarning("ball " + (indexSkin + 1));
             PlayerPrefs.SetInt("ball " + (indexSkin + 1), 1);
         }
         else if (TypeShop == 1)
         {
+            Debug.LogWarning("skin " + (indexSkin + 1));
             PlayerPrefs.SetInt("skin " + (indexSkin + 1), 1);
         }
         VictoryScene.SetActive(true);
@@ -1232,5 +1225,38 @@ public class CanvasManager : MonoBehaviour
         SoundVolumn.value = PlayerPrefs.GetFloat("SfxVolumn");
         MusicVolumn.value = PlayerPrefs.GetFloat("MusicVolumn");
         AudioAssistant.Instance.UpdateSoundSetting2(SoundVolumn.value, MusicVolumn.value);
+    }
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+        {
+            SetTimeCountDown();
+            PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
+            PlayerPrefs.SetInt("FirstGoShopSkin", 0);
+            PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
+            PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
+            PlayerPrefs.SetInt("InterVictory", 0);
+        }
+    }
+    void OnApplicationFocus(bool hasFocus)
+    {
+        if (!hasFocus)
+        {
+            SetTimeCountDown();
+            PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
+            PlayerPrefs.SetInt("FirstGoShopSkin", 0);
+            PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
+            PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
+            PlayerPrefs.SetInt("InterVictory", 0);
+        }
+    }
+    private void OnApplicationQuit()
+    {
+        SetTimeCountDown();
+        PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
+        PlayerPrefs.SetInt("FirstGoShopSkin", 0);
+        PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
+        PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
+        PlayerPrefs.SetInt("InterVictory", 0);
     }
 }

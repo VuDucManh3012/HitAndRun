@@ -48,7 +48,7 @@ public class Tracking : MonoBehaviour
             }
         }
     }
-    private void OnApplicationQuit()
+    private void OnApplicationPause()
     {
         TimeInSession();
         TrackingNumberTimesOpenGift();
