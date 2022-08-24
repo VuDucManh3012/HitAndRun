@@ -68,11 +68,10 @@ public class AudioAssistant : SerializedMonoBehaviour
     public void UpdateSoundSetting2(float sfxVolumn , float musicVolumn)
     {
         if (GameManager.Instance == null) return;
-        var settingData = GameManager.Instance.Data.Setting;
 
         sfx.volume = sfxVolumn;
         music.volume = musicVolumn;
-        normalMusicVolume = sfxVolumn;
+        normalMusicVolume = musicVolumn;
     }
 
     public string currentTrack;
@@ -162,12 +161,11 @@ public class AudioAssistant : SerializedMonoBehaviour
         if (!music.isPlaying) music.Play();
         while (countDownDelay < delay)
         {
-            music.volume = countDownDelay * normalMusicVolume;
+            music.volume = countDownDelay * normalMusicVolume *3.333f;
+            Debug.LogWarning(countDownDelay);
             countDownDelay += timeUnScaleDentaTime;
             yield return null;
         }
-
-        music.volume = normalMusicVolume;
     }
 
 

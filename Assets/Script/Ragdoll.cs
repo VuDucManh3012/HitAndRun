@@ -4,16 +4,20 @@ using UnityEngine;
 
 public class Ragdoll : MonoBehaviour
 {
-    Rigidbody rigidbody;
-    public float x = 0.1f;
-    public float y = 0.7f;
-    public float z = 0.7f;
-    public float timeDestroy = 1.5f;
+    private float x = -0.1f;
+    private float y = 0.7f;
+    private float z = 0.7f;
+    private float timeDestroy = 0.4f;
+    public bool EnemyEnding = false;
+    public bool EnemyInStageEnding;
     // Start is called before the first frame update
     void Start()
     {
-        rigidbody = GetComponent<Rigidbody>();
-        Destroy(transform.gameObject, timeDestroy);
+        EnemyInStageEnding = transform.parent.GetComponent<Enemy>().EnemyEnding;
+        if (!EnemyEnding)
+        {
+            Destroy(transform.gameObject, timeDestroy);
+        }
     }
 
     // Update is called once per frame
@@ -21,7 +25,14 @@ public class Ragdoll : MonoBehaviour
     {
         Vector3 position = transform.position;
         position.z += z;
-        position.y += y;
+        if (!EnemyInStageEnding)
+        {
+            position.y += y * 0.8f;
+        }
+        else
+        {
+            position.y += y * 1.5f;
+        }
         position.x += x;
         transform.position = position;
     }

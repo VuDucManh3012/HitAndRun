@@ -140,6 +140,12 @@ public class ControllerPlayer : MonoBehaviour
 
     [Header("CanvasTouchPad")]
     public GameObject CanvasTouchPad;
+
+    [Header("SoundAttack")]
+    public GameObject SoundAttack;
+
+    [Header("GameOverScene")]
+    public GameObject ModelGameOver;
     private void Awake()
     {
         myLevel = 1;
@@ -183,7 +189,10 @@ public class ControllerPlayer : MonoBehaviour
 
         activeLF = false;
         Plus999 = false;
+
+        PitchSound = SoundAttack.GetComponent<AudioSource>().pitch;
     }
+    public float PitchSound;
     public void SetPlus999()
     {
         Plus999 = true;
@@ -197,6 +206,31 @@ public class ControllerPlayer : MonoBehaviour
         //
         SetOnRoad();
         AutoRotateFloatingText();
+        checkSoundAttack();
+        //
+        if (myLevel == 0)
+        {
+            SetSpeed(0);
+        }
+    }
+    public void checkSoundAttack()
+    {
+        if (PitchSound > 1)
+        {
+            PitchSound -= 0.01f;
+            
+        }
+        else
+        {
+            PitchSound = 1;
+        }
+        SoundAttack.GetComponent<AudioSource>().pitch = PitchSound;
+    }
+    public void AddPitchSoundAttack()
+    {
+        SoundAttack.SetActive(false);
+        SoundAttack.SetActive(true);
+        PitchSound += 0.2f;
     }
     public void AutoRotateFloatingText()
     {
@@ -462,6 +496,7 @@ public class ControllerPlayer : MonoBehaviour
     }
     void SetAttack()
     {
+        AddPitchSoundAttack();
         if (attack == 0)
         {
             myAnim.SetBool("Attack", true);
@@ -543,12 +578,6 @@ public class ControllerPlayer : MonoBehaviour
         myBody.velocity = new Vector3(x, y, z);
     }
     public bool OnJump;
-    IEnumerator setOnJump()
-    {
-        OnJump = true;
-        yield return new WaitForSeconds(1.5f);
-        //OnJump = false;
-    }
     private void JumpHigh()
     {
         if (!OnJump)
@@ -556,17 +585,8 @@ public class ControllerPlayer : MonoBehaviour
             ObjectFollowCharacter.GetComponent<CameraFollow2>().onJump = true;
             SetSpeed(SpeedJump);
             myBody.velocity = new Vector3(0, 24f, 0);
-            StartCoroutine(setOnJump());
             AudioAssistant.Shot(TYPE_SOUND.Jump);
             HCVibrate.Haptic(HapticTypes.SoftImpact);
-            //if(transform.position.x > 2)
-            //{
-            //    transform.localEulerAngles = new Vector3(0, 0, 45);
-            //}
-            //else if(transform.position.x < 2)
-            //{
-            //    transform.localEulerAngles = new Vector3(0, 0, -45);
-            //}  
         }
     }
     private void JumpLow()
@@ -577,7 +597,6 @@ public class ControllerPlayer : MonoBehaviour
             myBody.velocity = new Vector3(0, 12f, 0);
             SetSpeed(SpeedJump + 1);
             StartCoroutine(setUnDead());
-            StartCoroutine(setOnJump());
             AudioAssistant.Shot(TYPE_SOUND.Jump);
             HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
@@ -707,7 +726,7 @@ public class ControllerPlayer : MonoBehaviour
             SetSpeed(0);
 
             QualityDiamond -= DiamondFound;
-            GameOverScene.SetActive(true);
+            StartCoroutine(GameOver());
             transform.position = new Vector3(0, 10, 0);
             //AudioAssistant.Instance.PlayMusic("Lose",0,0);
             if (!OnAudio)
@@ -718,7 +737,12 @@ public class ControllerPlayer : MonoBehaviour
             }
         }
     }
-    IEnumerator VictoryInStageEnding()
+    IEnumerator GameOver()
+    {
+        yield return new WaitForSeconds(2f);
+        GameOverScene.SetActive(true);
+    }
+        IEnumerator VictoryInStageEnding()
     {
         yield return new WaitForSeconds(3f);
         ActiveCanvasVictory();
@@ -779,7 +803,7 @@ public class ControllerPlayer : MonoBehaviour
             else
             {
                 QualityDiamond -= DiamondFound;
-                GameOverScene.SetActive(true);
+                StartCoroutine(GameOver());
                 isMove = false;
                 //AudioAssistant.Instance.PlayMusic("Lose", 1f, 0);
                 if (!OnAudio)
@@ -801,7 +825,8 @@ public class ControllerPlayer : MonoBehaviour
         GameOverScene.SetActive(false);
         unsetLevelText = false;
         myAnim.SetBool("Die", false);
-        myLevel = 1;
+        myLevel = 999;
+        ModelGameOver.SetActive(false);
         ChangeCam("CamRun");
         isMove = true;
         OnAudio = false;
@@ -820,8 +845,10 @@ public class ControllerPlayer : MonoBehaviour
         }
         AudioAssistant.Instance.PlayMusic("Start");
         HCVibrate.Haptic(HapticTypes.SoftImpact);
+        
         StartCoroutine(AfterReborn());
         checkedY = false;
+        SetSkin();
     }
     IEnumerator AfterReborn()
     {
@@ -883,7 +910,10 @@ public class ControllerPlayer : MonoBehaviour
             if (startgame)
             {
                 onRoad = true;
-                SetSpeed(SpeedRoad);
+                if (myLevel > 0)
+                {
+                    SetSpeed(SpeedRoad);
+                }
             }
         }
         else if (other.tag == "StageEnding")
@@ -994,60 +1024,12 @@ public class ControllerPlayer : MonoBehaviour
         else if (other.tag == "Enemy")
         {
             SeBonus = other.GetComponent<Enemy>().SeBonus;
-            if (!unLimitDamage)
-            {
-                if (other.GetComponent<Enemy>().level <= myLevel)
-                {
-                    SetAttack();
-                    Destroy(other.transform.Find("EnemyModel").gameObject);
-                    Destroy(other.transform.Find("TextLevel").gameObject);
-                    Destroy(other.transform.Find("LowerLevel").gameObject);
-                    myLevel += other.GetComponent<Enemy>().levelBonus;
-                    FloatingTextAnimator.Play("FloatingText");
-                    FloatingTextUp.GetComponent<TextMeshPro>().text = "+" + other.GetComponent<Enemy>().levelBonus + " level";
-                    if (other.GetComponent<Enemy>().levelBonus >= 10)
-                    {
-                        FloatingTextUp.SetActive(false);
-                        FloatingTextUp.SetActive(true);
-                        OnParticle(4); OnParticle(6);
-                    }
-                    AudioAssistant.Shot(TYPE_SOUND.Enemy);
-                    HCVibrate.Haptic(HapticTypes.SoftImpact);
-                }
-                else
-                {
-                    if (other.GetComponent<Enemy>().unDamage)
-                    {
-                        StartCoroutine(VictoryInStageEnding());
-                        UpdateDiamond();
-                        SetDieTrue();
-                        SetSpeed(0);
-                        myLevel -= 10000;
-                    }
-                    else
-                    {
-                        SetAttack();
-                        Destroy(other.transform.Find("EnemyModel").gameObject);
-                        Destroy(other.transform.Find("TextLevel").gameObject);
-                        myLevel += other.GetComponent<Enemy>().levelBonus;
-                        FloatingTextAnimator.Play("FloatingText");
-                        FloatingTextUp.GetComponent<TextMeshPro>().text = "+" + other.GetComponent<Enemy>().levelBonus + " level";
-                        if (other.GetComponent<Enemy>().levelBonus >= 10)
-                        {
-                            FloatingTextUp.SetActive(false);
-                            FloatingTextUp.SetActive(true);
-                            OnParticle(4); OnParticle(6);
-                        }
-                        AudioAssistant.Shot(TYPE_SOUND.Enemy);
-                        HCVibrate.Haptic(HapticTypes.SoftImpact);
-                    }
-                }
-            }
-            else
+            void destroyEnemy()
             {
                 SetAttack();
                 Destroy(other.transform.Find("EnemyModel").gameObject);
                 Destroy(other.transform.Find("TextLevel").gameObject);
+                Destroy(other.transform.Find("LowerLevel").gameObject);
                 other.transform.Find("EnemyRagdoll").gameObject.SetActive(true);
                 myLevel += other.GetComponent<Enemy>().levelBonus;
                 FloatingTextAnimator.Play("FloatingText");
@@ -1058,65 +1040,37 @@ public class ControllerPlayer : MonoBehaviour
                     FloatingTextUp.SetActive(true);
                     OnParticle(4); OnParticle(6);
                 }
-                AudioAssistant.Shot(TYPE_SOUND.Enemy);
                 HCVibrate.Haptic(HapticTypes.SoftImpact);
+            }
+            if (!other.GetComponent<Enemy>().unDamage)
+            {
+                destroyEnemy();
+            }
+            else
+            {
+                if (other.GetComponent<Enemy>().level > myLevel)
+                {
+                    StartCoroutine(VictoryInStageEnding());
+                    UpdateDiamond();
+                    SetDieTrue();
+                    SetSpeed(0);
+                    myLevel -= 10000;
+                }
+                else
+                {
+                    destroyEnemy();
+                }
             }
             CheckLevelEnemy();
         }
         else if (other.tag == "Enemy3")
         {
             SeBonus = other.GetComponent<Enemy>().SeBonus;
-            if (!unLimitDamage)
-            {
-                if (other.GetComponent<Enemy>().level <= myLevel)
-                {
-                    //anim
-                    myAnim.SetBool("AttackBoss", true);
-                    //
-                    Destroy(other.transform.Find("EnemyModel").gameObject);
-                    Destroy(other.transform.Find("TextLevel").gameObject);
-                    Destroy(other.transform.Find("LowerLevel").gameObject);
-                    other.transform.Find("EnemyRagdoll").gameObject.SetActive(true);
-                    myLevel += other.GetComponent<Enemy>().levelBonus;
-                    FloatingTextAnimator.Play("FloatingText");
-                    FloatingTextUp.GetComponent<TextMeshPro>().text = "+" + other.GetComponent<Enemy>().levelBonus + " level";
-                    if (other.GetComponent<Enemy>().levelBonus >= 10)
-                    {
-                        FloatingTextUp.SetActive(false);
-                        FloatingTextUp.SetActive(true);
-                        OnParticle(4); OnParticle(6);
-                    }
-                    AudioAssistant.Shot(TYPE_SOUND.Enemy);
-                    HCVibrate.Haptic(HapticTypes.SoftImpact);
-                }
-                else
-                {
-                    if (other.GetComponent<Enemy>().unDamage)
-                    {
-                        StartCoroutine(VictoryInStageEnding());
-                        UpdateDiamond();
-                        SetDieTrue();
-                        SetSpeed(0);
-                        myLevel -= 10000;
-                        //AudioAssistant.Instance.PlayMusic("WinNormal");
-
-                        AudioAssistant.Shot(TYPE_SOUND.WinBinhThuong);
-                        HCVibrate.Haptic(HapticTypes.SoftImpact);
-                    }
-                    else
-                    {
-                        if (isUnDead == false)
-                        {
-                            hurt();
-                            pushOppsiteEnemy();
-                        }
-                    }
-                }
-            }
-            else
+            void destroyEnemy()
             {
                 Destroy(other.transform.Find("EnemyModel").gameObject);
                 Destroy(other.transform.Find("TextLevel").gameObject);
+                Destroy(other.transform.Find("LowerLevel").gameObject);
                 other.transform.Find("EnemyRagdoll").gameObject.SetActive(true);
                 myLevel += other.GetComponent<Enemy>().levelBonus;
                 FloatingTextAnimator.Play("FloatingText");
@@ -1130,7 +1084,32 @@ public class ControllerPlayer : MonoBehaviour
                 }
                 AudioAssistant.Shot(TYPE_SOUND.Enemy);
                 HCVibrate.Haptic(HapticTypes.SoftImpact);
-
+            }
+            if (unLimitDamage)
+            {
+                destroyEnemy();
+            }
+            else if (other.GetComponent<Enemy>().level <= myLevel)
+            {
+                //anim
+                myAnim.SetBool("AttackBoss", true);
+                //
+                destroyEnemy();
+            }
+            else if (other.GetComponent<Enemy>().unDamage)
+            {
+                StartCoroutine(VictoryInStageEnding());
+                UpdateDiamond();
+                SetDieTrue();
+                SetSpeed(0);
+                myLevel -= 10000;
+                AudioAssistant.Shot(TYPE_SOUND.WinBinhThuong);
+                HCVibrate.Haptic(HapticTypes.SoftImpact);
+            }
+            else if (!isUnDead)
+            {
+                hurt();
+                pushOppsiteEnemy();
             }
             CheckLevelEnemy();
         }
@@ -1291,7 +1270,7 @@ public class ControllerPlayer : MonoBehaviour
             if (other.GetComponent<BlackHole>().levelHole <= myLevel)
             {
                 myposition = transform.position;
-                myposition.z += 1;
+                myposition = new Vector3(myposition.x, myposition.y, myposition.z + 2);
                 transform.position = other.GetComponent<BlackHole>().start.position;
                 ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.position.y + 2;
                 ObjectFollowCharacter.transform.position = transform.position;
@@ -1321,7 +1300,10 @@ public class ControllerPlayer : MonoBehaviour
         {
             SetSkin();
             SetAttackFalse();
-            other.transform.gameObject.SetActive(false);
+            if (other.GetComponent<Enemy>().level == 10)
+            {
+                PitchSound = 1;
+            }
         }
         else if (other.tag == "Enemy3")
         {

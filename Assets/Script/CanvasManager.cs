@@ -152,22 +152,46 @@ public class CanvasManager : MonoBehaviour
     public void CanvasNewSkinEndingController()
     {
         CanvasNewSkinEnding.SetActive(true);
-
-        if (PlayerPrefs.HasKey("phanTramNewSkinEndingCurrent") && PlayerPrefs.GetInt("phanTramNewSkinEndingCurrent") != 100)
+        //
+        WeaponNoBuy.Clear();
+        SkinNoBuy.Clear();
+        for (int i = 1; i < 6; i++)
         {
-            ThemPhanTramSkinEndingCurrent();
-            SetTextAndAnimSkinEnding();
+            if (PlayerPrefs.GetInt("ball " + i) != 1)
+            {
+                WeaponNoBuy.Add(i);
+            }
+            if (PlayerPrefs.GetInt("skin " + i) != 1)
+            {
+                SkinNoBuy.Add(i);
+            }
+        }
+        //
+        if (WeaponNoBuy.Count > 0 || SkinNoBuy.Count > 0)
+        {
+            if (PlayerPrefs.HasKey("phanTramNewSkinEndingCurrent") && PlayerPrefs.GetInt("phanTramNewSkinEndingCurrent") != 100)
+            {
+                ThemPhanTramSkinEndingCurrent();
+                SetTextAndAnimSkinEnding();
+            }
+            else
+            {
+                RandomSkinEnding();
+                SetTextAndAnimSkinEnding();
+            }
         }
         else
         {
-            RandomSkinEnding();
-            SetTextAndAnimSkinEnding();
+            ButtonCanvasNewSkinEnding();
         }
+
     }
 
     public void RandomSkinEnding()
     {
         //checkball
+        WeaponNoBuy.Clear();
+        SkinNoBuy.Clear();
         for (int i = 1; i < 6; i++)
         {
             if (PlayerPrefs.GetInt("ball " + i) != 1)
@@ -372,8 +396,8 @@ public class CanvasManager : MonoBehaviour
         //
         Save.WriteText();
         SetTimeCountDown();
-        Loadscene = true;
         PlayerPrefs.SetInt("InterVictory", 1);
+        Loadscene = true;
     }
     public bool Loadscene = false;
     public bool ScreenVictoryActive;
@@ -575,8 +599,10 @@ public class CanvasManager : MonoBehaviour
         //haptic
         checkHaptic();
         ////audio
+        //
         AudioAssistant.Instance.PlayMusic("Start");
         AudioAssistant.Instance.PlayMusic("Start");
+        checkvolumn();
         //
         SetValueSliderSetting();
         if (PlayerPrefs.GetInt("InterVictory") == 1)
@@ -621,6 +647,12 @@ public class CanvasManager : MonoBehaviour
         {
             VictoryScene.SetActive(true);
         }
+    }
+    public void checkvolumn()
+    {
+        MusicVolumn.value = PlayerPrefs.GetFloat("MusicVolumn");
+        SoundVolumn.value = PlayerPrefs.GetFloat("SfxVolumn");
+        AudioAssistant.Instance.UpdateSoundSetting2(SoundVolumn.value, MusicVolumn.value);
     }
     private void checkRate()
     {
@@ -1211,12 +1243,27 @@ public class CanvasManager : MonoBehaviour
     public void ChangeVolumnMusic()
     {
         AudioAssistant.Instance.UpdateSoundSetting2(SoundVolumn.value, MusicVolumn.value);
-        PlayerPrefs.SetFloat("MusicVolumn", MusicVolumn.value);
+        if (PlayerPrefs.HasKey("MusicVolumn"))
+        {
+            PlayerPrefs.SetFloat("MusicVolumn", MusicVolumn.value);
+        }
+        else
+        {
+            PlayerPrefs.SetFloat("MusicVolumn", 0.5f);
+        }
+
     }
     public void ChangeVolumnSfx()
     {
         AudioAssistant.Instance.UpdateSoundSetting2(SoundVolumn.value, MusicVolumn.value);
-        PlayerPrefs.SetFloat("SfxVolumn", SoundVolumn.value);
+        if (PlayerPrefs.HasKey("SfxVolumn"))
+        {
+            PlayerPrefs.SetFloat("SfxVolumn", SoundVolumn.value);
+        }
+        else
+        {
+            PlayerPrefs.SetFloat("SfxVolumn", 0.5f);
+        }
     }
     public void PLayMusicStart()
     {

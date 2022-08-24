@@ -16,6 +16,7 @@ public class Lava : MonoBehaviour
     void Update()
     {
         float offset = Time.time * scrollSpeed;
-        rend.material.SetTextureOffset("_MainTex", new Vector2(offset, 0));
+        rend.material.SetTextureOffset("MainTex", new Vector2(offset, 0));
+        rend.material.mainTextureOffset = new Vector2(offset, 0);
     }
 }

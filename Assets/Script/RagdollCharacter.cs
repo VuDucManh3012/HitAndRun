@@ -19,12 +19,6 @@ public class RagdollCharacter : MonoBehaviour
         Force.z = Random.Range(0, 1);
         myRigid.AddForce(Force * 100, ForceMode.Impulse);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     public void RagdollChangeSkin(int NumberTextSkin ,double mylevel)
     {
         ModelArmor.GetComponent<Renderer>().material.mainTexture = ListTexture[NumberTextSkin];

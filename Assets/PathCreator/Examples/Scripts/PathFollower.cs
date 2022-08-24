@@ -10,7 +10,8 @@ namespace PathCreation.Examples
         public float distanceTravelled;
 
         public bool moveOnCurve;
-        public void Start() {
+        public void Start()
+        {
             pathCreator = GetComponent<PathCreation.PathCreator>();
             if (pathCreator != null)
             {
@@ -19,23 +20,24 @@ namespace PathCreation.Examples
             }
         }
 
-        void Update()
+        void FixedUpdate()
         {
             if (pathCreator != null && moveOnCurve)
             {
-                distanceTravelled += speed * Time.deltaTime;
-                transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled*1.5f, endOfPathInstruction);
-                transform.rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled * 1.5f, endOfPathInstruction);
+                distanceTravelled += speed * 1.5f * Time.deltaTime;
+                transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
+                transform.rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled, endOfPathInstruction);
                 float yRotation = transform.eulerAngles.y;
-                transform.localEulerAngles = new Vector3(0, yRotation , 0);
+                transform.localEulerAngles = new Vector3(0, yRotation, 0);
             }
         }
 
         // If the path changes during the game, update the distance travelled so that the follower's position on the new path
         // is as close as possible to its position on the old path
-        void OnPathChanged() {
+        void OnPathChanged()
+        {
             distanceTravelled = pathCreator.path.GetClosestDistanceAlongPath(transform.position);
         }
-        
+
     }
 }

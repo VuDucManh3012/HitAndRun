@@ -80,7 +80,7 @@ public class ChestRoom : MonoBehaviour
     {
         if (System.Int32.Parse(PlayerPrefs.GetString("key")) >= 1)
         {
-            if (EventSystem.current.currentSelectedGameObject.transform.GetChild(0).gameObject.active)
+            if (EventSystem.current.currentSelectedGameObject.transform.GetChild(1).gameObject.active)
             {
                 SubtractKey();
             }
