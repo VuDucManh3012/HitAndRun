@@ -814,6 +814,7 @@ public class ControllerPlayer : MonoBehaviour
             if (Start.position.z <= transform.position.z && transform.position.z <= End.transform.position.z)
             {
                 transform.position = new Vector3(0, 2.3f, Start.transform.position.z - 5);
+                ObjectFollowCharacter.transform.position = new Vector3(0, 2.3f, Start.transform.position.z - 5);
                 break;
             }
         }

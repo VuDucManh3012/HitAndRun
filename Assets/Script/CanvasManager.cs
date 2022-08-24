@@ -79,8 +79,8 @@ public class CanvasManager : MonoBehaviour
     public List<GameObject> ListImageKeyDisable;
 
     [Header("CanvasNewSkinEnding")]
-    public List<int> SkinNoBuy;
     public List<int> WeaponNoBuy;
+    public List<int> SkinNoBuy;
     public int TypeShop;
     public int indexSkin;
     public int phanTramNewSkinEndingCurrent = 0;
@@ -180,12 +180,13 @@ public class CanvasManager : MonoBehaviour
             }
         }
         //chon random
-        TypeShop = Random.Range(0, 2);
-        if (TypeShop == 0 && WeaponNoBuy.Count > 0)
+        //Type 1 = Weapon, Type 2 = Skin
+        TypeShop = Random.Range(1, 3);
+        if (TypeShop == 1 && WeaponNoBuy.Count > 0)
         {
             indexSkin = Random.Range(0, WeaponNoBuy.Count);
         }
-        else if (TypeShop == 1 && SkinNoBuy.Count > 0)
+        else if (TypeShop == 2 && SkinNoBuy.Count > 0)
         {
             indexSkin = Random.Range(0, SkinNoBuy.Count);
         }
@@ -217,18 +218,30 @@ public class CanvasManager : MonoBehaviour
         TextFillAmountSkinEnding = 0;
         TextFillAmountSkinEndingCurrent = phanTramNewSkinEndingBefore;
 
+        WeaponNoBuy.Clear();
+        SkinNoBuy.Clear();
+        for (int i = 1; i < 6; i++)
+        {
+            if (PlayerPrefs.GetInt("ball " + i) != 1)
+            {
+                WeaponNoBuy.Add(i);
+            }
+            if (PlayerPrefs.GetInt("skin " + i) != 1)
+            {
+                SkinNoBuy.Add(i);
+            }
+        }
         TypeShop = PlayerPrefs.GetInt("TypeShopEndingSkin");
         indexSkin = PlayerPrefs.GetInt("IndexSkinEndingShop");
 
-        if (TypeShop == 0)
+        if (TypeShop == 1)
         {
-            ImageSkin.sprite = ListSpriteImage[indexSkin];
+            ImageSkin.sprite = ListSpriteImage[WeaponNoBuy[indexSkin]];
         }
-        else if (TypeShop == 1)
+        else if (TypeShop == 2)
         {
-            ImageSkin.sprite = ListSpriteImage[indexSkin + WeaponNoBuy.Count];
+            ImageSkin.sprite = ListSpriteImage[SkinNoBuy[indexSkin] + 6];
         }
-
         int CurrentProcess = PlayerPrefs.GetInt("phanTramNewSkinEndingCurrent");
         float fillAmount = CurrentProcess;
         fillAmount = 1 - (fillAmount / 100);
@@ -1110,15 +1123,13 @@ public class CanvasManager : MonoBehaviour
     {
         AnalyticManager.LogWatchAds("GetSkinEnding", 1);
         adsShowing = false;
-        if (TypeShop == 0)
+        if (TypeShop == 1)
         {
-            Debug.LogWarning("ball " + (indexSkin + 1));
-            PlayerPrefs.SetInt("ball " + (indexSkin + 1), 1);
+            PlayerPrefs.SetInt("ball " + WeaponNoBuy[indexSkin], 1);
         }
-        else if (TypeShop == 1)
+        else if (TypeShop == 2)
         {
-            Debug.LogWarning("skin " + (indexSkin + 1));
-            PlayerPrefs.SetInt("skin " + (indexSkin + 1), 1);
+            PlayerPrefs.SetInt("skin " + SkinNoBuy[indexSkin], 1);
         }
         VictoryScene.SetActive(true);
         CanvasNewSkinEnding.SetActive(false);
