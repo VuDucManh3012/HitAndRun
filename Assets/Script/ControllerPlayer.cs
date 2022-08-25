@@ -88,15 +88,14 @@ public class ControllerPlayer : MonoBehaviour
     private int attack;
 
     private int CharacterGlowUp;
-    private Animator FloatingTextAnimator;
-    private GameObject FloatingTextUp;
-    private GameObject Floatingtext;
+    public Animator FloatingTextAnimator;
+    public GameObject FloatingTextUp;
+    public GameObject Floatingtext;
 
     private GameObject EnemyEndingModel;
     private GameObject EnemyEndingRagdoll;
     private GameObject FireWorkEnemyEnding;
 
-    private SWS.splineMove splineMoveComponent;
     public bool PlusedSeBonus = false;
     [Header("Ragdoll")]
     public GameObject Ragdoll;
@@ -146,6 +145,11 @@ public class ControllerPlayer : MonoBehaviour
 
     [Header("GameOverScene")]
     public GameObject ModelGameOver;
+
+    [Header("WeaponHammer")]
+    public GameObject WeaponHammer;
+    public GameObject ModelHammer;
+    public GameObject CamHammerAttack;
     private void Awake()
     {
         myLevel = 1;
@@ -160,7 +164,6 @@ public class ControllerPlayer : MonoBehaviour
     {
         myBody = GetComponent<Rigidbody>();
         myAnim = GetComponent<Animator>();
-        splineMoveComponent = GetComponentInParent<SWS.splineMove>();
         SkinRenderer = ModelCharacterBase.GetComponent<Renderer>();
         SkinArmorRenderer = ModelCharacterArmor.GetComponent<Renderer>();
         FloatingTextUp = transform.Find("Character").Find("FloatingTextUp").gameObject;
@@ -218,7 +221,7 @@ public class ControllerPlayer : MonoBehaviour
         if (PitchSound > 1)
         {
             PitchSound -= 0.01f;
-            
+
         }
         else
         {
@@ -742,7 +745,7 @@ public class ControllerPlayer : MonoBehaviour
         yield return new WaitForSeconds(2f);
         GameOverScene.SetActive(true);
     }
-        IEnumerator VictoryInStageEnding()
+    IEnumerator VictoryInStageEnding()
     {
         yield return new WaitForSeconds(3f);
         ActiveCanvasVictory();
@@ -844,7 +847,7 @@ public class ControllerPlayer : MonoBehaviour
         }
         AudioAssistant.Instance.PlayMusic("Start");
         HCVibrate.Haptic(HapticTypes.SoftImpact);
-        
+
         StartCoroutine(AfterReborn());
         checkedY = false;
         SetSkin();
@@ -1198,8 +1201,23 @@ public class ControllerPlayer : MonoBehaviour
             SetSpeed(SpeedRoad);
             SetJumpWall();
         }
+        else if (other.tag == "ItemHammer")
+        {
+            SetSpeed(10);
+            WeaponHammer.SetActive(true);
+            Jump(0, 15, 0);
+            ChangeCam("CamHammerAttack");
+            ChangeTimeScale(0.4f);
+        }
     }
-
+    public void ChangeTimeScale(float time)
+    {
+        Time.timeScale = time;
+    }
+    public void SetHammerAttack()
+    {
+        ModelHammer.transform.position = new Vector3(transform.position.x, transform.position.y + 2, transform.position.z + 3);
+    }
     private void OnTriggerStay(Collider other)
     {
         if (other.tag == "Wall")

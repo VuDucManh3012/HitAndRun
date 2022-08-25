@@ -904,6 +904,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfb339291e08d9146a4799e51f3ce9ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EnemyEnding: 0
+  EnemyInStageEnding: 0
 --- !u!114 &5847860620928549807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -960,7 +962,7 @@ MonoBehaviour:
   targetIsSelf: 1
   targetGO: {fileID: 0}
   tweenTargetIsTargetGO: 1
-  delay: 0.4
+  delay: 0.3
   duration: 1
   easeType: 1
   easeCurve:

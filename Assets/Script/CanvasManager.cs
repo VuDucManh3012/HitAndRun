@@ -20,7 +20,7 @@ public class CanvasManager : MonoBehaviour
 
     [Header("Gift10Minutes")]
     public GameObject PopupGift;
-    public int startingTime = 600;
+    private int startingTime = 180;
     public Text countdownText;
     public GameObject NoticeGift10Minutes;
     public Text RewardGift10Minutes;
@@ -667,17 +667,14 @@ public class CanvasManager : MonoBehaviour
     }
     public void RateUs()
     {
+        PopupThankForRate.SetActive(true);
+        CanvasPopupRate.SetActive(false);
+        GameStartScene.SetActive(true);
+        PlayerPrefs.SetInt("Rated", 1);
         if (StarRate >= 4)
         {
             Application.OpenURL(@"https://play.google.com/store/apps/details?id=" + GameManager.Instance.NoAdsId);
         }
-        else
-        {
-            PopupThankForRate.SetActive(true);
-            CanvasPopupRate.SetActive(false);
-            GameStartScene.SetActive(true);
-        }
-        PlayerPrefs.SetInt("Rated", 1);
     }
     public void CheckSlotSpin()
     {
