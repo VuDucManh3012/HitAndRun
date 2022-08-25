@@ -15,7 +15,10 @@ public class GameOverScene : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        ModelGameOver.SetActive(true);
-        CamDead.SetActive(false);
+        if (transform.gameObject.active)
+        {
+            ModelGameOver.SetActive(true);
+            CamDead.SetActive(false);
+        }
     }
 }

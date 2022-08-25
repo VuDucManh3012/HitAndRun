@@ -805,7 +805,6 @@ public class ControllerPlayer : MonoBehaviour
                 QualityDiamond -= DiamondFound;
                 StartCoroutine(GameOver());
                 isMove = false;
-                //AudioAssistant.Instance.PlayMusic("Lose", 1f, 0);
                 if (!OnAudio)
                 {
                     AudioAssistant.Shot(TYPE_SOUND.Lose);
