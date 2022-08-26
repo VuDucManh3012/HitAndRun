@@ -208,6 +208,15 @@ public class CanvasManager : MonoBehaviour
                 SkinNoBuy.Add(i);
             }
         }
+        RandomTypeShopAndIndexSkin();
+        //SetPhanTramCurrentFirst
+        phanTramNewSkinEndingCurrent = 25;
+        PlayerPrefs.SetInt("TypeShopEndingSkin", TypeShop);
+        PlayerPrefs.SetInt("IndexSkinEndingShop", indexSkin);
+        PlayerPrefs.SetInt("phanTramNewSkinEndingCurrent", phanTramNewSkinEndingCurrent);
+    }
+    void RandomTypeShopAndIndexSkin()
+    {
         //chon random
         //Type 1 = Weapon, Type 2 = Skin
         TypeShop = Random.Range(1, 3);
@@ -227,11 +236,19 @@ public class CanvasManager : MonoBehaviour
         {
             indexSkin = Random.Range(0, WeaponNoBuy.Count);
         }
-        //SetPhanTramCurrentFirst
-        phanTramNewSkinEndingCurrent = 25;
-        PlayerPrefs.SetInt("TypeShopEndingSkin", TypeShop);
-        PlayerPrefs.SetInt("IndexSkinEndingShop", indexSkin);
-        PlayerPrefs.SetInt("phanTramNewSkinEndingCurrent", phanTramNewSkinEndingCurrent);
+        if (TypeShop == 1)
+        {
+            if (TypeShop == PlayerPrefs.GetInt("TypeShopEndingSkin") && indexSkin == PlayerPrefs.GetInt("IndexSkinEndingShop") && SkinNoBuy.Count > 0)
+            {
+                indexSkin = Random.Range(0, SkinNoBuy.Count);
+            }
+        }else if(TypeShop == 2)
+        {
+            if (TypeShop == PlayerPrefs.GetInt("TypeShopEndingSkin") && indexSkin == PlayerPrefs.GetInt("IndexSkinEndingShop") && WeaponNoBuy.Count > 0)
+            {
+                indexSkin = Random.Range(0, WeaponNoBuy.Count);
+            }
+        }
     }
     public void ThemPhanTramSkinEndingCurrent()
     {

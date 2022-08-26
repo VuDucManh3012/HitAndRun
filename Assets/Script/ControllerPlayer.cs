@@ -1189,24 +1189,11 @@ public class ControllerPlayer : MonoBehaviour
             attackObject.SetActive(true);
             Jump(0, 6, 0);
             SetSpeed(11);
-            ChangeTimeScale(0.9f);
+            ChangeTimeScale(0.6f);
             ChangeGravity(20f);
             unLimitDamage = true;
             SetJumpAttack360(false);
             myAnim.SetInteger("AttackItem", 1);
-            //////////
-            //IEnumerator jumpAttack()
-            //{
-            //    unLimitDamage = true;
-            //    SetJumpAttack360(false);
-            //    yield return new WaitForSeconds(0.2f);
-            //    myAnim.SetInteger("AttackItem", 1);
-            //    attackObject.transform.GetChild(0).gameObject.SetActive(true);
-            //    yield return new WaitForSeconds(0.3f);
-            //    attackObject.transform.GetChild(1).gameObject.SetActive(true);
-            //    myAnim.SetInteger("AttackItem", 2);
-            //}
-            //
         }
         else if (other.tag == "StartCurve")
         {

@@ -24385,6 +24385,41 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1237272521021061836
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5053215514490948014}
+  m_Layer: 5
+  m_Name: SliderProcess
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5053215514490948014
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1237272521021061836}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7494322088233896254}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.7915834}
+  m_AnchorMax: {x: 0.5, y: 0.7915834}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 900, y: 150}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1311691918215368830
 GameObject:
   m_ObjectHideFlags: 0
@@ -43153,6 +43188,7 @@ RectTransform:
   - {fileID: 7494322089665058087}
   - {fileID: 7494322090152420236}
   - {fileID: 4938096501902281386}
+  - {fileID: 5053215514490948014}
   m_Father: {fileID: 7494322088956327999}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -58424,7 +58460,6 @@ MonoBehaviour:
   CanvasGameStartController: {fileID: 3208404210690870756}
   Save: {fileID: 0}
   PopupGift: {fileID: 7494322088672188526}
-  startingTime: 600
   countdownText: {fileID: 7494322089613381151}
   NoticeGift10Minutes: {fileID: 1369590320}
   RewardGift10Minutes: {fileID: 110089295046443792}
@@ -58458,7 +58493,9 @@ MonoBehaviour:
   - {fileID: 4938096499961185872}
   - {fileID: 4938096501970738510}
   WeaponNoBuy: 
+  WeaponBonusEnding: []
   SkinNoBuy: 
+  SkinBonusEnding: []
   TypeShop: 0
   indexSkin: 0
   phanTramNewSkinEndingCurrent: 0
@@ -58494,6 +58531,7 @@ MonoBehaviour:
   MusicVolumn: {fileID: 1835905608}
   SoundVolumn: {fileID: 1907299276}
   CanvasTouchPad: {fileID: 0}
+  CanvasDemoSkin: {fileID: 0}
   Loadscene: 0
   ScreenVictoryActive: 0
 --- !u!1 &7494322088968091976
@@ -66518,6 +66556,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvasManager: {fileID: 7494322088956327998}
+  canvasNewSkinDemo: {fileID: 0}
 --- !u!1 &7494322089301589093
 GameObject:
   m_ObjectHideFlags: 0
