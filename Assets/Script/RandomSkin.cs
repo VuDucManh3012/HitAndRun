@@ -348,7 +348,6 @@ public class RandomSkin : MonoBehaviour
         }
         else if (EventSystem.current.currentSelectedGameObject.name == "Ball (10)")
         {
-            Debug.Log("ddd");
             if (!ImageDisableSpecial[3].active)
             {
                 ImageTickSpecial[3].SetActive(true);

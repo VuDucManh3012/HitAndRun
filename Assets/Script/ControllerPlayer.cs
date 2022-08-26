@@ -53,7 +53,6 @@ public class ControllerPlayer : MonoBehaviour
     public GameObject attackObject;
 
     public GameObject GameOverScene;
-    public GameObject VictoryScene;
 
     private bool onRoad;
     public GameObject GameStartScene;
@@ -143,13 +142,20 @@ public class ControllerPlayer : MonoBehaviour
     [Header("SoundAttack")]
     public GameObject SoundAttack;
 
+    [Header("SoundDiamond")]
+    public GameObject SoundDiamond;
+
     [Header("GameOverScene")]
     public GameObject ModelGameOver;
 
     [Header("WeaponHammer")]
     public GameObject WeaponHammer;
     public GameObject ModelHammer;
-    public GameObject CamHammerAttack;
+
+    [Header("DemoSkin")]
+    public bool DemoingSkin = false;
+    public int indexSkinDemo = 10;
+    public int typeShopSkinDemo;
     private void Awake()
     {
         myLevel = 1;
@@ -194,8 +200,10 @@ public class ControllerPlayer : MonoBehaviour
         Plus999 = false;
 
         PitchSound = SoundAttack.GetComponent<AudioSource>().pitch;
+        PitchSoundDiamond = SoundDiamond.GetComponent<AudioSource>().pitch;
     }
     public float PitchSound;
+    public float PitchSoundDiamond;
     public void SetPlus999()
     {
         Plus999 = true;
@@ -221,19 +229,36 @@ public class ControllerPlayer : MonoBehaviour
         if (PitchSound > 1)
         {
             PitchSound -= 0.01f;
+            SoundAttack.GetComponent<AudioSource>().pitch = PitchSound;
+        }
+        else if (PitchSound < 1)
+        {
+            PitchSound = 1;
+            SoundAttack.GetComponent<AudioSource>().pitch = PitchSound;
+        }
 
+        if (PitchSoundDiamond > 1)
+        {
+            PitchSoundDiamond -= 0.01f;
+            SoundDiamond.GetComponent<AudioSource>().pitch = PitchSoundDiamond;
         }
         else
         {
-            PitchSound = 1;
+            PitchSoundDiamond = 1;
+            SoundDiamond.GetComponent<AudioSource>().pitch = PitchSoundDiamond;
         }
-        SoundAttack.GetComponent<AudioSource>().pitch = PitchSound;
     }
     public void AddPitchSoundAttack()
     {
         SoundAttack.SetActive(false);
         SoundAttack.SetActive(true);
         PitchSound += 0.2f;
+    }
+    public void AddPitchSoundDiamond()
+    {
+        SoundDiamond.SetActive(false);
+        SoundDiamond.SetActive(true);
+        PitchSoundDiamond += 0.2f;
     }
     public void AutoRotateFloatingText()
     {
@@ -590,6 +615,7 @@ public class ControllerPlayer : MonoBehaviour
             myBody.velocity = new Vector3(0, 24f, 0);
             AudioAssistant.Shot(TYPE_SOUND.Jump);
             HCVibrate.Haptic(HapticTypes.SoftImpact);
+            OnJump = true;
         }
     }
     private void JumpLow()
@@ -619,22 +645,6 @@ public class ControllerPlayer : MonoBehaviour
         {
             moveOnWall = false;
         }
-    }
-    [ContextMenu("Attack")]
-    public void AttackJump()
-    {
-        StartCoroutine(jumpAttack());
-    }
-    IEnumerator jumpAttack()
-    {
-        unLimitDamage = true;
-        SetJumpAttack360(false);
-        yield return new WaitForSeconds(0.2f);
-        myAnim.SetInteger("AttackItem", 1);
-        attackObject.transform.GetChild(0).gameObject.SetActive(true);
-        yield return new WaitForSeconds(0.3f);
-        attackObject.transform.GetChild(1).gameObject.SetActive(true);
-        myAnim.SetInteger("AttackItem", 2);
     }
     public void SetAttackAnimTo0()
     {
@@ -770,14 +780,7 @@ public class ControllerPlayer : MonoBehaviour
             }
             else
             {
-                if (PlayerPrefs.GetInt("skinSpecial" + 4) >= 2 && PlayerPrefs.GetInt("skinSpecial" + 5) >= 2)
-                {
-                    VictoryScene.SetActive(true);
-                }
-                else
-                {
-                    CanvasManager.CanvasNewSkinEndingController();
-                }
+                CanvasManager.CanvasNewSkinEndingController();
             }
             ActiveCanvasVictoy = true;
         }
@@ -851,6 +854,7 @@ public class ControllerPlayer : MonoBehaviour
         StartCoroutine(AfterReborn());
         checkedY = false;
         SetSkin();
+        CheckLevelEnemy();
     }
     IEnumerator AfterReborn()
     {
@@ -1117,7 +1121,7 @@ public class ControllerPlayer : MonoBehaviour
         }
         else if (other.tag == "Diamond")
         {
-            AudioAssistant.Shot(TYPE_SOUND.Diamond);
+            AddPitchSoundDiamond();
             HCVibrate.Haptic(HapticTypes.RigidImpact);
             QualityDiamond += 1;
             Destroy(other.gameObject);
@@ -1183,7 +1187,26 @@ public class ControllerPlayer : MonoBehaviour
         else if (other.tag == "JumpAttack")
         {
             attackObject.SetActive(true);
-            StartCoroutine(jumpAttack());
+            Jump(0, 6, 0);
+            SetSpeed(11);
+            ChangeTimeScale(0.9f);
+            ChangeGravity(20f);
+            unLimitDamage = true;
+            SetJumpAttack360(false);
+            myAnim.SetInteger("AttackItem", 1);
+            //////////
+            //IEnumerator jumpAttack()
+            //{
+            //    unLimitDamage = true;
+            //    SetJumpAttack360(false);
+            //    yield return new WaitForSeconds(0.2f);
+            //    myAnim.SetInteger("AttackItem", 1);
+            //    attackObject.transform.GetChild(0).gameObject.SetActive(true);
+            //    yield return new WaitForSeconds(0.3f);
+            //    attackObject.transform.GetChild(1).gameObject.SetActive(true);
+            //    myAnim.SetInteger("AttackItem", 2);
+            //}
+            //
         }
         else if (other.tag == "StartCurve")
         {
@@ -1203,12 +1226,70 @@ public class ControllerPlayer : MonoBehaviour
         }
         else if (other.tag == "ItemHammer")
         {
-            SetSpeed(10);
             WeaponHammer.SetActive(true);
-            Jump(0, 15, 0);
             ChangeCam("CamHammerAttack");
-            ChangeTimeScale(0.4f);
+            Jump(0, 10, 0);
+            SetSpeed(5);
+            ChangeTimeScale(0.5f);
+            ChangeGravity(15f);
+            myAnim.SetInteger("AttackHammer", 1);
         }
+        else if (other.tag == "ItemDemoSkin")
+        {
+            int indexSkin = other.GetComponent<ModelChangeSkin>().indexSkin;
+            indexSkinDemo = indexSkin;
+            if (other.GetComponent<ModelChangeSkin>().TypeShop == 2)
+            {
+                OnChangeSkin = false;
+                //thay skin
+                transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
+                NumberTextSkinLevel = 27 + (indexSkin * 4);
+                SkinRenderer.material.mainTexture = textSkin[NumberTextSkinLevel];
+                ModelCharacterArmor.SetActive(true);
+                SkinArmorRenderer.material.mainTexture = textSkin[NumberTextSkinLevel];
+                //bat weaponSpecial
+                WeaponSpecial.transform.GetChild(indexSkin + 6).gameObject.SetActive(true);
+            }
+            else if (other.GetComponent<ModelChangeSkin>().TypeShop == 1)
+            {
+                //thay weapon
+                //tat het weapon
+                for (int i = 0; i < WeaponLeft.transform.childCount; i++)
+                {
+                    WeaponLeft.transform.GetChild(i).gameObject.SetActive(false);
+                    WeaponRight.transform.GetChild(i).gameObject.SetActive(false);
+                }
+                //bat weapon demo moi
+                WeaponLeft.transform.GetChild(indexSkin + 6).gameObject.SetActive(true);
+                WeaponRight.transform.GetChild(indexSkin + 6).gameObject.SetActive(true);
+            }
+            typeShopSkinDemo = other.GetComponent<ModelChangeSkin>().TypeShop;
+            OnParticle(3);
+            AudioAssistant.Shot(TYPE_SOUND.WinBinhThuong);
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
+            other.transform.gameObject.SetActive(false);
+            DemoingSkin = true;
+        }
+    }
+    public void ChangeAnimJumpAttack()
+    {
+        myAnim.SetInteger("AttackItem", 2);
+    }
+    public void ChangeAnimJumpAttack2()
+    {
+        myAnim.SetInteger("AttackItem", 0);
+    }
+    public void ChangeAnimAttackHammer2()
+    {
+        myAnim.SetInteger("AttackHammer", 2);
+    }
+    public void ChangeAnimAttackHammer0()
+    {
+        myAnim.SetInteger("AttackHammer", 0);
+    }
+    public void ChangeGravity(float force)
+    {
+        Physics.gravity = new Vector3(0, -force, 0);
     }
     public void ChangeTimeScale(float time)
     {
@@ -1216,7 +1297,7 @@ public class ControllerPlayer : MonoBehaviour
     }
     public void SetHammerAttack()
     {
-        ModelHammer.transform.position = new Vector3(transform.position.x, transform.position.y + 2, transform.position.z + 3);
+        ModelHammer.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 3);
     }
     private void OnTriggerStay(Collider other)
     {

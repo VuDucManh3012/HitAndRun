@@ -10,7 +10,7 @@ public class HammerAttack : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -37,7 +37,8 @@ public class HammerAttack : MonoBehaviour
                 controllerPlayer.OnParticle(6);
             }
             HCVibrate.Haptic(HapticTypes.SoftImpact);
-        }else if(other.tag == "Enemy3")
+        }
+        else if (other.tag == "Enemy3")
         {
             Destroy(other.transform.Find("EnemyModel").gameObject);
             Destroy(other.transform.Find("TextLevel").gameObject);

@@ -32,7 +32,7 @@ Transform:
   m_LocalScale: {x: 10, y: 30, z: 1}
   m_Children: []
   m_Father: {fileID: 3380888703618550238}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 90}
 --- !u!33 &1004211685026411592
 MeshFilter:
@@ -124,7 +124,7 @@ GameObject:
   m_TagString: ItemWall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &3380888702608766433
 Transform:
@@ -133,12 +133,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3380888702608766434}
-  m_LocalRotation: {x: 0, y: -0.70710677, z: 0.70710677, w: 0}
-  m_LocalPosition: {x: 10.71, y: 7.4, z: 7.69}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalRotation: {x: -0, y: -0.7071068, z: 0.7071068, w: 0}
+  m_LocalPosition: {x: -0.010000229, y: 1.6500001, z: -0.11000013}
+  m_LocalScale: {x: 0.49999982, y: 0.49999994, z: 0.49999994}
   m_Children: []
-  m_Father: {fileID: 3380888703618550238}
-  m_RootOrder: 0
+  m_Father: {fileID: 5901223625025710141}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: -90, z: 90}
 --- !u!33 &3380888702608766438
 MeshFilter:
@@ -227,7 +227,6 @@ Transform:
   m_LocalPosition: {x: -13.857091, y: -4.8238735, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 3380888702608766433}
   - {fileID: 1004211685026411593}
   - {fileID: 8562186141236001076}
   m_Father: {fileID: 0}
@@ -253,7 +252,7 @@ PrefabInstance:
     - target: {fileID: 2885915326896583581, guid: 7f0312633b5ad1142925a0802ae78b70,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2885915326896583581, guid: 7f0312633b5ad1142925a0802ae78b70,
         type: 3}
@@ -310,6 +309,12 @@ PrefabInstance:
 --- !u!4 &8562186141236001076 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2885915326896583581, guid: 7f0312633b5ad1142925a0802ae78b70,
+    type: 3}
+  m_PrefabInstance: {fileID: 6835947864634575529}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5901223625025710141 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1097596019671999124, guid: 7f0312633b5ad1142925a0802ae78b70,
     type: 3}
   m_PrefabInstance: {fileID: 6835947864634575529}
   m_PrefabAsset: {fileID: 0}

@@ -91,6 +91,9 @@ public class SpawnMap2 : MonoBehaviour
     public List<GameObject> ListMapTotalLevel;
     public List<GameObject> ListEnemyInTotalLevel;
     public double ToTalLevelInMap;
+
+    [Header("DemoSkin")]
+    public GameObject MapDemoSkin;
     // Start is called before the first frame update
     public void Start()
     {
@@ -107,12 +110,6 @@ public class SpawnMap2 : MonoBehaviour
         TotalLevelInMap();
         RandomKey();
         transform.GetComponent<EnemyCheckLevel>().Start();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     // Start is called before the first frame update
@@ -601,7 +598,7 @@ public class SpawnMap2 : MonoBehaviour
     public void RandomHole()
     {
         int random;
-        if (Random.Range(0, 10) <= 6)
+        if (Random.Range(0, 10) <= 7)
         {
             Debug.LogWarning("Co the Thang");
             switch (ToTalLevelInMap / 50)
@@ -684,22 +681,46 @@ public class SpawnMap2 : MonoBehaviour
     {
         for (int i = 0; i <= ListMapFound.Count - 1; i++)
         {
+            //SpawnDemoSkin
+            if (i == 0)
+            {
+                if (System.Int32.Parse(PlayerPrefs.GetString("stage")) % 5 == 3)
+                {
+                    newmap = Instantiate(MapDemoSkin, transform);
+
+                    StartOj = newmap.transform.Find("Start").gameObject;
+
+                    newmap.transform.position = newmap.transform.position + (newmap.transform.position - newmap.transform.Find("Start").transform.position);
+
+                    EndOj = newmap.transform.Find("End").gameObject;
+                }
+            }
             //spawn Mechanic
             try
             {
                 newMechanic = Instantiate(ViTriMechanicSauSort[i], transform);
                 if (i == 0)
                 {
-                    Transform startSpawn = this.transform.Find("StartSpawn").transform;
+                    if (System.Int32.Parse(PlayerPrefs.GetString("stage")) % 5 != 3)
+                    {
+                        Transform startSpawn = this.transform.Find("StartSpawn").transform;
 
-                    newMechanic.transform.position = startSpawn.position;
+                        newMechanic.transform.position = startSpawn.position;
 
-                    StartOj = newMechanic.transform.Find("Start").gameObject;
+                        StartOj = newMechanic.transform.Find("Start").gameObject;
 
-                    newMechanic.transform.position = transform.position + (newMechanic.transform.position - StartOj.transform.position);
+                        newMechanic.transform.position = transform.position + (newMechanic.transform.position - StartOj.transform.position);
 
-                    EndOj = newMechanic.transform.Find("End").gameObject;
+                        EndOj = newMechanic.transform.Find("End").gameObject;
+                    }
+                    else
+                    {
+                        newMechanic.transform.position = EndOj.transform.position;
 
+                        newMechanic.transform.position = newMechanic.transform.position + (newMechanic.transform.position - newMechanic.transform.Find("Start").transform.position);
+
+                        EndOj = newMechanic.transform.Find("End").gameObject;
+                    }
                 }
                 else
                 {

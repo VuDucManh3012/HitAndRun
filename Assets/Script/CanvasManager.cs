@@ -80,7 +80,9 @@ public class CanvasManager : MonoBehaviour
 
     [Header("CanvasNewSkinEnding")]
     public List<int> WeaponNoBuy;
+    public List<GameObject> WeaponBonusEnding;
     public List<int> SkinNoBuy;
+    public List<Texture> SkinBonusEnding;
     public int TypeShop;
     public int indexSkin;
     public int phanTramNewSkinEndingCurrent = 0;
@@ -119,6 +121,9 @@ public class CanvasManager : MonoBehaviour
 
     [Header("CanvasTouchPad")]
     public GameObject CanvasTouchPad;
+
+    [Header("CanvasDemoSkin")]
+    public GameObject CanvasDemoSkin;
     public void FixedUpdate()
     {
         if (VictoryScene.active)
@@ -210,9 +215,17 @@ public class CanvasManager : MonoBehaviour
         {
             indexSkin = Random.Range(0, WeaponNoBuy.Count);
         }
+        else if (TypeShop == 1 && WeaponNoBuy.Count == 0 && SkinNoBuy.Count > 0)
+        {
+            indexSkin = Random.Range(0, SkinNoBuy.Count);
+        }
         else if (TypeShop == 2 && SkinNoBuy.Count > 0)
         {
             indexSkin = Random.Range(0, SkinNoBuy.Count);
+        }
+        else if (TypeShop == 2 && SkinNoBuy.Count == 0 && WeaponNoBuy.Count > 0)
+        {
+            indexSkin = Random.Range(0, WeaponNoBuy.Count);
         }
         //SetPhanTramCurrentFirst
         phanTramNewSkinEndingCurrent = 25;
@@ -257,8 +270,15 @@ public class CanvasManager : MonoBehaviour
         }
         TypeShop = PlayerPrefs.GetInt("TypeShopEndingSkin");
         indexSkin = PlayerPrefs.GetInt("IndexSkinEndingShop");
-
-        if (TypeShop == 1)
+        if (TypeShop == 1 && WeaponNoBuy.Count == 0)
+        {
+            RandomSkinEnding();
+        }
+        else if (TypeShop == 2 && SkinNoBuy.Count == 0)
+        {
+            RandomSkinEnding();
+        }
+        else if (TypeShop == 1)
         {
             ImageSkin.sprite = ListSpriteImage[WeaponNoBuy[indexSkin]];
         }
@@ -292,7 +312,15 @@ public class CanvasManager : MonoBehaviour
         {
             //next level
             CanvasNewSkinEnding.SetActive(false);
-            VictoryScene.SetActive(true);
+            if (characterController.DemoingSkin)
+            {
+                CanvasDemoSkin.GetComponent<CanvasNewSkinDemo>().SetImage(characterController.indexSkinDemo, characterController.typeShopSkinDemo);
+                CanvasDemoSkin.SetActive(true);
+            }
+            else
+            {
+                VictoryScene.SetActive(true);
+            }
         }
         else
         {
@@ -306,6 +334,15 @@ public class CanvasManager : MonoBehaviour
         if (PlayerPrefs.GetInt("phanTramNewSkinEndingCurrent") == 100)
         {
             PlayerPrefs.DeleteKey("phanTramNewSkinEndingCurrent");
+        }
+        if (characterController.DemoingSkin)
+        {
+            CanvasDemoSkin.GetComponent<CanvasNewSkinDemo>().SetImage(characterController.indexSkinDemo, characterController.typeShopSkinDemo);
+            CanvasDemoSkin.SetActive(true);
+        }
+        else
+        {
+            VictoryScene.SetActive(true);
         }
     }
     public void ButtonADSNewSkin()
@@ -645,7 +682,15 @@ public class CanvasManager : MonoBehaviour
         CheckSlotSpin();
         if (ScreenVictoryActive)
         {
-            VictoryScene.SetActive(true);
+            if (characterController.DemoingSkin)
+            {
+                CanvasDemoSkin.GetComponent<CanvasNewSkinDemo>().SetImage(characterController.indexSkinDemo, characterController.typeShopSkinDemo);
+                CanvasDemoSkin.SetActive(true);
+            }
+            else
+            {
+                VictoryScene.SetActive(true);
+            }
         }
     }
     public void checkvolumn()
@@ -1155,12 +1200,23 @@ public class CanvasManager : MonoBehaviour
         if (TypeShop == 1)
         {
             PlayerPrefs.SetInt("ball " + WeaponNoBuy[indexSkin], 1);
+            PlayerPrefs.SetString("CurrentWeapon", WeaponBonusEnding[WeaponNoBuy[indexSkin]].name);
         }
         else if (TypeShop == 2)
         {
             PlayerPrefs.SetInt("skin " + SkinNoBuy[indexSkin], 1);
+            PlayerPrefs.SetString("CurrentSkin", SkinBonusEnding[SkinNoBuy[indexSkin]].name);
         }
-        VictoryScene.SetActive(true);
+        PlayerPrefs.DeleteKey("phanTramNewSkinEndingCurrent");
+        if (characterController.DemoingSkin)
+        {
+            CanvasDemoSkin.GetComponent<CanvasNewSkinDemo>().SetImage(characterController.indexSkinDemo, characterController.typeShopSkinDemo);
+            CanvasDemoSkin.SetActive(true);
+        }
+        else
+        {
+            VictoryScene.SetActive(true);
+        }
         CanvasNewSkinEnding.SetActive(false);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
