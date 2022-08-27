@@ -7,17 +7,6 @@ using MoreMountains.NiceVibrations;
 public class HammerAttack : MonoBehaviour
 {
     public ControllerPlayer controllerPlayer;
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Enemy")
@@ -25,7 +14,9 @@ public class HammerAttack : MonoBehaviour
             Destroy(other.transform.Find("EnemyModel").gameObject);
             Destroy(other.transform.Find("TextLevel").gameObject);
             Destroy(other.transform.Find("LowerLevel").gameObject);
+            Destroy(other.transform.Find("UpperLevel").gameObject);
             other.transform.Find("EnemyRagdoll").gameObject.SetActive(true);
+            other.transform.GetComponent<BoxCollider>().enabled = false;
             controllerPlayer.myLevel += other.GetComponent<Enemy>().levelBonus;
             controllerPlayer.FloatingTextAnimator.Play("FloatingText");
             controllerPlayer.FloatingTextUp.GetComponent<TextMeshPro>().text = "+" + other.GetComponent<Enemy>().levelBonus + " level";
@@ -37,13 +28,18 @@ public class HammerAttack : MonoBehaviour
                 controllerPlayer.OnParticle(6);
             }
             HCVibrate.Haptic(HapticTypes.SoftImpact);
+            controllerPlayer.SetSkin();
+            controllerPlayer.CheckLevelEnemy();
+            controllerPlayer.AddPitchSoundAttack();
         }
         else if (other.tag == "Enemy3")
         {
             Destroy(other.transform.Find("EnemyModel").gameObject);
             Destroy(other.transform.Find("TextLevel").gameObject);
             Destroy(other.transform.Find("LowerLevel").gameObject);
+            Destroy(other.transform.Find("UpperLevel").gameObject);
             other.transform.Find("EnemyRagdoll").gameObject.SetActive(true);
+            other.transform.GetComponent<BoxCollider>().enabled = false;
             controllerPlayer.myLevel += other.GetComponent<Enemy>().levelBonus;
             controllerPlayer.FloatingTextAnimator.Play("FloatingText");
             controllerPlayer.FloatingTextUp.GetComponent<TextMeshPro>().text = "+" + other.GetComponent<Enemy>().levelBonus + " level";
@@ -55,6 +51,9 @@ public class HammerAttack : MonoBehaviour
                 controllerPlayer.OnParticle(6);
             }
             HCVibrate.Haptic(HapticTypes.SoftImpact);
+            controllerPlayer.SetSkin();
+            controllerPlayer.CheckLevelEnemy();
+            controllerPlayer.AddPitchSoundAttack();
         }
     }
 }

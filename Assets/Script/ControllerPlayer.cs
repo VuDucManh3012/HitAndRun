@@ -376,7 +376,7 @@ public class ControllerPlayer : MonoBehaviour
                 if (CharacterGlowUp == 2)
                 {
                     //chay anim
-                    if (!myAnim.GetBool("JumpAttack360"))
+                    if (!OnJump)
                     {
                         myAnim.Play("GlowUp");
                         Jump(0, 4, 0);
@@ -397,7 +397,7 @@ public class ControllerPlayer : MonoBehaviour
                 if (CharacterGlowUp == 1)
                 {
                     //chay anim
-                    if (!myAnim.GetBool("JumpAttack360"))
+                    if (!OnJump)
                     {
                         myAnim.Play("GlowUp");
                         Jump(0, 4, 0);
@@ -414,7 +414,7 @@ public class ControllerPlayer : MonoBehaviour
                 if (CharacterGlowUp == 0)
                 {
                     //chay anim
-                    if (!myAnim.GetBool("JumpAttack360"))
+                    if (!OnJump)
                     {
                         myAnim.Play("GlowUp");
                         Jump(0, 4, 0);
@@ -1044,7 +1044,8 @@ public class ControllerPlayer : MonoBehaviour
                 {
                     FloatingTextUp.SetActive(false);
                     FloatingTextUp.SetActive(true);
-                    OnParticle(4); OnParticle(6);
+                    OnParticle(4);
+                    OnParticle(6);
                 }
                 HCVibrate.Haptic(HapticTypes.SoftImpact);
             }
@@ -1187,10 +1188,11 @@ public class ControllerPlayer : MonoBehaviour
         else if (other.tag == "JumpAttack")
         {
             attackObject.SetActive(true);
-            Jump(0, 6, 0);
-            SetSpeed(11);
+            attackObject.transform.GetChild(0).gameObject.SetActive(true);
+            Jump(0, 7f, 0);
+            SetSpeed(16);
             ChangeTimeScale(0.6f);
-            ChangeGravity(20f);
+            ChangeGravity(18f);
             unLimitDamage = true;
             SetJumpAttack360(false);
             myAnim.SetInteger("AttackItem", 1);
@@ -1258,21 +1260,13 @@ public class ControllerPlayer : MonoBehaviour
             DemoingSkin = true;
         }
     }
-    public void ChangeAnimJumpAttack()
+    public void ChangeAnimJumpAttack(int anim)
     {
-        myAnim.SetInteger("AttackItem", 2);
+        myAnim.SetInteger("AttackItem", anim);
     }
-    public void ChangeAnimJumpAttack2()
+    public void ChangeAnimAttackHammer(int anim)
     {
-        myAnim.SetInteger("AttackItem", 0);
-    }
-    public void ChangeAnimAttackHammer2()
-    {
-        myAnim.SetInteger("AttackHammer", 2);
-    }
-    public void ChangeAnimAttackHammer0()
-    {
-        myAnim.SetInteger("AttackHammer", 0);
+        myAnim.SetInteger("AttackHammer", anim);
     }
     public void ChangeGravity(float force)
     {
@@ -1297,13 +1291,11 @@ public class ControllerPlayer : MonoBehaviour
                 {
                     transform.position = Vector3.Lerp(transform.position, new Vector3(other.transform.position.x - 0.5f, other.transform.position.y + 1, transform.position.z), 0.2f);
                     transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(new Vector3(0, 0, 70)), 0.1f);
-                    //transform.localEulerAngles = new Vector3(0, 0, 70);
                 }
                 else
                 {
                     transform.position = Vector3.Lerp(transform.position, new Vector3(other.transform.position.x + 0.5f, other.transform.position.y + 1, transform.position.z), 0.2f);
                     transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(new Vector3(0, 0, -70)), 0.1f);
-                    //transform.localEulerAngles = new Vector3(0, 0, -70);
                 }
             }
         }
