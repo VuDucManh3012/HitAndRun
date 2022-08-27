@@ -6,11 +6,6 @@ public class SpawnMap2 : MonoBehaviour
 {
     private int stage = 1;
     private GameObject StartOj, EndOj, newmap, newMechanic;
-    [Header("So Luong Random")]
-    [Range(0, 2)]
-    public int MechanicMin;
-    [Range(0, 4)]
-    public int MechanicMax;
 
     [Header("Vi Tri Mechanic")]
     public int SoLuongMechanicCoTheTrongMap;
@@ -21,23 +16,23 @@ public class SpawnMap2 : MonoBehaviour
     public List<GameObject> ViTriMechanicSauSort;
 
     [Header("Cac Loai Mechanic")]
-    public List<GameObject> TuongChan;
-    public List<GameObject> Lava;
-    public List<GameObject> CuaChan;
     public List<GameObject> Coc;
+    public List<GameObject> TuongChan;
+    public List<GameObject> Cau;
+    public List<GameObject> Lava;
+    public List<GameObject> Bua;
+    public List<GameObject> Tuong;
+    public List<GameObject> CuaChan;
+    public List<GameObject> DuongCong;
+    public List<GameObject> ItemSword;
     public List<GameObject> Dam;
+    public List<GameObject> DuongSut;
+    public List<GameObject> ItemHammer;
     public List<GameObject> TruGai;
     public List<GameObject> Cua;
     public List<GameObject> ConLac;
-    public List<GameObject> CuaMove;
     public List<GameObject> ConQuay;
     public List<GameObject> TruGai4;
-    public List<GameObject> Bua;
-    public List<GameObject> DuongSut;
-    public List<GameObject> Cau;
-    public List<GameObject> Tuong;
-    public List<GameObject> DuongCong;
-
 
     [Header("Phan Loai Mechanic")]
     public List<GameObject> Level1;
@@ -47,18 +42,18 @@ public class SpawnMap2 : MonoBehaviour
     public List<GameObject> Level5;
 
     [Header("List To Spawn")]
-    public List<GameObject> Level1ToSpawn;
-    public List<GameObject> Level2ToSpawn;
-    public List<GameObject> Level3ToSpawn;
-    public List<GameObject> Level4ToSpawn;
-    public List<GameObject> Level5ToSpawn;
+    private List<GameObject> Level1ToSpawn;
+    private List<GameObject> Level2ToSpawn;
+    private List<GameObject> Level3ToSpawn;
+    private List<GameObject> Level4ToSpawn;
+    private List<GameObject> Level5ToSpawn;
 
     [Header("List History")]
-    public List<GameObject> Level1History;
-    public List<GameObject> Level2History;
-    public List<GameObject> Level3History;
-    public List<GameObject> Level4History;
-    public List<GameObject> Level5History;
+    private List<GameObject> Level1History;
+    private List<GameObject> Level2History;
+    private List<GameObject> Level3History;
+    private List<GameObject> Level4History;
+    private List<GameObject> Level5History;
 
     [Header("So Luong Map Spawn")]
     public int[] MapLevel1;
@@ -83,14 +78,16 @@ public class SpawnMap2 : MonoBehaviour
     public List<GameObject> ListMapFound;
 
     [Header("RandomKey")]
+    [HideInInspector]
     public List<GameObject> ListMap;
+    [HideInInspector]
     public List<GameObject> ListDiamond;
     public GameObject Key;
 
     [Header("TotalLevel")]
-    public List<GameObject> ListMapTotalLevel;
-    public List<GameObject> ListEnemyInTotalLevel;
-    public double ToTalLevelInMap;
+    private List<GameObject> ListMapTotalLevel;
+    private List<GameObject> ListEnemyInTotalLevel;
+    private double ToTalLevelInMap;
 
     [Header("DemoSkin")]
     public GameObject MapDemoSkin;
@@ -292,70 +289,71 @@ public class SpawnMap2 : MonoBehaviour
             switch (i)
             {
                 case 1:
-                    ListMechanicPhaiCoTrongMap.Add(TuongChan[0]);
+                    ListMechanicPhaiCoTrongMap.Add(Coc[0]);
                     break;
                 case 2:
+                    ListMechanicPhaiCoTrongMap.Add(TuongChan[0]);
+                    ListMechanicCoTheTrongMap.AddRange(Coc);
+                    break;
+                case 3:
                     ListMechanicPhaiCoTrongMap.Add(Cau[0]);
                     ListMechanicCoTheTrongMap.AddRange(TuongChan);
                     break;
-                case 3:
+                case 4:
                     ListMechanicPhaiCoTrongMap.Add(Lava[0]);
                     ListMechanicCoTheTrongMap.AddRange(Cau);
                     break;
-                case 4:
-                    ListMechanicPhaiCoTrongMap.Add(Tuong[0]);
+                case 5:
+                    ListMechanicPhaiCoTrongMap.Add(Bua[0]);
                     ListMechanicCoTheTrongMap.AddRange(Lava);
                     break;
-                case 5:
-                    ListMechanicPhaiCoTrongMap.Add(Cua[0]);
-                    ListMechanicCoTheTrongMap.AddRange(Tuong);
-                    break;
                 case 6:
-                    ListMechanicPhaiCoTrongMap.Add(CuaChan[0]);
-                    ListMechanicCoTheTrongMap.AddRange(Cua);
+                    ListMechanicPhaiCoTrongMap.Add(Tuong[0]);
+                    ListMechanicCoTheTrongMap.AddRange(Bua);
                     break;
                 case 7:
+                    ListMechanicPhaiCoTrongMap.Add(CuaChan[0]);
+                    ListMechanicCoTheTrongMap.AddRange(Tuong);
+                    break;
+                case 8:
                     ListMechanicPhaiCoTrongMap.Add(DuongCong[0]);
                     ListMechanicCoTheTrongMap.AddRange(CuaChan);
                     break;
-                case 8:
-                    ListMechanicPhaiCoTrongMap.Add(Coc[0]);
+                case 9:
+                    ListMechanicPhaiCoTrongMap.Add(ItemSword[0]);
                     ListMechanicCoTheTrongMap.AddRange(DuongCong);
                     break;
-                case 9:
-                    ListMechanicPhaiCoTrongMap.Add(Dam[0]);
-                    ListMechanicCoTheTrongMap.AddRange(Coc);
-                    break;
                 case 10:
+                    ListMechanicPhaiCoTrongMap.Add(Dam[0]);
+                    ListMechanicCoTheTrongMap.AddRange(ItemSword);
+                    break;
+                case 11:
                     ListMechanicPhaiCoTrongMap.Add(DuongSut[0]);
                     ListMechanicCoTheTrongMap.AddRange(Dam);
                     break;
-                case 11:
-                    ListMechanicPhaiCoTrongMap.Add(TruGai[0]);
-                    ListMechanicCoTheTrongMap.AddRange(TruGai);
-                    break;
                 case 12:
-                    ListMechanicPhaiCoTrongMap.Add(ConLac[0]);
-                    ListMechanicCoTheTrongMap.AddRange(TruGai);
+                    ListMechanicPhaiCoTrongMap.Add(ItemHammer[0]);
+                    ListMechanicCoTheTrongMap.AddRange(DuongSut);
                     break;
                 case 13:
-                    ListMechanicPhaiCoTrongMap.Add(CuaMove[0]);
-                    ListMechanicCoTheTrongMap.AddRange(ConLac);
+                    ListMechanicPhaiCoTrongMap.Add(TruGai[0]);
+                    ListMechanicCoTheTrongMap.AddRange(ItemHammer);
                     break;
                 case 14:
-                    ListMechanicPhaiCoTrongMap.Add(ConQuay[0]);
-                    ListMechanicCoTheTrongMap.AddRange(CuaMove);
+                    ListMechanicPhaiCoTrongMap.Add(Cua[0]);
+                    ListMechanicCoTheTrongMap.AddRange(TruGai);
                     break;
                 case 15:
-                    ListMechanicPhaiCoTrongMap.Add(TruGai4[0]);
-                    ListMechanicCoTheTrongMap.AddRange(ConQuay);
+                    ListMechanicPhaiCoTrongMap.Add(ConLac[0]) ;
+                    ListMechanicCoTheTrongMap.AddRange(Cua);
                     break;
                 case 16:
-                    ListMechanicPhaiCoTrongMap.Add(Bua[0]);
-                    ListMechanicCoTheTrongMap.AddRange(TruGai4);
+                    ListMechanicPhaiCoTrongMap.Add(ConQuay[0]);
+                    ListMechanicCoTheTrongMap.AddRange(ConLac);
                     break;
                 case 17:
-                    ListMechanicCoTheTrongMap.AddRange(Bua);
+                    ListMechanicPhaiCoTrongMap.Add(TruGai4[0]);
+                    ListMechanicCoTheTrongMap.AddRange(ConQuay);
                     break;
                 default:
                     SoLuongMechanicCoTheTrongMap = 3;

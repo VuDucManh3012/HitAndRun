@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 569549180615718090}
-  - component: {fileID: 569549180615718091}
+  - component: {fileID: 1691008220373742656}
   m_Layer: 0
   m_Name: PendulumHammer
   m_TagString: Untagged
@@ -32,21 +32,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
---- !u!114 &569549180615718091
-MonoBehaviour:
+--- !u!95 &1691008220373742656
+Animator:
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 569549180615718093}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 696180b9c920d4f498706f298c83a4c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onpendulum: 1
-  x: 0
-  y: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9f5c796b0a32f2b4282656c3f09646e1, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &569549181091871368
 GameObject:
   m_ObjectHideFlags: 0
