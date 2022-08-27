@@ -8,8 +8,11 @@ public class RagdollCharacter : MonoBehaviour
     Rigidbody myRigid;
     public GameObject ModelArmor;
     public GameObject ModelCharacter;
+    public GameObject WeaponSpecial;
+
     public List<Texture> ListTexture;
     public int IndexSkin;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,9 +22,22 @@ public class RagdollCharacter : MonoBehaviour
         Force.z = Random.Range(0, 1);
         myRigid.AddForce(Force * 100, ForceMode.Impulse);
     }
-    public void RagdollChangeSkin(int NumberTextSkin ,double mylevel)
+    private bool RagdollActive = false;
+    public void RagdollChangeSkin(int NumberTextSkin, double mylevel)
     {
-        ModelArmor.GetComponent<Renderer>().material.mainTexture = ListTexture[NumberTextSkin];
-        ModelCharacter.GetComponent<Renderer>().material.mainTexture = ListTexture[NumberTextSkin];
+        if (!RagdollActive)
+        {
+            mylevel += 10000;
+            if (mylevel >= double.Parse("250"))
+            {
+                ModelArmor.SetActive(true);
+                ModelArmor.transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
+                ModelCharacter.transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
+                WeaponSpecial.transform.Find(PlayerPrefs.GetString("CurrentSkin").Remove(PlayerPrefs.GetString("CurrentSkin").Length - 1)).gameObject.SetActive(true);
+            }
+            ModelArmor.GetComponent<Renderer>().material.mainTexture = ListTexture[NumberTextSkin];
+            ModelCharacter.GetComponent<Renderer>().material.mainTexture = ListTexture[NumberTextSkin];
+            RagdollActive = true;
+        }
     }
 }

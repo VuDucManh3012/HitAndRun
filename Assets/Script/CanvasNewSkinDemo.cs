@@ -16,6 +16,10 @@ public class CanvasNewSkinDemo : MonoBehaviour
     public List<GameObject> WeaponDemo;
     public List<Texture> SkinDemo;
 
+    [Header("RendererTexture")]
+    public List<GameObject> ListModelSkin;
+    public List<GameObject> ListModelWeapon;
+
     public GameObject VictoryScene;
 
     public void SetImage(int indexSkin, int TypeShop)
@@ -25,10 +29,12 @@ public class CanvasNewSkinDemo : MonoBehaviour
         if (TypeShop == 1)
         {
             ImageSkin.sprite = ListImageWeapon[indexSkin];
+            ListModelWeapon[indexSkin].SetActive(true);
         }
         else if (TypeShop == 2)
         {
             ImageSkin.sprite = ListImageSkin[indexSkin];
+            ListModelSkin[indexSkin].SetActive(true);
         }
     }
     private bool adsShowing;

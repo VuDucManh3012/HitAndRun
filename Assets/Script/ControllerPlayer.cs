@@ -731,7 +731,7 @@ public class ControllerPlayer : MonoBehaviour
     private bool checkedY;
     private void checkY()
     {
-        if (transform.position.y <= -20 && !startStageEnding && !checkedY)
+        if (transform.position.y <= -10 && !startStageEnding && !checkedY)
         {
             checkedY = true;
             myLevel = 0;
@@ -741,7 +741,6 @@ public class ControllerPlayer : MonoBehaviour
             QualityDiamond -= DiamondFound;
             StartCoroutine(GameOver());
             transform.position = new Vector3(0, 10, 0);
-            //AudioAssistant.Instance.PlayMusic("Lose",0,0);
             if (!OnAudio)
             {
                 AudioAssistant.Shot(TYPE_SOUND.Lose);
@@ -794,7 +793,7 @@ public class ControllerPlayer : MonoBehaviour
             ChangeCam("CamDead");
             CamManager.transform.Find("CamDead").gameObject.GetComponent<Cinemachine.CinemachineVirtualCamera>().enabled = false;
             SetDieTrue();
-            myLevel = 0;
+            
             isMove = false;
             if (startStageEnding)
             {
@@ -818,6 +817,7 @@ public class ControllerPlayer : MonoBehaviour
                     OnAudio = true;
                 }
             }
+            myLevel = 0;
         }
     }
 
@@ -1458,9 +1458,9 @@ public class ControllerPlayer : MonoBehaviour
         adsShowing = false;
         CanvasX2Hole.SetActive(false);
         SetSpeed(SpeedRoad);
-        QualityDiamond += DiamondBonusInHole;
+        QualityDiamond += (DiamondBonusInHole*10);
         Save.Diamond.text = QualityDiamond.ToString();
-        DiamondFound += DiamondBonusInHole;
+        DiamondFound += (DiamondBonusInHole * 10);
         DiamondBonusInHole = 0;
 
         ActiveLF();

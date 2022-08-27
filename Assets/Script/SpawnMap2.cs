@@ -42,18 +42,28 @@ public class SpawnMap2 : MonoBehaviour
     public List<GameObject> Level5;
 
     [Header("List To Spawn")]
-    private List<GameObject> Level1ToSpawn;
-    private List<GameObject> Level2ToSpawn;
-    private List<GameObject> Level3ToSpawn;
-    private List<GameObject> Level4ToSpawn;
-    private List<GameObject> Level5ToSpawn;
+    [HideInInspector]
+    public List<GameObject> Level1ToSpawn;
+    [HideInInspector]
+    public List<GameObject> Level2ToSpawn;
+    [HideInInspector]
+    public List<GameObject> Level3ToSpawn;
+    [HideInInspector]
+    public List<GameObject> Level4ToSpawn;
+    [HideInInspector]
+    public List<GameObject> Level5ToSpawn;
 
     [Header("List History")]
-    private List<GameObject> Level1History;
-    private List<GameObject> Level2History;
-    private List<GameObject> Level3History;
-    private List<GameObject> Level4History;
-    private List<GameObject> Level5History;
+    [HideInInspector]
+    public List<GameObject> Level1History;
+    [HideInInspector]
+    public List<GameObject> Level2History;
+    [HideInInspector]
+    public List<GameObject> Level3History;
+    [HideInInspector]
+    public List<GameObject> Level4History;
+    [HideInInspector]
+    public List<GameObject> Level5History;
 
     [Header("So Luong Map Spawn")]
     public int[] MapLevel1;
@@ -85,8 +95,10 @@ public class SpawnMap2 : MonoBehaviour
     public GameObject Key;
 
     [Header("TotalLevel")]
-    private List<GameObject> ListMapTotalLevel;
-    private List<GameObject> ListEnemyInTotalLevel;
+    [HideInInspector]
+    public List<GameObject> ListMapTotalLevel;
+    [HideInInspector]
+    public List<GameObject> ListEnemyInTotalLevel;
     private double ToTalLevelInMap;
 
     [Header("DemoSkin")]

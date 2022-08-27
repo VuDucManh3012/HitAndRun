@@ -89,7 +89,6 @@ public class Spin : MonoBehaviour
         ProcessCurrent += 0.05f;
         if (ProcessCurrent >= ProcessEnding)
         {
-            Debug.Log("aaaa");
             OnAnimSliderProcess = false;
             AddProcess();
             SetProcess();

@@ -22,6 +22,8 @@ public class ChestRoom : MonoBehaviour
     public GameObject ImagePanel;
     public GameObject ButtonAdsKey;
 
+    public List<GameObject> ListWeaponSpecial;
+
     [Header("CanvasNewSkin")]
     public Image ImageNewSkin;
     public GameObject CanvasNewSkin;
@@ -149,6 +151,7 @@ public class ChestRoom : MonoBehaviour
                 PlayerPrefs.SetInt("OpenedChest " + 8, 1);
                 int adsPoint = PlayerPrefs.GetInt("weaponSpecial" + currentItemSpecial) + 2;
                 PlayerPrefs.SetInt("weaponSpecial" + currentItemSpecial, adsPoint);
+                PlayerPrefs.SetString("CurrentWeapon", ListWeaponSpecial[currentItemSpecial].name);
                 CanvasNewSkin.SetActive(true);
                 transform.GetChild(0).gameObject.SetActive(false);
                 ImageNewSkin.sprite = ListImageSpecialGift[currentItemSpecial];

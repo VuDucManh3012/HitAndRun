@@ -15,6 +15,10 @@ public class SliderProcessStage : MonoBehaviour
     public Image Environment2;
     public List<Sprite> ListImageEnvironment1;
     public List<Sprite> ListImageEnvironment2;
+
+    [Header("DemoSkin")]
+    public List<GameObject> ListImageSkin;
+    public List<GameObject> ListImageWeapon;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +32,7 @@ public class SliderProcessStage : MonoBehaviour
         }
         BatImage();
         SetImageEnviroment();
+        SetImageDemoSkin();
     }
     void SetImageEnviroment()
     {
@@ -57,7 +62,24 @@ public class SliderProcessStage : MonoBehaviour
             Environment1.sprite = ListImageEnvironment1[4];
             Environment2.sprite = ListImageEnvironment2[4];
         }
-
+    }
+    void SetImageDemoSkin()
+    {
+        int stage2 = StageCurrent % 10;
+        if (stage2 > 0 || stage2 <= 5)
+        {
+            foreach(GameObject item in ListImageSkin)
+            {
+                item.SetActive(false);
+            }
+        }
+        else if (stage2 == 0 || stage2 >= 6)
+        {
+            foreach (GameObject item in ListImageWeapon)
+            {
+                item.SetActive(false);
+            }
+        }
     }
     void BatImage()
     {
