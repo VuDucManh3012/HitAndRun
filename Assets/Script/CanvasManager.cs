@@ -450,7 +450,7 @@ public class CanvasManager : MonoBehaviour
         //
         Save.WriteText();
         PlayerPrefs.SetString("key", PlayerPrefs.GetString("key"));
-        PlayerPrefs.SetString("stage", characterController.QualityStage.ToString());
+        
         SetTimeCountDown();
         PlayerPrefs.SetInt("InterVictory", 1);
         Loadscene = true;

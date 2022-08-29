@@ -1,13 +1,10 @@
 ﻿using Cinemachine;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using CnControls;
 using RocketTeam.Sdk.Services.Ads;
-using Cinemachine;
 using MoreMountains.NiceVibrations;
 using HyperCatSdk;
 public class ControllerPlayer : MonoBehaviour
@@ -156,6 +153,9 @@ public class ControllerPlayer : MonoBehaviour
     public bool DemoingSkin = false;
     public int indexSkinDemo = 10;
     public int typeShopSkinDemo;
+
+    [Header("CanvasStage")]
+    public GameObject CanvasStage;
     private void Awake()
     {
         myLevel = 1;
@@ -660,6 +660,7 @@ public class ControllerPlayer : MonoBehaviour
         EnemyEndingRagdoll.SetActive(true);
         yield return new WaitForSeconds(1.8f);
         Time.timeScale = 1f;
+        Floatingtext.SetActive(false);
         OffParticle(5);
         transform.localRotation = Quaternion.Euler(new Vector3(0, 180, 0));
         FireWorkEnemyEnding.SetActive(true);
@@ -672,8 +673,6 @@ public class ControllerPlayer : MonoBehaviour
         UpdateDiamond();
         ActiveCanvasVictory();
         //AudioAssistant.Instance.PlayMusic("WinEnding");
-
-
         transform.rotation = new Quaternion(0, 1, 0, 0);
     }
     public void pushOpposite()
@@ -771,6 +770,7 @@ public class ControllerPlayer : MonoBehaviour
     public bool ActiveCanvasVictoy;
     public void ActiveCanvasVictory()
     {
+        CanvasStage.SetActive(false);
         if (!ActiveCanvasVictoy)
         {
             if (System.Int32.Parse(PlayerPrefs.GetString("key")) >= 3)
@@ -793,7 +793,6 @@ public class ControllerPlayer : MonoBehaviour
             ChangeCam("CamDead");
             CamManager.transform.Find("CamDead").gameObject.GetComponent<Cinemachine.CinemachineVirtualCamera>().enabled = false;
             SetDieTrue();
-            
             isMove = false;
             if (startStageEnding)
             {
@@ -926,10 +925,11 @@ public class ControllerPlayer : MonoBehaviour
         {
             isMove = false;
             ChangeCam("CamEnding");
-            SetSpeed(SpeedRoad - 2);
+            SetSpeed(SpeedRoad - 4);
             if (!PlusStage)
             {
                 QualityStage += 1;
+                PlayerPrefs.SetString("stage",QualityStage.ToString());
                 PlusStage = true;
             }
             startStageEnding = true;
