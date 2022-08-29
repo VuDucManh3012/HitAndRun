@@ -913,7 +913,7 @@ public class ControllerPlayer : MonoBehaviour
         }
         else if (other.tag == "Road")
         {
-            if (startgame)
+            if (startgame && !OnJump)
             {
                 onRoad = true;
                 if (myLevel > 0)

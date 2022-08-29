@@ -37,14 +37,6 @@ public class CanvasGameStartController : MonoBehaviour
             }
             Hiddened = true;
         }
-        if (PlayerPrefs.HasKey("Rated"))
-        {
-            ButtonRateUs.SetActive(false);
-        }
-        else
-        {
-            ButtonRateUs.SetActive(true);
-        }
         if (GameManager.Instance.Data.User.PurchasedNoAds)
         {
             ButtonNoAds.SetActive(false);

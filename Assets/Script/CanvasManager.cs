@@ -449,6 +449,8 @@ public class CanvasManager : MonoBehaviour
         PlayerPrefs.SetInt("IntBossToSpawn", currentBoss);
         //
         Save.WriteText();
+        PlayerPrefs.SetString("key", PlayerPrefs.GetString("key"));
+        PlayerPrefs.SetString("stage", characterController.QualityStage.ToString());
         SetTimeCountDown();
         PlayerPrefs.SetInt("InterVictory", 1);
         Loadscene = true;
