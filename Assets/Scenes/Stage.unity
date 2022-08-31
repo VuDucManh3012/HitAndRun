@@ -14942,6 +14942,28 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 678753142}
+        m_MethodName: setSubTractTimeScale
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 678753142}
+        m_MethodName: SetTimeScaleNormal
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   onTweenCreated:
     m_PersistentCalls:
       m_Calls: []
@@ -22338,6 +22360,28 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 129098083}
+        m_MethodName: setSubTractTimeScale
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1928751477}
+        m_MethodName: SetOffUnLimitDamege
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
         m_CallState: 2
   onTweenCreated:
     m_PersistentCalls:
@@ -37917,30 +37961,29 @@ MonoBehaviour:
   MapHole: []
   Hole0_50:
   - {fileID: 7273563125794935847, guid: 6f9c29c9686305d4a913e5b76d54e782, type: 3}
+  - {fileID: 7273563125794935847, guid: 28164cab1f1147b409be19c91477c212, type: 3}
   - {fileID: 7593529788796893263, guid: a5e386016cf57fc47ab813557a831f3f, type: 3}
   - {fileID: 7593529788796893263, guid: fcc09e9c5eea3434e9c6469830ea4b58, type: 3}
-  - {fileID: 7593529788796893263, guid: d15a39f7b92423843805c5459840fd8d, type: 3}
   - {fileID: 7273563125794935847, guid: 2139ed650f8c33648a3db6698b2bf092, type: 3}
+  - {fileID: 7593529788796893263, guid: d15a39f7b92423843805c5459840fd8d, type: 3}
   Hole50_100:
   - {fileID: 7593529788796893263, guid: fcc09e9c5eea3434e9c6469830ea4b58, type: 3}
+  - {fileID: 7273563125794935847, guid: 2139ed650f8c33648a3db6698b2bf092, type: 3}
   - {fileID: 7593529788796893263, guid: d15a39f7b92423843805c5459840fd8d, type: 3}
-  - {fileID: 7593529788796893263, guid: d96664d12284a964d982298caa9bb79f, type: 3}
+  - {fileID: 7273563125794935847, guid: 54ce86109b90c6746a49d7b39f5c4fa9, type: 3}
   Hole100_150:
-  - {fileID: 7273563125794935847, guid: 54ce86109b90c6746a49d7b39f5c4fa9, type: 3}
-  - {fileID: 7273563125794935847, guid: 87966ef55af2b544da8a5a3fc89fed7f, type: 3}
   - {fileID: 7593529788796893263, guid: d96664d12284a964d982298caa9bb79f, type: 3}
-  Hole150_200:
-  - {fileID: 7273563125794935847, guid: 54ce86109b90c6746a49d7b39f5c4fa9, type: 3}
   - {fileID: 7273563125794935847, guid: 87966ef55af2b544da8a5a3fc89fed7f, type: 3}
+  Hole150_200:
   - {fileID: 7593529788796893263, guid: 51d643ae23dd45f4fad88881ab0f596b, type: 3}
   - {fileID: 4837075443455638800, guid: 7ce2fe840467de2429d3af7ff2339ff4, type: 3}
   Hole200_250:
-  - {fileID: 7593529788796893263, guid: ec4e05c6c6a0e7848b272485370ad296, type: 3}
   - {fileID: 4837075443455638800, guid: 7ce2fe840467de2429d3af7ff2339ff4, type: 3}
-  Hole250_300:
-  - {fileID: 7273563125794935847, guid: f5a797e7ce8020045a2faadf1cdce6f0, type: 3}
   - {fileID: 7593529788796893263, guid: ec4e05c6c6a0e7848b272485370ad296, type: 3}
+  Hole250_300:
   - {fileID: 7273563125794935847, guid: 28164cab1f1147b409be19c91477c212, type: 3}
+  - {fileID: 7273563125794935847, guid: 54ce86109b90c6746a49d7b39f5c4fa9, type: 3}
+  - {fileID: 7273563125794935847, guid: f5a797e7ce8020045a2faadf1cdce6f0, type: 3}
   ListMapFound: []
   ListMap: []
   ListDiamond: []

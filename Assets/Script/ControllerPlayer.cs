@@ -255,6 +255,10 @@ public class ControllerPlayer : MonoBehaviour
         {
             ActiveLeftRight();
         }
+        if (Input.GetKey(KeyCode.Space))
+        {
+            pushOpposite();
+        }
     }
     public void checkSoundAttack()
     {
@@ -710,15 +714,17 @@ public class ControllerPlayer : MonoBehaviour
     }
     public void pushOpposite()
     {
-        myBody.AddForce(new Vector3(0, 0, -10), ForceMode.Impulse);
+        myBody.AddForce(new Vector3(0, 0, -23), ForceMode.Impulse);
         StartCoroutine(setUnDead());
+
         AudioAssistant.Shot(TYPE_SOUND.PushOppsite);
         HCVibrate.Haptic(HapticTypes.SoftImpact);
     }
     public void pushOppsiteEnemy()
     {
-        myBody.AddForce(new Vector3(0, 0, -23), ForceMode.VelocityChange);
+        myBody.AddForce(new Vector3(0, 0, -23), ForceMode.Impulse);
         StartCoroutine(setUnDead());
+
         AudioAssistant.Shot(TYPE_SOUND.PushOppsite);
         HCVibrate.Haptic(HapticTypes.SoftImpact);
     }
@@ -1297,6 +1303,10 @@ public class ControllerPlayer : MonoBehaviour
             DemoingSkin = true;
         }
     }
+    public void SetOffUnLimitDamege()
+    {
+        unLimitDamage = false;
+    }
     public void SetOnJump()
     {
         OnJump = false;
@@ -1393,7 +1403,7 @@ public class ControllerPlayer : MonoBehaviour
             if (other.GetComponent<BlackHole>().levelHole <= myLevel)
             {
                 myposition = transform.position;
-                myposition = new Vector3(myposition.x, myposition.y, myposition.z + 2);
+                myposition = new Vector3(myposition.x, myposition.y, myposition.z + 5);
                 transform.position = other.GetComponent<BlackHole>().start.position;
                 ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.position.y + 2;
                 ObjectFollowCharacter.transform.position = transform.position;
@@ -1448,7 +1458,7 @@ public class ControllerPlayer : MonoBehaviour
     public void ButtonHole()
     {
         buttonHoleGet = true;
-        transform.position = new Vector3(myposition.x, myposition.y, myposition.z + 2);
+        transform.position = myposition;
         ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.position.y;
         ChangeCamInHoleToRun();
         CanvasX2Hole.SetActive(false);
