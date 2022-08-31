@@ -2131,6 +2131,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Subtracting: 1
+  TimeScaleWish: 0.4
+  DoGiamTimeScale: 0.02
+  DoTangTimeScale: 0.5
   TimeScaleCurrent: 0
 --- !u!1 &129851414
 GameObject:
@@ -3362,7 +3365,7 @@ PrefabInstance:
     - target: {fileID: 198817456782696504, guid: 2b2844f70cdc117499cbac5446906321,
         type: 3}
       propertyPath: lengthInSec
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 198817456782696504, guid: 2b2844f70cdc117499cbac5446906321,
         type: 3}
@@ -12575,7 +12578,7 @@ MonoBehaviour:
   hasOnPlay: 0
   hasOnUpdate: 0
   hasOnStepComplete: 0
-  hasOnComplete: 0
+  hasOnComplete: 1
   hasOnTweenCreated: 0
   hasOnRewind: 0
   onStart:
@@ -12592,7 +12595,18 @@ MonoBehaviour:
       m_Calls: []
   onComplete:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 564549097}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onTweenCreated:
     m_PersistentCalls:
       m_Calls: []
@@ -12678,7 +12692,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 14
   m_CollisionDetection: 0
 --- !u!114 &564549101
 MonoBehaviour:
@@ -14756,6 +14770,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Subtracting: 1
+  TimeScaleWish: 0.6
+  DoGiamTimeScale: 0.02
+  DoTangTimeScale: 0.5
   TimeScaleCurrent: 0
 --- !u!114 &678753143
 MonoBehaviour:
@@ -17815,6 +17832,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Sword: {fileID: 1193996531}
+  ColliderCube: {fileID: 564549097}
 --- !u!64 &906121411
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -19307,7 +19325,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1028407085
 Transform:
   m_ObjectHideFlags: 0
@@ -19654,7 +19672,7 @@ PrefabInstance:
     - target: {fileID: 198817456782696504, guid: 2b2844f70cdc117499cbac5446906321,
         type: 3}
       propertyPath: lengthInSec
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 198817456782696504, guid: 2b2844f70cdc117499cbac5446906321,
         type: 3}
@@ -20219,10 +20237,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.0077117216
-  m_Height: 0.061077204
+  m_Radius: 0.007711721
+  m_Height: 0.058861602
   m_Direction: 2
-  m_Center: {x: -0.000127126, y: -0.00012714499, z: 0.029751029}
+  m_Center: {x: -0.00012712632, y: -0.00012714555, z: 0.030858828}
 --- !u!1001 &1082477054
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22235,6 +22253,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1928751477}
+        m_MethodName: ChangeGravity
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 30
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onUpdate:
     m_PersistentCalls:
       m_Calls: []
@@ -22288,6 +22317,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 129098083}
+        m_MethodName: SetTimeScaleNormal
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 564549097}
         m_MethodName: SetActive
         m_Mode: 6
@@ -22309,7 +22349,7 @@ MonoBehaviour:
   targetGO: {fileID: 0}
   tweenTargetIsTargetGO: 1
   delay: 0.1
-  duration: 0.2
+  duration: 0.15
   easeType: 1
   easeCurve:
     serializedVersion: 2
@@ -22383,7 +22423,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: 0
-  onEnableBehaviour: 3
+  onEnableBehaviour: 2
   onDisableBehaviour: 2
 --- !u!1 &1194762679 stripped
 GameObject:
@@ -23334,7 +23374,7 @@ PrefabInstance:
     - target: {fileID: 198817456782696504, guid: 2b2844f70cdc117499cbac5446906321,
         type: 3}
       propertyPath: lengthInSec
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 198817456782696504, guid: 2b2844f70cdc117499cbac5446906321,
         type: 3}
@@ -39340,6 +39380,11 @@ PrefabInstance:
       objectReference: {fileID: 313851367}
     - target: {fileID: 17875791220661270, guid: 148c47380dc2e7e4bb1ac937c1ee66b8,
         type: 3}
+      propertyPath: maxX
+      value: 4.16
+      objectReference: {fileID: 0}
+    - target: {fileID: 17875791220661270, guid: 148c47380dc2e7e4bb1ac937c1ee66b8,
+        type: 3}
       propertyPath: CamRun
       value: 
       objectReference: {fileID: 1226722355}
@@ -44036,22 +44081,22 @@ PrefabInstance:
     - target: {fileID: 8898140555588074086, guid: 148c47380dc2e7e4bb1ac937c1ee66b8,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.43810472
+      value: 0.6711512
       objectReference: {fileID: 0}
     - target: {fileID: 8898140555588074086, guid: 148c47380dc2e7e4bb1ac937c1ee66b8,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.43810472
+      value: 0.6711512
       objectReference: {fileID: 0}
     - target: {fileID: 8898140555588074086, guid: 148c47380dc2e7e4bb1ac937c1ee66b8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.5550354
+      value: 0.22261196
       objectReference: {fileID: 0}
     - target: {fileID: 8898140555588074086, guid: 148c47380dc2e7e4bb1ac937c1ee66b8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.5550354
+      value: -0.22261196
       objectReference: {fileID: 0}
     - target: {fileID: 8898140555588074086, guid: 148c47380dc2e7e4bb1ac937c1ee66b8,
         type: 3}
@@ -44061,7 +44106,7 @@ PrefabInstance:
     - target: {fileID: 8898140555588074086, guid: 148c47380dc2e7e4bb1ac937c1ee66b8,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -103.43
+      value: 36.7
       objectReference: {fileID: 0}
     - target: {fileID: 8940661746855963572, guid: 148c47380dc2e7e4bb1ac937c1ee66b8,
         type: 3}
@@ -53123,16 +53168,28 @@ PrefabInstance:
       value: 44
       objectReference: {fileID: 0}
     - target: {fileID: 1314459392, guid: a9d6522ab210ade4e8f2740a206b8da2, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1314459392, guid: a9d6522ab210ade4e8f2740a206b8da2, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.0811579
+      value: 0.058764707
       objectReference: {fileID: 0}
     - target: {fileID: 1314459392, guid: a9d6522ab210ade4e8f2740a206b8da2, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.0811579
+      value: 0.058764707
       objectReference: {fileID: 0}
     - target: {fileID: 1314459392, guid: a9d6522ab210ade4e8f2740a206b8da2, type: 3}
       propertyPath: m_SizeDelta.x
       value: 346.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1314459392, guid: a9d6522ab210ade4e8f2740a206b8da2, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 78.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 1314459392, guid: a9d6522ab210ade4e8f2740a206b8da2, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1314459392, guid: a9d6522ab210ade4e8f2740a206b8da2, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -54593,7 +54650,7 @@ PrefabInstance:
     - target: {fileID: 7494322088474843555, guid: a9d6522ab210ade4e8f2740a206b8da2,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.3291765
+      value: 0.29864708
       objectReference: {fileID: 0}
     - target: {fileID: 7494322088474843555, guid: a9d6522ab210ade4e8f2740a206b8da2,
         type: 3}
@@ -54603,7 +54660,7 @@ PrefabInstance:
     - target: {fileID: 7494322088474843555, guid: a9d6522ab210ade4e8f2740a206b8da2,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.14600001
+      value: 0.120294124
       objectReference: {fileID: 0}
     - target: {fileID: 7494322088474843555, guid: a9d6522ab210ade4e8f2740a206b8da2,
         type: 3}
@@ -55892,6 +55949,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
       objectReference: {fileID: 1928751477}
+    - target: {fileID: 7494322089523164895, guid: a9d6522ab210ade4e8f2740a206b8da2,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: rotateTo180
+      objectReference: {fileID: 0}
     - target: {fileID: 7494322089565292307, guid: a9d6522ab210ade4e8f2740a206b8da2,
         type: 3}
       propertyPath: m_AnchorMax.x

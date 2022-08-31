@@ -322,7 +322,7 @@ public class ControllerPlayer : MonoBehaviour
     }
     public void AutoRotate()
     {
-        deltaX2 = ModelCharacterParent.transform.position.x;
+        deltaX2 = transform.position.x;
         if (deltaX2 != deltaX2Before)
         {
             float dis = deltaX2 - deltaX2Before;
@@ -335,7 +335,7 @@ public class ControllerPlayer : MonoBehaviour
             float newRotation = Quaternion.Angle(ModelCharacterParent.transform.localRotation, Quaternion.Euler(0, 0, 0)) * 0.1f;
             ModelCharacterParent.transform.localRotation = Quaternion.Lerp(ModelCharacterParent.transform.localRotation, Quaternion.Euler(0, newRotation, 0), 0.2f);
         }
-        deltaX2Before = ModelCharacterParent.transform.position.x;
+        deltaX2Before = transform.position.x;
     }
     public void SetFloatingTextAnimator()
     {
@@ -390,7 +390,7 @@ public class ControllerPlayer : MonoBehaviour
                     //
                     CharacterGlowUp = 3;
                 }
-                transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
+                ModelCharacterParent.transform.localScale = new Vector3(80, 80, 80);
                 NumberTextSkinLevel = NumberTextSkin + 3;
                 SkinRenderer.material.mainTexture = textSkin[NumberTextSkinLevel];
                 ModelCharacterArmor.SetActive(true);
@@ -620,12 +620,12 @@ public class ControllerPlayer : MonoBehaviour
     private void RotateCharacter(float x, float y, float z)
     {
         Quaternion newRotation = Quaternion.Euler(x, y, z);
-        ModelCharacterParent.transform.localRotation = Quaternion.Lerp(ModelCharacterParent.transform.localRotation, newRotation, 0.25f);
+        ModelCharacterParent.transform.localRotation = Quaternion.Lerp(transform.localRotation, newRotation, 0.25f);
     }
     public void rotateTo180()
     {
         //ModelCharacterParent.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
-        ModelCharacterParent.transform.localEulerAngles = new Vector3(0, 180, 0);
+        ModelCharacterParent.transform.localEulerAngles = new Vector3(0, 0, 0);
     }
     private void Jump(float y)
     {
@@ -695,7 +695,7 @@ public class ControllerPlayer : MonoBehaviour
         Time.timeScale = 1f;
         Floatingtext.SetActive(false);
         OffParticle(5);
-        transform.localRotation = Quaternion.Euler(new Vector3(0, 180, 0));
+        ModelCharacterParent.transform.localRotation = Quaternion.Euler(new Vector3(0, 180, 0));
         FireWorkEnemyEnding.SetActive(true);
         ChangeCam("CamStart");
         WeaponLeft.SetActive(false);
@@ -706,7 +706,7 @@ public class ControllerPlayer : MonoBehaviour
         UpdateDiamond();
         ActiveCanvasVictory();
         //AudioAssistant.Instance.PlayMusic("WinEnding");
-        transform.rotation = new Quaternion(0, 1, 0, 0);
+        ModelCharacterParent.transform.rotation = new Quaternion(0, 1, 0, 0);
     }
     public void pushOpposite()
     {
@@ -763,7 +763,7 @@ public class ControllerPlayer : MonoBehaviour
     private bool checkedY;
     private void checkY()
     {
-        if (ModelCharacterParent.transform.position.y <= -10 && !startStageEnding && !checkedY)
+        if (transform.position.y <= -10 && !startStageEnding && !checkedY)
         {
             checkedY = true;
             myLevel = 0;
@@ -772,7 +772,7 @@ public class ControllerPlayer : MonoBehaviour
 
             QualityDiamond -= DiamondFound;
             StartCoroutine(GameOver());
-            ModelCharacterParent.transform.position = new Vector3(0, ModelCharacterParent.transform.position.y, ModelCharacterParent.transform.position.z);
+            transform.position = new Vector3(0, transform.position.y, transform.position.z);
             if (!OnAudio)
             {
                 AudioAssistant.Shot(TYPE_SOUND.Lose);
@@ -874,9 +874,9 @@ public class ControllerPlayer : MonoBehaviour
         {
             Start = SpawnMap.transform.GetChild(i).Find("Start");
             End = SpawnMap.transform.GetChild(i).Find("End");
-            if (Start.position.z <= ModelCharacterParent.transform.position.z && ModelCharacterParent.transform.position.z <= End.transform.position.z)
+            if (Start.position.z <= transform.position.z && transform.position.z <= End.transform.position.z)
             {
-                ModelCharacterParent.transform.position = new Vector3(0, 2.3f, Start.transform.position.z - 5);
+                transform.position = new Vector3(0, 2.3f, Start.transform.position.z - 5);
                 ObjectFollowCharacter.transform.position = new Vector3(0, 2.3f, Start.transform.position.z - 5);
                 break;
             }
@@ -915,8 +915,9 @@ public class ControllerPlayer : MonoBehaviour
         if (other.tag == "Bridge")
         {
             isMove = false;
-           transform.position = new Vector3(other.transform.position.x, ModelCharacterParent.transform.position.y, ModelCharacterParent.transform.position.z);
+            transform.position = new Vector3(other.transform.position.x, transform.position.y - 0.1f, transform.position.z);
             SetSpeed(SpeedRoad);
+
             AudioAssistant.Shot(TYPE_SOUND.Diamond);
             HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
@@ -1224,8 +1225,8 @@ public class ControllerPlayer : MonoBehaviour
         {
             attackObject.SetActive(true);
             attackObject.GetComponent<AttackCharacter>().setSubTractTimeScale(true);
-            SetSpeed(19);
-            Jump(12);
+            SetSpeed(23);
+            Jump(10);
             unLimitDamage = true;
             SetJumpAttack360(false);
             myAnim.SetInteger("AttackItem", 1);
@@ -1267,7 +1268,7 @@ public class ControllerPlayer : MonoBehaviour
             {
                 OnChangeSkin = false;
                 //thay skin
-                transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
+                ModelCharacterParent.transform.localScale = new Vector3(80, 80, 80);
                 NumberTextSkinLevel = 27 + (indexSkin * 4);
                 SkinRenderer.material.mainTexture = textSkin[NumberTextSkinLevel];
                 ModelCharacterArmor.SetActive(true);
@@ -1334,13 +1335,13 @@ public class ControllerPlayer : MonoBehaviour
                 unLimitDamage = true;
                 if (other.transform.position.x > 0)
                 {
-                    transform.position = Vector3.Lerp(transform.position, new Vector3(other.transform.position.x - 0.5f, other.transform.position.y + 1, transform.position.z), 0.2f);
+                    transform.position = Vector3.Lerp(transform.position, new Vector3(other.transform.position.x - 0.5f, other.transform.position.y, transform.position.z), 0.2f);
                     ModelCharacterParent.transform.rotation = Quaternion.Lerp(ModelCharacterParent.transform.rotation, Quaternion.Euler(new Vector3(0, 0, 70)), 0.1f);
                 }
                 else
                 {
-                    transform.position = Vector3.Lerp(transform.position, new Vector3(other.transform.position.x + 0.5f, other.transform.position.y + 1, transform.position.z), 0.2f);
-                    ModelCharacterParent.transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(new Vector3(0, 0, -70)), 0.1f);
+                    transform.position = Vector3.Lerp(transform.position, new Vector3(other.transform.position.x + 0.5f, other.transform.position.y, transform.position.z), 0.2f);
+                    ModelCharacterParent.transform.rotation = Quaternion.Lerp(ModelCharacterParent.transform.rotation, Quaternion.Euler(new Vector3(0, 0, -70)), 0.1f);
                 }
             }
         }
@@ -1391,7 +1392,7 @@ public class ControllerPlayer : MonoBehaviour
         {
             if (other.GetComponent<BlackHole>().levelHole <= myLevel)
             {
-                myposition = transform.parent.position;
+                myposition = transform.position;
                 myposition = new Vector3(myposition.x, myposition.y, myposition.z + 2);
                 transform.position = other.GetComponent<BlackHole>().start.position;
                 ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.position.y + 2;
@@ -1447,8 +1448,8 @@ public class ControllerPlayer : MonoBehaviour
     public void ButtonHole()
     {
         buttonHoleGet = true;
-        transform.parent.position = new Vector3(myposition.x, myposition.y, myposition.z + 2);
-        ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.parent.position.y;
+        transform.position = new Vector3(myposition.x, myposition.y, myposition.z + 2);
+        ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.position.y;
         ChangeCamInHoleToRun();
         CanvasX2Hole.SetActive(false);
         isMove = true;
@@ -1495,8 +1496,8 @@ public class ControllerPlayer : MonoBehaviour
     private void OnCompleteAdsX2Hole(int value)
     {
         AnalyticManager.LogWatchAds("AdsInHole", 1);
-        transform.parent.position = myposition;
-        ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.parent.position.y;
+        transform.position = myposition;
+        ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.position.y;
         isMove = true;
         ChangeCamInHoleToRun();
         buttonHoleGet = true;

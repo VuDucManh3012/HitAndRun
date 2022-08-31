@@ -40,8 +40,6 @@ public class Hammer : MonoBehaviour
         if (other.tag == "Road")
         {
             onDown = false;
-            Debug.Log("aaa");
         }
-
     }
 }

@@ -6,6 +6,9 @@ public class AttackCharacter : MonoBehaviour
 {
     public bool Subtracting = true;
     float TimefixedDelta;
+    public float TimeScaleWish = 0.7f;
+    public float DoGiamTimeScale = 0.02f;
+    public float DoTangTimeScale = 0.5f;
     public float TimeScaleCurrent;
     // Start is called before the first frame update
     void Start()
@@ -14,28 +17,28 @@ public class AttackCharacter : MonoBehaviour
     }
     void PlusTimeScale()
     {
-        Time.timeScale += 0.5f;
+        Time.timeScale += DoTangTimeScale;
         Time.fixedDeltaTime = TimefixedDelta;
     }
     void SubtractTimeScale()
     {
-        Time.timeScale -= 0.015f;
+        Time.timeScale -= DoGiamTimeScale;
         Time.fixedDeltaTime = Time.timeScale * 0.02f;
     }
 
     // Update is called once per frame
     void Update()
     {
+        TimeScaleCurrent = Time.timeScale;
         transform.rotation = new Quaternion(0, 0, 0, 1);
 
-        TimeScaleCurrent=Time.timeScale;
-        if (Subtracting && Time.timeScale <= 0.7f)
+        if (Subtracting && Time.timeScale <= TimeScaleWish)
         {
-            Time.timeScale = 0.7f;
+            Time.timeScale = TimeScaleWish;
         }
-        else if (!Subtracting && Time.timeScale >= 1)
+        else if (!Subtracting && Time.timeScale >= 1.2f)
         {
-            Time.timeScale = 1;
+            Time.timeScale = 1.2f;
         }
         else if (!Subtracting)
         {
@@ -49,6 +52,11 @@ public class AttackCharacter : MonoBehaviour
     public void setSubTractTimeScale(bool subtract)
     {
         Subtracting = subtract;
+    }
+    public void SetTimeScaleNormal()
+    {
+        Time.timeScale = 1;
+        Time.fixedDeltaTime = TimefixedDelta;
     }
 
 }
