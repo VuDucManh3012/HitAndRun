@@ -12,8 +12,7 @@ public class CanvasGameStartController : MonoBehaviour
     public GameObject OfflineUpdateNoEnoughDiamond;
     public List<GameObject> ListObjectHidden;
     private bool Hiddened;
-    [Header("RateUs")]
-    public GameObject ButtonRateUs;
+
     [Header("Noads")]
     public GameObject ButtonNoAds;
     [Header("CanvasTouchPad")]

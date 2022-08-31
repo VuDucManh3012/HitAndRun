@@ -51,9 +51,11 @@ public class CanvasManager : MonoBehaviour
     public GameObject VictoryScene;
     public Slider SliderVictory;
     public Text TextX;
+    public Text TextXInLv1;
     public Text DiamondFound;
     public GameObject BossBonus;
     public Text DiamondBonusADSText;
+    public Text DiamondBonusADSTextInLv1;
     private double DiamondADS;
     private double bonusX;
 
@@ -382,8 +384,9 @@ public class CanvasManager : MonoBehaviour
             {
                 ListImageKeyDisable[i].SetActive(false);
             }
+            CanVasQualityKey.SetActive(true);
         }
-        CanVasQualityKey.SetActive(true);
+        
     }
     public void VictorySceneController()
     {
@@ -393,26 +396,31 @@ public class CanvasManager : MonoBehaviour
         if (valueSlider >= 0 && valueSlider <= 1)
         {
             TextX.text = "x2";
+            TextXInLv1.text = "x2";
             bonusX = 2;
         }
         else if (valueSlider >= 1 && valueSlider <= 2)
         {
             TextX.text = "x3";
+            TextXInLv1.text = "x3";
             bonusX = 3;
         }
         else if (valueSlider >= 2 && valueSlider <= 3)
         {
             TextX.text = "x5";
+            TextXInLv1.text = "x5";
             bonusX = 5;
         }
         else if (valueSlider >= 3 && valueSlider <= 4)
         {
             TextX.text = "x3";
+            TextXInLv1.text = "x3";
             bonusX = 3;
         }
         else if (valueSlider >= 4 && valueSlider <= 5)
         {
             TextX.text = "x2";
+            TextXInLv1.text = "x2";
             bonusX = 2;
         }
         if (BossBonus.active)
@@ -424,11 +432,24 @@ public class CanvasManager : MonoBehaviour
             DiamondADS = double.Parse(DiamondFound.text) * bonusX;
         }
         DiamondBonusADSText.text = DiamondADS.ToString();
+        DiamondBonusADSTextInLv1.text = DiamondADS.ToString();
     }
     public void ADSBonusButton()
     {
         ///Ads
         WatchAdsADSBonusVictory();
+    }
+    public void ADSBonusButtonInLv1()
+    {
+        AnalyticManager.LogWatchAds("AdsBonusVictory", 1);
+        adsShowing = false;
+        double diamondCurrent = double.Parse(Save.Diamond.text);
+        diamondCurrent += DiamondADS;
+        Save.Diamond.text = diamondCurrent.ToString();
+        PlayerPrefs.SetInt("InterVictory", 0);
+        Save.WriteText();
+        SetTimeCountDown();
+        Loadscene = true;
     }
     public void Plus999Level()
     {
@@ -438,16 +459,13 @@ public class CanvasManager : MonoBehaviour
     }
     public void GameOver()
     {
+        PlayerPrefs.SetInt("InterVictory", 1);
         Time.timeScale = 1;
         SetTimeCountDown();
         Loadscene = true;
     }
     public void Continues()
     {
-        //BossEnding
-        int currentBoss = PlayerPrefs.GetInt("IntBossToSpawn") + 1;
-        PlayerPrefs.SetInt("IntBossToSpawn", currentBoss);
-        //
         Save.WriteText();
         PlayerPrefs.SetString("key", PlayerPrefs.GetString("key"));
         
@@ -683,7 +701,6 @@ public class CanvasManager : MonoBehaviour
             GameStartScene.SetActive(false);
             CanVasQualityKey.SetActive(false);
         }
-        checkRate();
         //
     }
     // Update is called once per frame
@@ -717,17 +734,6 @@ public class CanvasManager : MonoBehaviour
         MusicVolumn.value = PlayerPrefs.GetFloat("MusicVolumn");
         SoundVolumn.value = PlayerPrefs.GetFloat("SfxVolumn");
         AudioAssistant.Instance.UpdateSoundSetting2(SoundVolumn.value, MusicVolumn.value);
-    }
-    private void checkRate()
-    {
-        if (!PlayerPrefs.HasKey("Rated"))
-        {
-            ButtonRateUs.SetActive(true);
-        }
-        else
-        {
-            ButtonRateUs.SetActive(false);
-        }
     }
     public void RateUs()
     {
@@ -1027,10 +1033,6 @@ public class CanvasManager : MonoBehaviour
         diamondCurrent += DiamondADS;
         Save.Diamond.text = diamondCurrent.ToString();
         PlayerPrefs.SetInt("InterVictory", 0);
-        //BossEnding
-        int currentBoss = PlayerPrefs.GetInt("IntBossToSpawn") + 1;
-        PlayerPrefs.SetInt("IntBossToSpawn", currentBoss);
-        //
         Save.WriteText();
         SetTimeCountDown();
         Loadscene = true;
@@ -1366,6 +1368,7 @@ public class CanvasManager : MonoBehaviour
             PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
             PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
             PlayerPrefs.SetInt("InterVictory", 0);
+            Application.Quit();
         }
     }
     void OnApplicationFocus(bool hasFocus)
@@ -1378,6 +1381,7 @@ public class CanvasManager : MonoBehaviour
             PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
             PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
             PlayerPrefs.SetInt("InterVictory", 0);
+            Application.Quit();
         }
     }
     private void OnApplicationQuit()
@@ -1388,5 +1392,6 @@ public class CanvasManager : MonoBehaviour
         PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
         PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
         PlayerPrefs.SetInt("InterVictory", 0);
+        Application.Quit();
     }
 }

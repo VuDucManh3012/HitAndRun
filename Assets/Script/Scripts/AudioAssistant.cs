@@ -162,7 +162,6 @@ public class AudioAssistant : SerializedMonoBehaviour
         while (countDownDelay < delay)
         {
             music.volume = countDownDelay * normalMusicVolume *3.333f;
-            Debug.LogWarning(countDownDelay);
             countDownDelay += timeUnScaleDentaTime;
             yield return null;
         }

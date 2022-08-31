@@ -92,6 +92,8 @@ public class ControllerPlayer : MonoBehaviour
     private GameObject EnemyEndingRagdoll;
     private GameObject FireWorkEnemyEnding;
 
+    private float TimefixedNormal;
+
     public bool PlusedSeBonus = false;
     [Header("Ragdoll")]
     public GameObject Ragdoll;
@@ -201,6 +203,8 @@ public class ControllerPlayer : MonoBehaviour
 
         PitchSound = SoundAttack.GetComponent<AudioSource>().pitch;
         PitchSoundDiamond = SoundDiamond.GetComponent<AudioSource>().pitch;
+
+        TimefixedNormal = Time.fixedDeltaTime;
     }
     public float PitchSound;
     public float PitchSoundDiamond;
@@ -208,9 +212,36 @@ public class ControllerPlayer : MonoBehaviour
     {
         Plus999 = true;
     }
-    void FixedUpdate()
+    private void Update()
     {
         LeftRight();
+        if (myLevel == 0)
+        {
+            SetSpeed(0);
+        }
+        if (startgame && !onWall && !OnJump)
+        {
+            AutoRotate();
+        }
+        else if (OnJump)
+        {
+            if (JumpHighLeft == -1)
+            {
+                ModelCharacterParent.transform.rotation = Quaternion.Lerp(ModelCharacterParent.transform.rotation, Quaternion.Euler(0, 0, -30), 0.1f);
+            }
+            else if (JumpHighLeft == 1)
+            {
+                ModelCharacterParent.transform.rotation = Quaternion.Lerp(ModelCharacterParent.transform.rotation, Quaternion.Euler(0, 0, 30), 0.1f);
+            }
+            else
+            {
+                ModelCharacterParent.transform.rotation = Quaternion.Lerp(ModelCharacterParent.transform.rotation, Quaternion.Euler(0, 0, 0), 0.1f);
+            }
+        }
+    }
+    void FixedUpdate()
+    {
+
         checkDead();
         checkY();
         setLevelText();
@@ -219,9 +250,10 @@ public class ControllerPlayer : MonoBehaviour
         AutoRotateFloatingText();
         checkSoundAttack();
         //
-        if (myLevel == 0)
+
+        if (!activeLF)
         {
-            SetSpeed(0);
+            ActiveLeftRight();
         }
     }
     public void checkSoundAttack()
@@ -267,37 +299,10 @@ public class ControllerPlayer : MonoBehaviour
             Floatingtext.transform.rotation = new Quaternion(0, 0, 0, 1);
         }
     }
-    public void Update()
-    {
-        if (startgame && !onWall && !OnJump)
-        {
-            AutoRotate();
-        }
-        else if (OnJump)
-        {
-            if (JumpHighLeft == -1)
-            {
-                transform.rotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, 0, -30), 0.1f);
-            }
-            else if (JumpHighLeft == 1)
-            {
-                transform.rotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, 0, 30), 0.1f);
-            }
-            else
-            {
-                transform.rotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, 0, 0), 0.1f);
-            }
-        }
-        if (!activeLF)
-        {
-            ActiveLeftRight();
-        }
-    }
     public bool activeLF;
     private float XFrame1;
     private void ActiveLeftRight()
     {
-
         if (XFrame1 != 0)
         {
             StartGame();
@@ -317,20 +322,20 @@ public class ControllerPlayer : MonoBehaviour
     }
     public void AutoRotate()
     {
-        deltaX2 = transform.position.x;
+        deltaX2 = ModelCharacterParent.transform.position.x;
         if (deltaX2 != deltaX2Before)
         {
             float dis = deltaX2 - deltaX2Before;
             float Angle = Mathf.Clamp(Mathf.Atan(dis) * 180 / Mathf.PI * 10, -30, 30);
             Quaternion newRotation = Quaternion.Euler(0, Angle, 0);
-            transform.localRotation = Quaternion.Lerp(transform.localRotation, newRotation, 0.1f);
+            ModelCharacterParent.transform.localRotation = Quaternion.Lerp(ModelCharacterParent.transform.localRotation, newRotation, 0.1f);
         }
         else
         {
-            float newRotation = Quaternion.Angle(transform.localRotation, Quaternion.Euler(0, 0, 0)) * 0.1f;
-            transform.rotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, newRotation, 0), 0.2f);
+            float newRotation = Quaternion.Angle(ModelCharacterParent.transform.localRotation, Quaternion.Euler(0, 0, 0)) * 0.1f;
+            ModelCharacterParent.transform.localRotation = Quaternion.Lerp(ModelCharacterParent.transform.localRotation, Quaternion.Euler(0, newRotation, 0), 0.2f);
         }
-        deltaX2Before = transform.position.x;
+        deltaX2Before = ModelCharacterParent.transform.position.x;
     }
     public void SetFloatingTextAnimator()
     {
@@ -379,7 +384,7 @@ public class ControllerPlayer : MonoBehaviour
                     if (!OnJump)
                     {
                         myAnim.Play("GlowUp");
-                        Jump(0, 4, 0);
+                        Jump(4);
                     }
                     OnParticle(3);
                     //
@@ -400,7 +405,7 @@ public class ControllerPlayer : MonoBehaviour
                     if (!OnJump)
                     {
                         myAnim.Play("GlowUp");
-                        Jump(0, 4, 0);
+                        Jump(4);
                     }
                     OnParticle(3);
                     //
@@ -417,7 +422,7 @@ public class ControllerPlayer : MonoBehaviour
                     if (!OnJump)
                     {
                         myAnim.Play("GlowUp");
-                        Jump(0, 4, 0);
+                        Jump(4);
                     }
                     OnParticle(3);
                     //
@@ -455,8 +460,34 @@ public class ControllerPlayer : MonoBehaviour
         if (startgame && isMove)
         {
             SetRunTrue();
-            transform.position = new Vector3(Mathf.Clamp(transform.position.x + CnInputManager.GetAxis("Horizontal") * SpeedLeftRight * Time.deltaTime, -maxX, maxX), transform.position.y, transform.position.z);
+            Vector3 vel = myBody.transform.InverseTransformVector(myBody.velocity);
+            if (transform.position.x > maxX)
+            {
+                Vector3 pos = transform.position;
+                pos.x = maxX;
+                transform.position = pos;
+
+                vel.x = 0;
+            }
+            else if (transform.position.x < -maxX)
+            {
+                Vector3 pos = transform.position;
+                pos.x = -maxX;
+                transform.position = pos;
+
+                vel.x = 0;
+            }
+            else
+                vel.x = CnInputManager.GetAxis("Horizontal") * SpeedLeftRight;
+
+            myBody.velocity = myBody.transform.TransformVector(vel);
+            //transform.position = new Vector3(Mathf.Clamp(transform.position.x + CnInputManager.GetAxis("Horizontal") * SpeedLeftRight * Time.deltaTime, -maxX, maxX), transform.position.y, transform.position.z);
         }
+    }
+
+    public void SetSpeedLeftRight(float speed)
+    {
+        SpeedLeftRight = speed;
     }
     public void ChangeCam(string CamName)
     {
@@ -586,24 +617,21 @@ public class ControllerPlayer : MonoBehaviour
     {
         AutoMoveCharacter.SetSpeed(speed);
     }
-    private void RotateFloatingText(float x, float y, float z)
-    {
-        Quaternion newRotation = Quaternion.Euler(x, y, z);
-        Floatingtext.transform.localRotation = Quaternion.Lerp(transform.localRotation, newRotation, 0.25f);
-    }
     private void RotateCharacter(float x, float y, float z)
     {
         Quaternion newRotation = Quaternion.Euler(x, y, z);
-        transform.localRotation = Quaternion.Lerp(transform.localRotation, newRotation, 0.25f);
+        ModelCharacterParent.transform.localRotation = Quaternion.Lerp(ModelCharacterParent.transform.localRotation, newRotation, 0.25f);
     }
     public void rotateTo180()
     {
-        transform.localEulerAngles = new Vector3(0, 180, 0);
-        //Floatingtext.transform.localEulerAngles = new Vector3(0, 180, 0);
+        //ModelCharacterParent.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+        ModelCharacterParent.transform.localEulerAngles = new Vector3(0, 180, 0);
     }
-    private void Jump(float x, float y, float z)
+    private void Jump(float y)
     {
-        myBody.velocity = new Vector3(x, y, z);
+        Vector3 vel = myBody.transform.InverseTransformVector(myBody.velocity);
+        vel.y = y;
+        myBody.velocity = myBody.transform.TransformVector(vel);
     }
     public bool OnJump;
     private void JumpHigh()
@@ -612,7 +640,7 @@ public class ControllerPlayer : MonoBehaviour
         {
             ObjectFollowCharacter.GetComponent<CameraFollow2>().onJump = true;
             SetSpeed(SpeedJump);
-            myBody.velocity = new Vector3(0, 24f, 0);
+            Jump(24f);
             AudioAssistant.Shot(TYPE_SOUND.Jump);
             HCVibrate.Haptic(HapticTypes.SoftImpact);
             OnJump = true;
@@ -623,7 +651,7 @@ public class ControllerPlayer : MonoBehaviour
         if (!OnJump)
         {
             ObjectFollowCharacter.GetComponent<CameraFollow2>().onJump = true;
-            myBody.velocity = new Vector3(0, 12f, 0);
+            Jump(12f);
             SetSpeed(SpeedJump + 1);
             StartCoroutine(setUnDead());
             AudioAssistant.Shot(TYPE_SOUND.Jump);
@@ -655,9 +683,14 @@ public class ControllerPlayer : MonoBehaviour
     {
         yield return new WaitForSeconds(second);
         OnParticle(5);
+        //BossEnding
         Destroy(EnemyEndingModel);
         EnemyEndingRagdoll.transform.GetChild(PlayerPrefs.GetInt("IntBossToSpawn")).gameObject.SetActive(true);
         EnemyEndingRagdoll.SetActive(true);
+
+        int currentBoss = PlayerPrefs.GetInt("IntBossToSpawn") + 1;
+        PlayerPrefs.SetInt("IntBossToSpawn", currentBoss);
+        //
         yield return new WaitForSeconds(1.8f);
         Time.timeScale = 1f;
         Floatingtext.SetActive(false);
@@ -730,7 +763,7 @@ public class ControllerPlayer : MonoBehaviour
     private bool checkedY;
     private void checkY()
     {
-        if (transform.position.y <= -10 && !startStageEnding && !checkedY)
+        if (ModelCharacterParent.transform.position.y <= -10 && !startStageEnding && !checkedY)
         {
             checkedY = true;
             myLevel = 0;
@@ -739,7 +772,7 @@ public class ControllerPlayer : MonoBehaviour
 
             QualityDiamond -= DiamondFound;
             StartCoroutine(GameOver());
-            transform.position = new Vector3(0, 10, 0);
+            ModelCharacterParent.transform.position = new Vector3(0, ModelCharacterParent.transform.position.y, ModelCharacterParent.transform.position.z);
             if (!OnAudio)
             {
                 AudioAssistant.Shot(TYPE_SOUND.Lose);
@@ -752,6 +785,7 @@ public class ControllerPlayer : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         GameOverScene.SetActive(true);
+        OffCam();
     }
     IEnumerator VictoryInStageEnding()
     {
@@ -840,9 +874,9 @@ public class ControllerPlayer : MonoBehaviour
         {
             Start = SpawnMap.transform.GetChild(i).Find("Start");
             End = SpawnMap.transform.GetChild(i).Find("End");
-            if (Start.position.z <= transform.position.z && transform.position.z <= End.transform.position.z)
+            if (Start.position.z <= ModelCharacterParent.transform.position.z && ModelCharacterParent.transform.position.z <= End.transform.position.z)
             {
-                transform.position = new Vector3(0, 2.3f, Start.transform.position.z - 5);
+                ModelCharacterParent.transform.position = new Vector3(0, 2.3f, Start.transform.position.z - 5);
                 ObjectFollowCharacter.transform.position = new Vector3(0, 2.3f, Start.transform.position.z - 5);
                 break;
             }
@@ -873,6 +907,7 @@ public class ControllerPlayer : MonoBehaviour
         }
         ChangeCam("CamRun");
         SetSpeed(SpeedRoad);
+        rotateTo180();
     }
     public bool Plus999 = false;
     private void OnTriggerEnter(Collider other)
@@ -880,7 +915,7 @@ public class ControllerPlayer : MonoBehaviour
         if (other.tag == "Bridge")
         {
             isMove = false;
-            transform.position = new Vector3(other.transform.position.x, transform.position.y, transform.position.z);
+           transform.position = new Vector3(other.transform.position.x, ModelCharacterParent.transform.position.y, ModelCharacterParent.transform.position.z);
             SetSpeed(SpeedRoad);
             AudioAssistant.Shot(TYPE_SOUND.Diamond);
             HCVibrate.Haptic(HapticTypes.SoftImpact);
@@ -929,7 +964,7 @@ public class ControllerPlayer : MonoBehaviour
             if (!PlusStage)
             {
                 QualityStage += 1;
-                PlayerPrefs.SetString("stage",QualityStage.ToString());
+                PlayerPrefs.SetString("stage", QualityStage.ToString());
                 PlusStage = true;
             }
             startStageEnding = true;
@@ -1155,7 +1190,7 @@ public class ControllerPlayer : MonoBehaviour
             //
             Time.timeScale = 0.7f;
             SetSpeed(0);
-            Jump(0, 26, 0);
+            Jump(26);
             SetVictoryTrue();
             StartCoroutine(WaitToVictory(1.5f));
             startgame = false;
@@ -1188,11 +1223,9 @@ public class ControllerPlayer : MonoBehaviour
         else if (other.tag == "JumpAttack")
         {
             attackObject.SetActive(true);
-            attackObject.transform.GetChild(0).gameObject.SetActive(true);
-            Jump(0, 7f, 0);
-            SetSpeed(16);
-            ChangeTimeScale(0.6f);
-            ChangeGravity(18f);
+            attackObject.GetComponent<AttackCharacter>().setSubTractTimeScale(true);
+            SetSpeed(19);
+            Jump(12);
             unLimitDamage = true;
             SetJumpAttack360(false);
             myAnim.SetInteger("AttackItem", 1);
@@ -1209,19 +1242,22 @@ public class ControllerPlayer : MonoBehaviour
             GetComponent<PathCreation.Examples.PathFollower>().pathCreator = null;
             GetComponent<PathCreation.Examples.PathFollower>().distanceTravelled = 0;
             isMove = true;
-            Jump(0, 17, 0);
+            Jump(17);
             SetSpeed(SpeedRoad);
             SetJumpWall();
         }
         else if (other.tag == "ItemHammer")
         {
             WeaponHammer.SetActive(true);
+            WeaponHammer.GetComponent<AttackCharacter>().setSubTractTimeScale(true);
             ChangeCam("CamHammerAttack");
-            Jump(0, 10, 0);
+            Jump(10);
             SetSpeed(5);
             ChangeTimeScale(0.5f);
             ChangeGravity(15f);
             myAnim.SetInteger("AttackHammer", 1);
+            other.transform.gameObject.SetActive(false);
+            OnJump = true;
         }
         else if (other.tag == "ItemDemoSkin")
         {
@@ -1260,6 +1296,10 @@ public class ControllerPlayer : MonoBehaviour
             DemoingSkin = true;
         }
     }
+    public void SetOnJump()
+    {
+        OnJump = false;
+    }
     public void ChangeAnimJumpAttack(int anim)
     {
         myAnim.SetInteger("AttackItem", anim);
@@ -1275,6 +1315,11 @@ public class ControllerPlayer : MonoBehaviour
     public void ChangeTimeScale(float time)
     {
         Time.timeScale = time;
+        Time.fixedDeltaTime = Time.timeScale * 0.02f;
+    }
+    public void SetFixedDeltaTimeNormal()
+    {
+        Time.fixedDeltaTime = TimefixedNormal;
     }
     public void SetHammerAttack()
     {
@@ -1290,12 +1335,12 @@ public class ControllerPlayer : MonoBehaviour
                 if (other.transform.position.x > 0)
                 {
                     transform.position = Vector3.Lerp(transform.position, new Vector3(other.transform.position.x - 0.5f, other.transform.position.y + 1, transform.position.z), 0.2f);
-                    transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(new Vector3(0, 0, 70)), 0.1f);
+                    ModelCharacterParent.transform.rotation = Quaternion.Lerp(ModelCharacterParent.transform.rotation, Quaternion.Euler(new Vector3(0, 0, 70)), 0.1f);
                 }
                 else
                 {
                     transform.position = Vector3.Lerp(transform.position, new Vector3(other.transform.position.x + 0.5f, other.transform.position.y + 1, transform.position.z), 0.2f);
-                    transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(new Vector3(0, 0, -70)), 0.1f);
+                    ModelCharacterParent.transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(new Vector3(0, 0, -70)), 0.1f);
                 }
             }
         }
@@ -1309,7 +1354,7 @@ public class ControllerPlayer : MonoBehaviour
         if (other.tag == "Bridge")
         {
             isMove = true;
-            Jump(0, 17, 0);
+            Jump(17);
             SetSpeed(SpeedRoad);
             SetJumpWall();
         }
@@ -1346,7 +1391,7 @@ public class ControllerPlayer : MonoBehaviour
         {
             if (other.GetComponent<BlackHole>().levelHole <= myLevel)
             {
-                myposition = transform.position;
+                myposition = transform.parent.position;
                 myposition = new Vector3(myposition.x, myposition.y, myposition.z + 2);
                 transform.position = other.GetComponent<BlackHole>().start.position;
                 ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.position.y + 2;
@@ -1402,8 +1447,8 @@ public class ControllerPlayer : MonoBehaviour
     public void ButtonHole()
     {
         buttonHoleGet = true;
-        transform.position = myposition;
-        ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.position.y;
+        transform.parent.position = new Vector3(myposition.x, myposition.y, myposition.z + 2);
+        ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.parent.position.y;
         ChangeCamInHoleToRun();
         CanvasX2Hole.SetActive(false);
         isMove = true;
@@ -1450,15 +1495,15 @@ public class ControllerPlayer : MonoBehaviour
     private void OnCompleteAdsX2Hole(int value)
     {
         AnalyticManager.LogWatchAds("AdsInHole", 1);
-        transform.position = myposition;
-        ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.position.y;
+        transform.parent.position = myposition;
+        ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.parent.position.y;
         isMove = true;
         ChangeCamInHoleToRun();
         buttonHoleGet = true;
         adsShowing = false;
         CanvasX2Hole.SetActive(false);
         SetSpeed(SpeedRoad);
-        QualityDiamond += (DiamondBonusInHole*10);
+        QualityDiamond += (DiamondBonusInHole * 10);
         Save.Diamond.text = QualityDiamond.ToString();
         DiamondFound += (DiamondBonusInHole * 10);
         DiamondBonusInHole = 0;
@@ -1489,8 +1534,10 @@ public class ControllerPlayer : MonoBehaviour
         if (!GameManager.NetworkAvailable)
         {
             PopupNoInternet.Show();
+            GameOverScene.SetActive(true);
             return;
         }
+
 
         if (adsShowing)
             return;

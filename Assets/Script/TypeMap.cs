@@ -34,47 +34,41 @@ public class TypeMap : MonoBehaviour
             stage = 1;
         }
 
-        if (stage < 25)
+        if (stage >= 26)
         {
-            stage = stage / 5;
+            stage = stage % 26;
         }
-        else
+        if (stage < 6)
         {
-            stage = stage % 25 / 5;
+            IndexTextures = 0;
+            ColorUtility.TryParseHtmlString("#55A3AC", out ColorFog);
+            EnvironmentManager.transform.GetChild(0).gameObject.SetActive(true);
         }
-        switch (stage)
+        else if (stage < 11)
         {
-            case 0:
-                IndexTextures = 0;
-                ColorUtility.TryParseHtmlString("#55A3AC", out ColorFog);
-                EnvironmentManager.transform.GetChild(0).gameObject.SetActive(true);
-                break;
-            case 1:
-                IndexTextures = 1;
-                ColorUtility.TryParseHtmlString("#B8D0FE", out ColorFog);
-                EnvironmentManager.transform.GetChild(1).gameObject.SetActive(true);
-                break;
-            case 2:
-                IndexTextures = 2;
-                ColorUtility.TryParseHtmlString("#B2EDD9", out ColorFog);
-                EnvironmentManager.transform.GetChild(2).gameObject.SetActive(true);
-                break;
-            case 3:
-                IndexTextures = 3;
-                ColorUtility.TryParseHtmlString("#3A9CA8", out ColorFog);
-                EnvironmentManager.transform.GetChild(3).gameObject.SetActive(true);
-                break;
-            case 4:
-                IndexTextures = 4;
-                ColorUtility.TryParseHtmlString("#B6EBBD", out ColorFog);
-                EnvironmentManager.transform.GetChild(4).gameObject.SetActive(true);
-                break;
-            default:
-                IndexTextures = 0;
-                ColorUtility.TryParseHtmlString("#55A3AC", out ColorFog);
-                EnvironmentManager.transform.GetChild(0).gameObject.SetActive(true);
-                break;
+            IndexTextures = 1;
+            ColorUtility.TryParseHtmlString("#B8D0FE", out ColorFog);
+            EnvironmentManager.transform.GetChild(1).gameObject.SetActive(true);
         }
+        else if (stage < 16)
+        {
+            IndexTextures = 2;
+            ColorUtility.TryParseHtmlString("#B2EDD9", out ColorFog);
+            EnvironmentManager.transform.GetChild(2).gameObject.SetActive(true);
+        }
+        else if (stage < 21)
+        {
+            IndexTextures = 3;
+            ColorUtility.TryParseHtmlString("#3A9CA8", out ColorFog);
+            EnvironmentManager.transform.GetChild(3).gameObject.SetActive(true);
+        }
+        else if (stage < 26)
+        {
+            IndexTextures = 4;
+            ColorUtility.TryParseHtmlString("#B6EBBD", out ColorFog);
+            EnvironmentManager.transform.GetChild(4).gameObject.SetActive(true);
+        }
+
         for (int i = 0; i <= ListMaterialRoad.Length - 1; i++)
         {
             ListMaterialRoad[i].mainTexture = TexturesRoad[IndexTextures];
