@@ -83,6 +83,7 @@ public class SpawnMap2 : MonoBehaviour
     public List<GameObject> Hole150_200;
     public List<GameObject> Hole200_250;
     public List<GameObject> Hole250_300;
+    public GameObject HoleStage1;
 
     [Header("ToSpawn")]
     public List<GameObject> ListMapFound;
@@ -95,11 +96,9 @@ public class SpawnMap2 : MonoBehaviour
     public GameObject Key;
 
     [Header("TotalLevel")]
-    [HideInInspector]
     public List<GameObject> ListMapTotalLevel;
-    [HideInInspector]
     public List<GameObject> ListEnemyInTotalLevel;
-    private double ToTalLevelInMap;
+    public double ToTalLevelInMap;
 
     [Header("DemoSkin")]
     public GameObject MapDemoSkin;
@@ -116,7 +115,6 @@ public class SpawnMap2 : MonoBehaviour
             stage = 1;
         }
         checkStageToSpawn();
-        TotalLevelInMap();
         RandomKey();
         transform.GetComponent<EnemyCheckLevel>().Start();
     }
@@ -356,7 +354,7 @@ public class SpawnMap2 : MonoBehaviour
                     ListMechanicCoTheTrongMap.AddRange(TruGai);
                     break;
                 case 15:
-                    ListMechanicPhaiCoTrongMap.Add(ConLac[0]) ;
+                    ListMechanicPhaiCoTrongMap.Add(ConLac[0]);
                     ListMechanicCoTheTrongMap.AddRange(Cua);
                     break;
                 case 16:
@@ -607,81 +605,107 @@ public class SpawnMap2 : MonoBehaviour
     }
     public void RandomHole()
     {
+        TotalLevelInMap();
+        MapHole.Clear();
         int random;
-        if (Random.Range(0, 10) <= 7)
+        if (stage == 1)
         {
-            Debug.LogWarning("Co the Thang");
-            switch (ToTalLevelInMap / 50)
+            MapHole.Add(HoleStage1);
+        }
+        else
+        {
+            if (Random.Range(0, 10) <= 6)
             {
-                case 2:
-                    MapHole.AddRange(Hole250_300);
-                    break;
-                case 3:
-                    MapHole.AddRange(Hole200_250);
-                    break;
-                case 4:
-                    MapHole.AddRange(Hole200_250);
-                    break;
-                case 5:
-                    MapHole.AddRange(Hole100_150);
-                    break;
-                case 6:
-                    MapHole.AddRange(Hole50_100);
-                    break;
-                case 7:
-                    MapHole.AddRange(Hole0_50);
-                    break;
-                default:
+                Debug.LogWarning("Co the Thang");
+                if (ToTalLevelInMap <= 100)
+                {
                     MapHole.AddRange(Hole0_50);
                     MapHole.AddRange(Hole50_100);
                     MapHole.AddRange(Hole100_150);
                     MapHole.AddRange(Hole150_200);
                     MapHole.AddRange(Hole200_250);
                     MapHole.AddRange(Hole250_300);
-                    break;
+                }
+                else if (ToTalLevelInMap <= 150)
+                {
+                    MapHole.AddRange(Hole250_300);
+                }
+                else if (ToTalLevelInMap <= 200)
+                {
+                    MapHole.AddRange(Hole250_300);
+                }
+                else if (ToTalLevelInMap <= 250)
+                {
+                    MapHole.AddRange(Hole200_250);
+                }
+                else if (ToTalLevelInMap <= 300)
+                {
+                    MapHole.AddRange(Hole150_200);
+                }
+                else if (ToTalLevelInMap <= 350)
+                {
+                    MapHole.AddRange(Hole100_150);
+                }
+                else if (ToTalLevelInMap <= 400)
+                {
+                    MapHole.AddRange(Hole50_100);
+                    MapHole.AddRange(Hole0_50);
+                }
+                else
+                {
+                    MapHole.AddRange(Hole0_50);
+                    MapHole.AddRange(Hole50_100);
+                    MapHole.AddRange(Hole100_150);
+                    MapHole.AddRange(Hole150_200);
+                    MapHole.AddRange(Hole200_250);
+                    MapHole.AddRange(Hole250_300);
+                }
+            }
+            else
+            {
+                MapHole.AddRange(Hole0_50);
+                MapHole.AddRange(Hole50_100);
+                MapHole.AddRange(Hole100_150);
+                MapHole.AddRange(Hole150_200);
+                MapHole.AddRange(Hole200_250);
+                MapHole.AddRange(Hole250_300);
             }
         }
-        else
-        {
-            Debug.LogWarning("Random");
-            MapHole.AddRange(Hole0_50);
-            MapHole.AddRange(Hole50_100);
-            MapHole.AddRange(Hole100_150);
-            MapHole.AddRange(Hole150_200);
-            MapHole.AddRange(Hole200_250);
-            MapHole.AddRange(Hole250_300);
-        }
+
         random = Random.Range(0, MapHole.Count);
         ListMapFound.Add(MapHole[random]);
     }
     void TotalLevelInMap()
     {
         ToTalLevelInMap = 0;
-        for (int i = 1; i < transform.childCount - 2; i++)
+        foreach (GameObject item in ListMapFound)
         {
-            ListMapTotalLevel.Add(transform.GetChild(i).gameObject);
+            ListMapTotalLevel.Add(item);
         }
-
-        for (int i = 1; i < ListMapTotalLevel.Count; i++)
+        foreach (GameObject item in ViTriMechanicSauSort)
         {
-            for (int i2 = 0; i2 < ListMapTotalLevel[i].transform.childCount; i2++)
+            ListMapTotalLevel.Add(item);
+        }
+        foreach (GameObject item in ListMapTotalLevel)
+        {
+            for (int i = 0; i < item.transform.childCount; i++)
             {
-                if (ListMapTotalLevel[i].transform.GetChild(i2).tag == "Enemy")
+                if (item.transform.GetChild(i).tag == "Enemy")
                 {
-                    ListEnemyInTotalLevel.Add(ListMapTotalLevel[i].transform.GetChild(i2).gameObject);
-                    ToTalLevelInMap += ListMapTotalLevel[i].transform.GetChild(i2).gameObject.GetComponent<Enemy>().level;
+                    ListEnemyInTotalLevel.Add(item.transform.GetChild(i).gameObject);
+                    ToTalLevelInMap += item.transform.GetChild(i).gameObject.GetComponent<Enemy>().level;
                 }
-                else if (ListMapTotalLevel[i].transform.GetChild(i2).tag == "Enemy3" && ListMapTotalLevel[i].transform.GetChild(i2).transform.GetComponent<Enemy>().levelBonus >= 40)
+                else if (item.transform.GetChild(i).tag == "Enemy3" && item.transform.GetChild(i).transform.GetComponent<Enemy>().levelBonus >= 40)
                 {
-                    ListEnemyInTotalLevel.Add(ListMapTotalLevel[i].transform.GetChild(i2).gameObject);
-                    ToTalLevelInMap += ListMapTotalLevel[i].transform.GetChild(i2).gameObject.GetComponent<Enemy>().levelBonus;
+                    ListEnemyInTotalLevel.Add(item.transform.GetChild(i).gameObject);
+                    ToTalLevelInMap += item.transform.GetChild(i).gameObject.GetComponent<Enemy>().levelBonus;
                 }
-                else if (ListMapTotalLevel[i].transform.GetChild(i2).tag == "GroupEnemy")
+                else if (item.transform.GetChild(i).tag == "GroupEnemy")
                 {
-                    for (int i3 = 0; i3 < ListMapTotalLevel[i].transform.GetChild(i2).childCount; i3++)
+                    for (int i2 = 0; i2 < item.transform.GetChild(i).childCount; i2++)
                     {
-                        ListEnemyInTotalLevel.Add(ListMapTotalLevel[i].transform.GetChild(i2).GetChild(i3).gameObject);
-                        ToTalLevelInMap += ListMapTotalLevel[i].transform.GetChild(i2).GetChild(i3).gameObject.GetComponent<Enemy>().levelBonus;
+                        ListEnemyInTotalLevel.Add(item.transform.GetChild(i).GetChild(i2).gameObject);
+                        ToTalLevelInMap += item.transform.GetChild(i).GetChild(i2).gameObject.GetComponent<Enemy>().levelBonus;
                     }
                 }
             }
@@ -757,7 +781,6 @@ public class SpawnMap2 : MonoBehaviour
             EndOj = newmap.transform.Find("End").gameObject;
 
             //
-
         }
     }
     public void SetListMapFound()

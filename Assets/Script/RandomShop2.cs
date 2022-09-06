@@ -521,6 +521,7 @@ public class RandomShop2 : MonoBehaviour
         Character.GetComponent<ControllerPlayer>().ChangeCam("CamStart");
         Character.GetComponent<ControllerPlayer>().Save.GetComponent<Save>().ReadText();
         Character.GetComponent<ControllerPlayer>().Start();
+        Character.GetComponent<ControllerPlayer>().RotateCharacter(0, 180, 0);
     }
 
     private bool adsShowing = false;

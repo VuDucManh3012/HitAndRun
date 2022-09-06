@@ -66,7 +66,7 @@ public class SliderProcessStage : MonoBehaviour
     void SetImageDemoSkin()
     {
         int stage2 = StageCurrent % 10;
-        if (stage2 > 0 || stage2 <= 5)
+        if (stage2 > 0 && stage2 <= 5)
         {
             foreach(GameObject item in ListImageSkin)
             {

@@ -412,6 +412,7 @@ public class RandomSkin : MonoBehaviour
         controllerPlayer.Start();
         controllerPlayer.SetSkin2();
         controllerPlayer.Save.GetComponent<Save>().ReadText();
+        controllerPlayer.RotateCharacter(0, 180, 0);
     }
     public void ChangeSkinUpdate()
     {

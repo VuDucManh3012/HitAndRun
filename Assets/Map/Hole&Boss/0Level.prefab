@@ -168,7 +168,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3732440726788867929}
   m_Layer: 0
-  m_Name: 1Hole03
+  m_Name: 0Level
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -209,6 +209,21 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: 0.03
       objectReference: {fileID: 0}
+    - target: {fileID: 277076841671980354, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 7.46
+      objectReference: {fileID: 0}
+    - target: {fileID: 787648383990284769, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 1.2331128
+      objectReference: {fileID: 0}
+    - target: {fileID: 787648383990284769, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_Center.x
+      value: -0.006597519
+      objectReference: {fileID: 0}
     - target: {fileID: 1338181667372941223, guid: 44d2aadd4651f484383bf02057ede1c2,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -228,6 +243,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BlackHoleDiamond
+      objectReference: {fileID: 0}
+    - target: {fileID: 4548386143762470040, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4601680884704939008, guid: 44d2aadd4651f484383bf02057ede1c2,
         type: 3}
@@ -284,6 +304,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5008016273170385741, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5008016273170531723, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5405880851805240696, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 7.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5405880851805240696, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 30.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6427140741741077639, guid: 44d2aadd4651f484383bf02057ede1c2,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -324,9 +364,54 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 6.277
       objectReference: {fileID: 0}
+    - target: {fileID: 6687997374477261289, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6687997374477261289, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6787953497479283005, guid: 44d2aadd4651f484383bf02057ede1c2,
         type: 3}
       propertyPath: levelHole
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7236777985233751280, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7600722643262351336, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7600722643262466350, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7707153952865591194, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7707153952865591194, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8416449393656824159, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8461871227281619580, guid: 44d2aadd4651f484383bf02057ede1c2,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8808557500037244481, guid: 44d2aadd4651f484383bf02057ede1c2,

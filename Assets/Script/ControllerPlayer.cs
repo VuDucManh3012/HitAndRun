@@ -158,6 +158,8 @@ public class ControllerPlayer : MonoBehaviour
 
     [Header("CanvasStage")]
     public GameObject CanvasStage;
+
+    private bool RunnedOnHole;
     private void Awake()
     {
         myLevel = 1;
@@ -205,6 +207,8 @@ public class ControllerPlayer : MonoBehaviour
         PitchSoundDiamond = SoundDiamond.GetComponent<AudioSource>().pitch;
 
         TimefixedNormal = Time.fixedDeltaTime;
+        RotateCharacter(0, 180, 0);
+        RunnedOnHole = false;
     }
     public float PitchSound;
     public float PitchSoundDiamond;
@@ -222,6 +226,7 @@ public class ControllerPlayer : MonoBehaviour
         if (startgame && !onWall && !OnJump)
         {
             AutoRotate();
+            SetJumpAttack360(false);
         }
         else if (OnJump)
         {
@@ -255,9 +260,9 @@ public class ControllerPlayer : MonoBehaviour
         {
             ActiveLeftRight();
         }
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            pushOpposite();
+            pushOppsiteEnemy();
         }
     }
     public void checkSoundAttack()
@@ -542,16 +547,9 @@ public class ControllerPlayer : MonoBehaviour
             myAnim.SetBool("JumpAttack360", false);
         }
     }
-    void SetJumpWall()
+    void SetJumpWall(bool status)
     {
-        if (myAnim.GetBool("JumpWall"))
-        {
-            myAnim.SetBool("JumpWall", false);
-        }
-        else
-        {
-            myAnim.SetBool("JumpWall", true);
-        }
+        myAnim.SetBool("JumpWall", status);
     }
     void SetJumpAttack360(bool TorF)
     {
@@ -562,15 +560,23 @@ public class ControllerPlayer : MonoBehaviour
         AddPitchSoundAttack();
         if (attack == 0)
         {
-            myAnim.SetBool("Attack", true);
-            myAnim.SetBool("Attack2", false);
+            if (!OnJump)
+            {
+                myAnim.SetTrigger("PunchRight");
+                //myAnim.SetBool("Attack", true);
+                //myAnim.SetBool("Attack2", false);
+            }
             attack = 1;
             OnParticle(1);
         }
         else if (attack == 1)
         {
-            myAnim.SetBool("Attack", false);
-            myAnim.SetBool("Attack2", true);
+            if (!OnJump)
+            {
+                myAnim.SetTrigger("PunchLeft");
+                //myAnim.SetBool("Attack", false);
+                //myAnim.SetBool("Attack2", true);
+            }
             attack = 2;
             OnParticle(2);
         }
@@ -621,14 +627,13 @@ public class ControllerPlayer : MonoBehaviour
     {
         AutoMoveCharacter.SetSpeed(speed);
     }
-    private void RotateCharacter(float x, float y, float z)
+    public void RotateCharacter(float x, float y, float z)
     {
         Quaternion newRotation = Quaternion.Euler(x, y, z);
-        ModelCharacterParent.transform.localRotation = Quaternion.Lerp(transform.localRotation, newRotation, 0.25f);
+        ModelCharacterParent.transform.localRotation = newRotation;
     }
     public void rotateTo180()
     {
-        //ModelCharacterParent.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
         ModelCharacterParent.transform.localEulerAngles = new Vector3(0, 0, 0);
     }
     private void Jump(float y)
@@ -669,6 +674,7 @@ public class ControllerPlayer : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         OnJump = false;
         isUnDead = false;
+        SetSpeed(SpeedRoad);
     }
     IEnumerator setMoveOnWall()
     {
@@ -722,11 +728,13 @@ public class ControllerPlayer : MonoBehaviour
     }
     public void pushOppsiteEnemy()
     {
-        myBody.AddForce(new Vector3(0, 0, -23), ForceMode.Impulse);
+        SetSpeed(0);
+        myBody.AddForce(new Vector3(0, 0, -500), ForceMode.Acceleration);
         StartCoroutine(setUnDead());
 
         AudioAssistant.Shot(TYPE_SOUND.PushOppsite);
         HCVibrate.Haptic(HapticTypes.SoftImpact);
+
     }
     private bool buttonHoleGet = false;
     IEnumerator WaitX2Hole()
@@ -918,20 +926,19 @@ public class ControllerPlayer : MonoBehaviour
     public bool Plus999 = false;
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Bridge")
-        {
-            isMove = false;
-            transform.position = new Vector3(other.transform.position.x, transform.position.y - 0.1f, transform.position.z);
-            SetSpeed(SpeedRoad);
-
-            AudioAssistant.Shot(TYPE_SOUND.Diamond);
-            HCVibrate.Haptic(HapticTypes.SoftImpact);
-        }
-        else if (other.tag == "Glass")
+        if (other.tag == "Glass")
         {
             other.transform.parent.Find("Brick").gameObject.SetActive(true);
             other.gameObject.SetActive(false);
             AudioAssistant.Shot(TYPE_SOUND.Glass);
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
+        }
+        else if (other.tag == "Bridge")
+        {
+
+            SetSpeed(SpeedRoad);
+
+            AudioAssistant.Shot(TYPE_SOUND.Diamond);
             HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
         else if (other.tag == "WallBrick")
@@ -1094,6 +1101,7 @@ public class ControllerPlayer : MonoBehaviour
             if (!other.GetComponent<Enemy>().unDamage)
             {
                 destroyEnemy();
+                CheckLevelEnemy();
             }
             else
             {
@@ -1108,9 +1116,9 @@ public class ControllerPlayer : MonoBehaviour
                 else
                 {
                     destroyEnemy();
+                    CheckLevelEnemy();
                 }
             }
-            CheckLevelEnemy();
         }
         else if (other.tag == "Enemy3")
         {
@@ -1140,9 +1148,7 @@ public class ControllerPlayer : MonoBehaviour
             }
             else if (other.GetComponent<Enemy>().level <= myLevel)
             {
-                //anim
-                myAnim.SetBool("AttackBoss", true);
-                //
+                myAnim.SetTrigger("KnockOut");
                 destroyEnemy();
             }
             else if (other.GetComponent<Enemy>().unDamage)
@@ -1214,18 +1220,25 @@ public class ControllerPlayer : MonoBehaviour
         }
         else if (other.tag == "EndBlackHole")
         {
-            //bat canvas
-            CanvasX2Hole.SetActive(true);
-            //Tat di chuyen
-            activeLF = true;
-            CanvasTouchPad.SetActive(false);
-            //settext
-            CanvasX2Hole.transform.Find("BackGround").Find("Diamond").Find("Text").gameObject.GetComponent<Text>().text = DiamondBonusInHole.ToString();
-            //bam gio tat canvas
-            SetSpeed(0);
-            StartCoroutine(WaitX2Hole());
-            //
-            HCVibrate.Haptic(HapticTypes.SoftImpact);
+            if (DiamondBonusInHole <= 1)
+            {
+                ButtonHole();
+            }
+            else
+            {
+                //bat canvas
+                CanvasX2Hole.SetActive(true);
+                //Tat di chuyen
+                activeLF = true;
+                CanvasTouchPad.SetActive(false);
+                //settext
+                CanvasX2Hole.transform.Find("BackGround").Find("Diamond").Find("Text").gameObject.GetComponent<Text>().text = DiamondBonusInHole.ToString();
+                //bam gio tat canvas
+                SetSpeed(0);
+                StartCoroutine(WaitX2Hole());
+                //
+                HCVibrate.Haptic(HapticTypes.SoftImpact);
+            }
         }
         else if (other.tag == "JumpAttack")
         {
@@ -1236,6 +1249,8 @@ public class ControllerPlayer : MonoBehaviour
             unLimitDamage = true;
             SetJumpAttack360(false);
             myAnim.SetInteger("AttackItem", 1);
+            ChangeTimeScale(1);
+            SetFixedDeltaTimeNormal();
         }
         else if (other.tag == "StartCurve")
         {
@@ -1251,7 +1266,7 @@ public class ControllerPlayer : MonoBehaviour
             isMove = true;
             Jump(17);
             SetSpeed(SpeedRoad);
-            SetJumpWall();
+            SetJumpWall(true);
         }
         else if (other.tag == "ItemHammer")
         {
@@ -1359,6 +1374,11 @@ public class ControllerPlayer : MonoBehaviour
         {
             transform.position = Vector3.Lerp(transform.position, new Vector3(other.transform.position.x, transform.position.y, transform.position.z), 0.2f);
         }
+        else if (other.tag == "Bridge")
+        {
+            isMove = false;
+            transform.position = Vector3.Lerp(transform.position, new Vector3(other.transform.position.x, transform.position.y, transform.position.z), 0.2f);
+        }
     }
     private void OnTriggerExit(Collider other)
     {
@@ -1367,7 +1387,7 @@ public class ControllerPlayer : MonoBehaviour
             isMove = true;
             Jump(17);
             SetSpeed(SpeedRoad);
-            SetJumpWall();
+            SetJumpWall(true);
         }
         else if (other.tag == "Wall")
         {
@@ -1393,7 +1413,7 @@ public class ControllerPlayer : MonoBehaviour
 
                 //
                 onRoad = false;
-                SetJumpWall();
+                SetJumpWall(true);
                 ChangeCam("CamRun");
                 //
             }
@@ -1402,17 +1422,20 @@ public class ControllerPlayer : MonoBehaviour
         {
             if (other.GetComponent<BlackHole>().levelHole <= myLevel)
             {
-                myposition = transform.position;
-                myposition = new Vector3(myposition.x, myposition.y, myposition.z + 5);
-                transform.position = other.GetComponent<BlackHole>().start.position;
-                ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.position.y + 2;
-                ObjectFollowCharacter.transform.position = transform.position;
-                DiamondBonusInHole = 0;
-                //Cam
-                OffCam();
-                CamInHole = other.transform.parent.parent.Find("BlackHole").Find("CamInHole").gameObject;
-                CamInHole.SetActive(true);
-                CamInHole.GetComponent<CinemachineVirtualCamera>().Follow = ObjectFollowCharacter.transform;
+                if (!RunnedOnHole)
+                {
+                    myposition = transform.position;
+                    transform.position = new Vector3(other.GetComponent<BlackHole>().start.position.x, other.GetComponent<BlackHole>().start.position.y, other.GetComponent<BlackHole>().start.position.z + 2);
+                    ObjectFollowCharacter.GetComponent<CameraFollow2>().PositionYOnJump = transform.position.y + 2;
+                    ObjectFollowCharacter.transform.position = transform.position;
+                    DiamondBonusInHole = 0;
+                    //Cam
+                    OffCam();
+                    CamInHole = other.transform.parent.parent.Find("BlackHole").Find("CamInHole").gameObject;
+                    CamInHole.SetActive(true);
+                    CamInHole.GetComponent<CinemachineVirtualCamera>().Follow = ObjectFollowCharacter.transform;
+                    RunnedOnHole = true;
+                }
             }
             else
             {
@@ -1477,6 +1500,7 @@ public class ControllerPlayer : MonoBehaviour
         CanvasTouchPad.SetActive(true);
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///
     public void WatchAdsX2Hole()
     {
 
