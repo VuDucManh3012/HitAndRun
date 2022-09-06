@@ -1368,7 +1368,6 @@ public class CanvasManager : MonoBehaviour
             PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
             PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
             PlayerPrefs.SetInt("InterVictory", 0);
-            Application.Quit();
         }
     }
     void OnApplicationFocus(bool hasFocus)
@@ -1381,7 +1380,6 @@ public class CanvasManager : MonoBehaviour
             PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
             PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
             PlayerPrefs.SetInt("InterVictory", 0);
-            Application.Quit();
         }
     }
     private void OnApplicationQuit()
@@ -1392,6 +1390,5 @@ public class CanvasManager : MonoBehaviour
         PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
         PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
         PlayerPrefs.SetInt("InterVictory", 0);
-        Application.Quit();
     }
 }
