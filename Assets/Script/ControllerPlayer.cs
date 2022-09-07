@@ -1010,6 +1010,15 @@ public class ControllerPlayer : MonoBehaviour
             JumpHigh();
             SetJumpAttack360(false);
             other.transform.GetComponent<Animator>().Play("Piston", -1, 0f);
+            try
+            {
+                other.transform.parent.Find("Effect").gameObject.SetActive(true);
+            }
+            catch
+            {
+
+            }
+            
             if (transform.position.x <= -2)
             {
                 JumpHighLeft = -1;
@@ -1372,12 +1381,12 @@ public class ControllerPlayer : MonoBehaviour
         }
         else if (other.tag == "StageEnding")
         {
-            transform.position = Vector3.Lerp(transform.position, new Vector3(other.transform.position.x, transform.position.y, transform.position.z), 0.2f);
+            transform.position = new Vector3(other.transform.position.x, transform.position.y, transform.position.z);
         }
         else if (other.tag == "Bridge")
         {
             isMove = false;
-            transform.position = Vector3.Lerp(transform.position, new Vector3(other.transform.position.x, transform.position.y, transform.position.z), 0.2f);
+            transform.position = new Vector3(other.transform.position.x, transform.position.y, transform.position.z);
         }
     }
     private void OnTriggerExit(Collider other)

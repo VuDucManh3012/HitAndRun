@@ -10,6 +10,7 @@ public class AttackCharacter : MonoBehaviour
     public float DoGiamTimeScale = 0.02f;
     public float DoTangTimeScale = 0.5f;
     public float TimeScaleCurrent;
+    public GameObject ModelCharacter;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,7 +30,9 @@ public class AttackCharacter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        TimeScaleCurrent = Time.timeScale;
+        ModelCharacter.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+
+           TimeScaleCurrent = Time.timeScale;
         transform.rotation = new Quaternion(0, 0, 0, 1);
 
         if (Subtracting && Time.timeScale <= TimeScaleWish)
