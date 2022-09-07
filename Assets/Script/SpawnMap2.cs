@@ -608,11 +608,7 @@ public class SpawnMap2 : MonoBehaviour
         TotalLevelInMap();
         MapHole.Clear();
         int random;
-        if (stage == 1)
-        {
-            MapHole.Add(HoleStage1);
-        }
-        else
+        if (PlayerPrefs.GetInt("stage") != 1)
         {
             if (Random.Range(0, 10) <= 6)
             {
@@ -670,6 +666,10 @@ public class SpawnMap2 : MonoBehaviour
                 MapHole.AddRange(Hole200_250);
                 MapHole.AddRange(Hole250_300);
             }
+        }
+        else
+        {
+            MapHole.Add(HoleStage1);
         }
 
         random = Random.Range(0, MapHole.Count);

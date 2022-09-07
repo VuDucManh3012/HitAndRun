@@ -14,7 +14,8 @@ public class ModelChangeSkin : MonoBehaviour
 
     CapsuleCollider capsuleCollider;
     // Start is called before the first frame update
-    void Start()
+    [ContextMenu("Test")]
+    public void Start()
     {
         changeSkinModel();
         checkYON();
@@ -31,7 +32,7 @@ public class ModelChangeSkin : MonoBehaviour
         SkinNoBuy.Clear();
         for (int i = 0; i < 6; i++)
         {
-            if (PlayerPrefs.GetInt("weaponSpecial" + i) < 2 || !PlayerPrefs.HasKey("weaponSpecial" + i))
+            if (!PlayerPrefs.HasKey("ballSpecial " + i))
             {
                 WeaponNoBuy.Add(i);
             }
@@ -81,17 +82,22 @@ public class ModelChangeSkin : MonoBehaviour
     }
     void FromTextureToSkin()
     {
+        for(int i = 0; i < 6; i++)
+        {
+            ParentModelWeapon.transform.GetChild(i).gameObject.SetActive(false);
+            ParentModelSkin.transform.GetChild(i).gameObject.SetActive(false);
+        }
         //type ==1 : Weapon ; type==2:Skin
         if (indexSkin != 10 && TypeShop == 1)
         {
             ParentModelWeapon.SetActive(true);
-            ParentModelWeapon.transform.GetChild(indexSkin).gameObject.SetActive(true);
+            ParentModelWeapon.transform.GetChild(WeaponNoBuy[indexSkin]).gameObject.SetActive(true);
             Effect.SetActive(true);
         }
         else if (indexSkin != 10 && TypeShop == 2)
         {
             ParentModelSkin.SetActive(true);
-            ParentModelSkin.transform.GetChild(indexSkin).gameObject.SetActive(true);
+            ParentModelSkin.transform.GetChild(SkinNoBuy[indexSkin]).gameObject.SetActive(true);
             Effect.SetActive(true);
         }
     }

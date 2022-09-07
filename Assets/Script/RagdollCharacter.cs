@@ -13,14 +13,32 @@ public class RagdollCharacter : MonoBehaviour
     public List<Texture> ListTexture;
     public int IndexSkin;
 
+    private bool AddedForce;
     // Start is called before the first frame update
     void Start()
     {
         myRigid = GetComponent<Rigidbody>();
-        Force.x = Random.Range(0, 1);
+
+        if (Random.Range(0, 2) == 0)
+        {
+            Force.x = -0.1f;
+        }
+        else
+        {
+            Force.x = 0.1f;
+        }
         Force.y = 1;
-        Force.z = Random.Range(0, 1);
-        myRigid.AddForce(Force * 100, ForceMode.Impulse);
+        Force.z = 0;
+        AddedForce = false;
+    }
+    private void Update()
+    {
+        if (!AddedForce)
+        {
+            myRigid.AddForce(Force * 300, ForceMode.Impulse);
+            AddedForce = true;
+        }
+
     }
     private bool RagdollActive = false;
     public void RagdollChangeSkin(int NumberTextSkin, double mylevel)

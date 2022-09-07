@@ -9628,6 +9628,7 @@ MonoBehaviour:
   ImageItemSpecial: {fileID: 1414154080}
   ImagePanel: {fileID: 682389996}
   ButtonAdsKey: {fileID: 2046511075}
+  ListWeaponSpecial: []
   ImageNewSkin: {fileID: 7494322088361188480}
   CanvasNewSkin: {fileID: 7494322089788684582}
   DiamondKey: {fileID: 0}
@@ -25701,7 +25702,7 @@ RectTransform:
   - {fileID: 4938096500097594725}
   - {fileID: 2056794585}
   m_Father: {fileID: 4938096500935353422}
-  m_RootOrder: 2
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -26439,7 +26440,7 @@ RectTransform:
   - {fileID: 4938096501594420379}
   - {fileID: 1497440605}
   m_Father: {fileID: 4938096500935353422}
-  m_RootOrder: 6
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -31506,11 +31507,11 @@ RectTransform:
   m_Children:
   - {fileID: 4938096501172163329}
   - {fileID: 4938096500712911355}
-  - {fileID: 4938096500058699785}
+  - {fileID: 4938096500181529107}
   - {fileID: 4938096500614877216}
   - {fileID: 4938096500797444170}
   - {fileID: 4938096501124218817}
-  - {fileID: 4938096500181529107}
+  - {fileID: 4938096500058699785}
   - {fileID: 4938096501187103692}
   m_Father: {fileID: 4938096501295841541}
   m_RootOrder: 1
@@ -43280,7 +43281,6 @@ MonoBehaviour:
   - {fileID: 220594855}
   - {fileID: 4938096500210151459}
   - {fileID: 7494322089117369191}
-  ButtonRateUs: {fileID: 220594855}
   ButtonNoAds: {fileID: 1536370426}
   CanvasTouchPad: {fileID: 0}
   CanvasPopupOfflineReward: {fileID: 7494322089632567657}
@@ -58477,9 +58477,11 @@ MonoBehaviour:
   VictoryScene: {fileID: 7494322089301588272}
   SliderVictory: {fileID: 7494322089584754694}
   TextX: {fileID: 7494322089278332504}
+  TextXInLv1: {fileID: 0}
   DiamondFound: {fileID: 7494322089846400626}
   BossBonus: {fileID: 1628895678}
   DiamondBonusADSText: {fileID: 7494322090027269544}
+  DiamondBonusADSTextInLv1: {fileID: 0}
   Character: {fileID: 0}
   characterController: {fileID: 0}
   MainCamera: {fileID: 0}
@@ -61743,6 +61745,7 @@ MonoBehaviour:
   ImageItemSpecial: {fileID: 7494322088812803929}
   ImagePanel: {fileID: 7494322089215175169}
   ButtonAdsKey: {fileID: 7494322088792396395}
+  ListWeaponSpecial: []
   ImageNewSkin: {fileID: 7494322088361188480}
   CanvasNewSkin: {fileID: 7494322089788684582}
   DiamondKey: {fileID: 0}
@@ -66557,6 +66560,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasManager: {fileID: 7494322088956327998}
   canvasNewSkinDemo: {fileID: 0}
+  ButtonOffInLv1: []
+  ButtonLv1: {fileID: 0}
 --- !u!1 &7494322089301589093
 GameObject:
   m_ObjectHideFlags: 0

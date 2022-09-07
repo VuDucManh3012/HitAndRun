@@ -36,13 +36,19 @@ public class RandomShop2 : MonoBehaviour
     [Header("Character&Camera")]
     public GameObject Character;
     public GameObject MainCamera;
+
     [Header("GameStartScene")]
     public GameObject GameStartScene;
+
     [Header("CanvasDiamond")]
     public GameObject CanvasDiamond;
+
     [Header("CanvasPopUpDontOpen")]
     public GameObject CanvasPopUpDontOpen;
     private bool offing;
+
+    [Header("ButtonRandom")]
+    public Text TextButtonRandom;
     // Start is called before the first frame update
     public void Start()
     {
@@ -50,6 +56,16 @@ public class RandomShop2 : MonoBehaviour
         OnWeaponNormal();
         CheckBallSpecial();
         checkBall();
+        SetTextButtonRandom();
+    }
+    private void SetTextButtonRandom()
+    {
+        //hienthiButtonRandom
+        if (!PlayerPrefs.HasKey("SoLanRandomWeapon"))
+        {
+            PlayerPrefs.SetInt("SoLanRandomWeapon", 0);
+        }
+        TextButtonRandom.text = ((PlayerPrefs.GetInt("SoLanRandomWeapon") * 1000) + 1500).ToString();
     }
     public void Update()
     {
@@ -168,10 +184,22 @@ public class RandomShop2 : MonoBehaviour
     {
         if (YourSelect2.Count != 0)
         {
-            int e = int.Parse(PlayerPrefs.GetString("diamond"));
-            if (e >= 1500)
+            //
+            int price;
+            if (!PlayerPrefs.HasKey("SoLanRandomWeapon"))
             {
-                e -= 1500;
+                price = 1500;
+                PlayerPrefs.SetInt("SoLanRandomWeapon", 0);
+            }
+            else
+            {
+                price = (PlayerPrefs.GetInt("SoLanRandomWeapon") * 1000) + 1500;
+            }
+            //
+            int e = int.Parse(PlayerPrefs.GetString("diamond"));
+            if (e >= price)
+            {
+                e -= price;
                 string m = e.ToString();
                 diamond.text = m.ToString();
                 PlayerPrefs.SetString("diamond", diamond.text);
@@ -181,6 +209,11 @@ public class RandomShop2 : MonoBehaviour
                 //
                 StartCoroutine(Wait());
                 ai.enabled = true;
+                //CongSolanRandom
+                int SolanRandom = PlayerPrefs.GetInt("SoLanRandomWeapon");
+                SolanRandom += 1;
+                PlayerPrefs.SetInt("SoLanRandomWeapon", SolanRandom);
+                SetTextButtonRandom();
             }
             else
             {
@@ -192,6 +225,7 @@ public class RandomShop2 : MonoBehaviour
             }
         }
     }
+    [ContextMenu("RandomSpecial")]
     public void RandomButtonSpecial()
     {
         if (YourSelect2Special.Count != 0)

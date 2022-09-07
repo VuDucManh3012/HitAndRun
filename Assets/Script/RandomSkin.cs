@@ -40,13 +40,19 @@ public class RandomSkin : MonoBehaviour
     [Header("Character&Camera")]
     public GameObject Character;
     public GameObject MainCamera;
+
     [Header("GameStartScene")]
     public GameObject GameStartScene;
+
     [Header("CanvasDiamond")]
     public GameObject CanvasDiamond;
+
     [Header("CanvasPopUpDontOpen")]
     public GameObject CanvasPopUpDontOpen;
     private bool offing;
+
+    [Header("ButtonRandom")]
+    public Text TextButtonRandom;
     // Start is called before the first frame update
     public void Start()
     {
@@ -58,8 +64,17 @@ public class RandomSkin : MonoBehaviour
         OnSkinNormal();
         ModelArmor.SetActive(true);
         adsShowing = false;
+        SetTextButtonRandom();
     }
-
+    private void SetTextButtonRandom()
+    {
+        //hienthiButtonRandom
+        if (!PlayerPrefs.HasKey("SoLanRandomSkin"))
+        {
+            PlayerPrefs.SetInt("SoLanRandomSkin", 0);
+        }
+        TextButtonRandom.text = ((PlayerPrefs.GetInt("SoLanRandomSkin") * 1000) + 1500).ToString();
+    }
     public void Update()
     {
         if (CanvasPopUpDontOpen.active && !offing)
@@ -166,10 +181,22 @@ public class RandomSkin : MonoBehaviour
     {
         if (YourSelect2.Count != 0)
         {
-            int e = int.Parse(PlayerPrefs.GetString("diamond"));
-            if (e >= 1500)
+            //
+            int price;
+            if (!PlayerPrefs.HasKey("SoLanRandomSkin"))
             {
-                e -= 1500;
+                price = 1500;
+                PlayerPrefs.SetInt("SoLanRandomSkin", 0);
+            }
+            else
+            {
+                price = (PlayerPrefs.GetInt("SoLanRandomSkin") * 1000) + 1500;
+            }
+            //
+            int e = int.Parse(PlayerPrefs.GetString("diamond"));
+            if (e >= price)
+            {
+                e -= price;
                 string m = e.ToString();
                 diamond.text = m.ToString();
                 PlayerPrefs.SetString("diamond", diamond.text);
@@ -180,6 +207,11 @@ public class RandomSkin : MonoBehaviour
                 //
                 ai.enabled = true;
                 StartCoroutine(Wait());
+                //CongSolanRandom
+                int SolanRandom = PlayerPrefs.GetInt("SoLanRandomSkin");
+                SolanRandom += 1;
+                PlayerPrefs.SetInt("SoLanRandomSkin", SolanRandom);
+                SetTextButtonRandom();
             }
             else
             {
@@ -210,6 +242,7 @@ public class RandomSkin : MonoBehaviour
         ImageSelect[br].SetActive(false);
         ImageVery[br].SetActive(false);
         YourSelect[br].SetActive(true);
+        PlayerPrefs.SetString("CurrentSkin", textSkin[br].name);
 
         PlayerPrefs.SetInt("skin " + br, 1);
         checkBall();
@@ -513,6 +546,12 @@ public class RandomSkin : MonoBehaviour
         adsShowing = false;
         int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 0) + 1;
         PlayerPrefs.SetInt("skinSpecial" + 0, adsPoint);
+        if (PlayerPrefs.GetInt("skinSpecial" + 0) == 2)
+        {
+            PlayerPrefs.SetString("CurrentSkin", textSkin[6].name);
+            checkBall();
+            CheckItemChangeSkin();
+        }
         checkBallSpecial();
     }
     /// ///////////////////////////////////////////////////////////////////////////////////
@@ -548,6 +587,12 @@ public class RandomSkin : MonoBehaviour
         adsShowing = false;
         int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 1) + 1;
         PlayerPrefs.SetInt("skinSpecial" + 1, adsPoint);
+        if (PlayerPrefs.GetInt("skinSpecial" + 1) == 2)
+        {
+            PlayerPrefs.SetString("CurrentSkin", textSkin[7].name);
+            checkBall();
+            CheckItemChangeSkin();
+        }
         checkBallSpecial();
     }
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -583,6 +628,12 @@ public class RandomSkin : MonoBehaviour
         adsShowing = false;
         int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 2) + 1;
         PlayerPrefs.SetInt("skinSpecial" + 2, adsPoint);
+        if (PlayerPrefs.GetInt("skinSpecial" + 2) == 2)
+        {
+            PlayerPrefs.SetString("CurrentSkin", textSkin[8].name);
+            checkBall();
+            CheckItemChangeSkin();
+        }
         checkBallSpecial();
     }
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -618,6 +669,12 @@ public class RandomSkin : MonoBehaviour
         adsShowing = false;
         int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 3) + 1;
         PlayerPrefs.SetInt("skinSpecial" + 3, adsPoint);
+        if (PlayerPrefs.GetInt("skinSpecial" + 3) == 2)
+        {
+            PlayerPrefs.SetString("CurrentSkin", textSkin[9].name);
+            checkBall();
+            CheckItemChangeSkin();
+        }
         checkBallSpecial();
     }
     //////////////////////////////////////////////////////////////////////////////////////
@@ -656,6 +713,12 @@ public class RandomSkin : MonoBehaviour
         adsShowing = false;
         int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 4) + 1;
         PlayerPrefs.SetInt("skinSpecial" + 4, adsPoint);
+        if (PlayerPrefs.GetInt("skinSpecial" + 4) == 2)
+        {
+            PlayerPrefs.SetString("CurrentSkin", textSkin[10].name);
+            checkBall();
+            CheckItemChangeSkin();
+        }
         checkBallSpecial();
     }
     //////////////////////////////////////////////////////////////////////////////////////
@@ -690,6 +753,24 @@ public class RandomSkin : MonoBehaviour
         adsShowing = false;
         int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 5) + 1;
         PlayerPrefs.SetInt("skinSpecial" + 5, adsPoint);
+        if (PlayerPrefs.GetInt("skinSpecial" + 5) == 2)
+        {
+            PlayerPrefs.SetString("CurrentSkin", textSkin[11].name);
+            checkBall();
+        }
         checkBallSpecial();
+    }
+
+    [Header("ItemChangeSkin")]
+    public GameObject SpawnMap;
+    private GameObject ItemChangeSkin;
+    void CheckItemChangeSkin()
+    {
+        if (System.Int32.Parse(PlayerPrefs.GetString("stage")) % 10 == 8)
+        {
+            ItemChangeSkin = SpawnMap.transform.Find("MapDemoSkin(Clone)").Find("ItemChangeSkin").gameObject;
+            ItemChangeSkin.GetComponent<ModelChangeSkin>().Start();
+        }
+        
     }
 }

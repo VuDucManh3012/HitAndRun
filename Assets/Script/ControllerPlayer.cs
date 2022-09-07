@@ -172,6 +172,7 @@ public class ControllerPlayer : MonoBehaviour
     // Start is called before the first frame update
     public void Start()
     {
+        myLevel = 1;
         myBody = GetComponent<Rigidbody>();
         myAnim = GetComponent<Animator>();
         SkinRenderer = ModelCharacterBase.GetComponent<Renderer>();
@@ -972,6 +973,7 @@ public class ControllerPlayer : MonoBehaviour
         }
         else if (other.tag == "StageEnding")
         {
+            CanvasTouchPad.SetActive(false);
             isMove = false;
             ChangeCam("CamEnding");
             SetSpeed(SpeedRoad - 4);
@@ -1083,6 +1085,7 @@ public class ControllerPlayer : MonoBehaviour
             {
                 pushOpposite();
                 myLevel -= 10000;
+                SetSpeed(0);
             }
         }
         else if (other.tag == "Enemy")
@@ -1419,7 +1422,6 @@ public class ControllerPlayer : MonoBehaviour
                 {
                     pushRight();
                 }
-
                 //
                 onRoad = false;
                 SetJumpWall(true);

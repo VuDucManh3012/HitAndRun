@@ -244,7 +244,8 @@ public class CanvasManager : MonoBehaviour
             {
                 indexSkin = Random.Range(0, SkinNoBuy.Count);
             }
-        }else if(TypeShop == 2)
+        }
+        else if (TypeShop == 2)
         {
             if (TypeShop == PlayerPrefs.GetInt("TypeShopEndingSkin") && indexSkin == PlayerPrefs.GetInt("IndexSkinEndingShop") && WeaponNoBuy.Count > 0)
             {
@@ -386,7 +387,7 @@ public class CanvasManager : MonoBehaviour
             }
             CanVasQualityKey.SetActive(true);
         }
-        
+
     }
     public void VictorySceneController()
     {
@@ -468,7 +469,7 @@ public class CanvasManager : MonoBehaviour
     {
         Save.WriteText();
         PlayerPrefs.SetString("key", PlayerPrefs.GetString("key"));
-        
+
         SetTimeCountDown();
         PlayerPrefs.SetInt("InterVictory", 1);
         Loadscene = true;
@@ -970,7 +971,6 @@ public class CanvasManager : MonoBehaviour
             if (adsShowing)
                 return;
 
-
             if (GameManager.EnableAds)
             {
                 AdManager.Instance.ShowInterstitial("BackShopSkin", 1);
@@ -1010,7 +1010,6 @@ public class CanvasManager : MonoBehaviour
 
         if (adsShowing)
             return;
-
 
         if (!GameManager.EnableAds)
         {
@@ -1323,7 +1322,7 @@ public class CanvasManager : MonoBehaviour
         }
         else
         {
-            PlayerPrefs.SetFloat("MusicVolumn", 0.5f);
+            PlayerPrefs.SetFloat("MusicVolumn", 0.4f);
         }
 
     }
@@ -1336,7 +1335,7 @@ public class CanvasManager : MonoBehaviour
         }
         else
         {
-            PlayerPrefs.SetFloat("SfxVolumn", 0.5f);
+            PlayerPrefs.SetFloat("SfxVolumn", 0.8f);
         }
     }
     public void PLayMusicStart()
@@ -1347,11 +1346,11 @@ public class CanvasManager : MonoBehaviour
     {
         if (!PlayerPrefs.HasKey("SfxVolumn"))
         {
-            PlayerPrefs.SetFloat("SfxVolumn", 0.5f);
+            PlayerPrefs.SetFloat("SfxVolumn", 0.8f);
         }
         if (!PlayerPrefs.HasKey("MusicVolumn"))
         {
-            PlayerPrefs.SetFloat("MusicVolumn", 0.5f);
+            PlayerPrefs.SetFloat("MusicVolumn", 0.4f);
         }
 
         SoundVolumn.value = PlayerPrefs.GetFloat("SfxVolumn");
@@ -1362,24 +1361,39 @@ public class CanvasManager : MonoBehaviour
     {
         if (pause)
         {
-            SetTimeCountDown();
-            PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
-            PlayerPrefs.SetInt("FirstGoShopSkin", 0);
-            PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
-            PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
-            PlayerPrefs.SetInt("InterVictory", 0);
+            if (!AddedData)
+            {
+                SetTimeCountDown();
+                PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
+                PlayerPrefs.SetInt("FirstGoShopSkin", 0);
+                PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
+                PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
+                PlayerPrefs.SetInt("InterVictory", 0);
+            }
+        }
+        else
+        {
+            AddedData = false;
         }
     }
+    public bool AddedData = false;
     void OnApplicationFocus(bool hasFocus)
     {
         if (!hasFocus)
         {
-            SetTimeCountDown();
-            PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
-            PlayerPrefs.SetInt("FirstGoShopSkin", 0);
-            PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
-            PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
-            PlayerPrefs.SetInt("InterVictory", 0);
+            if (!AddedData)
+            {
+                SetTimeCountDown();
+                PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
+                PlayerPrefs.SetInt("FirstGoShopSkin", 0);
+                PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
+                PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
+                PlayerPrefs.SetInt("InterVictory", 0);
+            }
+        }
+        else
+        {
+            AddedData = false;
         }
     }
     private void OnApplicationQuit()
