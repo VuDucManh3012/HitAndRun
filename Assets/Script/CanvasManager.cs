@@ -126,6 +126,130 @@ public class CanvasManager : MonoBehaviour
 
     [Header("CanvasDemoSkin")]
     public GameObject CanvasDemoSkin;
+
+    [Header("CanvasDiamondFly")]
+    public MoneyClaimFx MoneyClaimFx;
+    public Transform SpawnPointDefault;
+    private Transform SpawnPoint;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        Loadscene = false;
+        GameOverScene.SetActive(false);
+        VictoryScene.SetActive(false);
+        CanvasLuckyWheel.GetComponentInChildren<Spin>().Start();
+        if (!PlayerPrefs.HasKey("currenttime"))
+        {
+            currentTime = startingTime;
+        }
+        else
+        {
+            currentTime = PlayerPrefs.GetInt("currenttime");
+        }
+
+        SetTextUpdateLevel();
+        //check lan dau vao shop
+        if (!PlayerPrefs.HasKey("FirstGoShopSkin"))
+        {
+            PlayerPrefs.SetInt("FirstGoShopSkin", 0);
+        }
+        if (!PlayerPrefs.HasKey("FirstGoShopWeapon"))
+        {
+            PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
+        }
+        if (PlayerPrefs.HasKey("DateBefore"))
+        {
+            if (!PlayerPrefs.HasKey("ClaimedOfflineReward"))
+            {
+                PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
+            }
+            else
+            {
+                CheckOfflineReward();
+                PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
+            }
+
+        }
+        SetTextOfflineRewardUpdate();
+        //haptic
+        checkHaptic();
+        ////audio
+        //
+        AudioAssistant.Instance.PlayMusic("Start");
+        AudioAssistant.Instance.PlayMusic("Start");
+        checkvolumn();
+        //
+        SetValueSliderSetting();
+        if (PlayerPrefs.GetInt("InterVictory") == 1)
+        {
+            InterInVictory();
+        }
+        //checkRated
+        bool Rated = PlayerPrefs.HasKey("Rated");
+        int stage;
+        try
+        {
+            stage = System.Int32.Parse(PlayerPrefs.GetString("stage"));
+        }
+        catch
+        {
+            stage = 1;
+        }
+
+        if (!Rated && (stage == 3 || stage % 15 == 0))
+        {
+            CanvasPopupRate.SetActive(true);
+            GameStartScene.SetActive(false);
+            CanVasQualityKey.SetActive(false);
+        }
+        //
+    }
+    public void DiamondFly(Transform spawnTransform)
+    {
+        if (spawnTransform != null)
+        {
+            MoneyClaimFx.ClaimMoney(20, spawnTransform);
+        }
+        else
+        {
+            MoneyClaimFx.ClaimMoney(20, SpawnPointDefault);
+        }
+    }
+    public void DiamondFlyAdsReward()
+    {
+        DiamondFly(SpawnPoint);
+    }
+    public void SetSpawnPoint(Transform transform)
+    {
+        SpawnPoint = transform;
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        if (currentTime == 0)
+        {
+            NoticeGift10Minutes.SetActive(true);
+        }
+        else if (currentTime != 0)
+        {
+            CountDown();
+            NoticeGift10Minutes.SetActive(false);
+        }
+        CheckSlotSpin();
+        if (ScreenVictoryActive)
+        {
+            if (characterController.DemoingSkin)
+            {
+                CanvasDemoSkin.GetComponent<CanvasNewSkinDemo>().SetImage(characterController.indexSkinDemo, characterController.typeShopSkinDemo);
+                CanvasDemoSkin.SetActive(true);
+            }
+            else
+            {
+                VictoryScene.SetActive(true);
+            }
+        }
+    }
     public void FixedUpdate()
     {
         if (VictoryScene.active)
@@ -631,105 +755,7 @@ public class CanvasManager : MonoBehaviour
         GameManager.Instance.Data.User.PurchasedNoAds = true;
         ///
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        Loadscene = false;
-        GameOverScene.SetActive(false);
-        VictoryScene.SetActive(false);
-        CanvasLuckyWheel.GetComponentInChildren<Spin>().Start();
-        if (!PlayerPrefs.HasKey("currenttime"))
-        {
-            currentTime = startingTime;
-        }
-        else
-        {
-            currentTime = PlayerPrefs.GetInt("currenttime");
-        }
 
-        SetTextUpdateLevel();
-        //check lan dau vao shop
-        if (!PlayerPrefs.HasKey("FirstGoShopSkin"))
-        {
-            PlayerPrefs.SetInt("FirstGoShopSkin", 0);
-        }
-        if (!PlayerPrefs.HasKey("FirstGoShopWeapon"))
-        {
-            PlayerPrefs.SetInt("FirstGoShopWeapon", 0);
-        }
-        if (PlayerPrefs.HasKey("DateBefore"))
-        {
-            if (!PlayerPrefs.HasKey("ClaimedOfflineReward"))
-            {
-                PlayerPrefs.SetInt("ClaimedOfflineReward", 0);
-            }
-            else
-            {
-                CheckOfflineReward();
-                PlayerPrefs.SetString("DateBefore", System.DateTime.Now.ToString());
-            }
-
-        }
-        SetTextOfflineRewardUpdate();
-        //haptic
-        checkHaptic();
-        ////audio
-        //
-        AudioAssistant.Instance.PlayMusic("Start");
-        AudioAssistant.Instance.PlayMusic("Start");
-        checkvolumn();
-        //
-        SetValueSliderSetting();
-        if (PlayerPrefs.GetInt("InterVictory") == 1)
-        {
-            InterInVictory();
-        }
-        //checkRated
-        bool Rated = PlayerPrefs.HasKey("Rated");
-        int stage;
-        try
-        {
-            stage = System.Int32.Parse(PlayerPrefs.GetString("stage"));
-        }
-        catch
-        {
-            stage = 1;
-        }
-
-        if (!Rated && (stage == 3 || stage % 15 == 0))
-        {
-            CanvasPopupRate.SetActive(true);
-            GameStartScene.SetActive(false);
-            CanVasQualityKey.SetActive(false);
-        }
-        //
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        if (currentTime == 0)
-        {
-            NoticeGift10Minutes.SetActive(true);
-        }
-        else if (currentTime != 0)
-        {
-            CountDown();
-            NoticeGift10Minutes.SetActive(false);
-        }
-        CheckSlotSpin();
-        if (ScreenVictoryActive)
-        {
-            if (characterController.DemoingSkin)
-            {
-                CanvasDemoSkin.GetComponent<CanvasNewSkinDemo>().SetImage(characterController.indexSkinDemo, characterController.typeShopSkinDemo);
-                CanvasDemoSkin.SetActive(true);
-            }
-            else
-            {
-                VictoryScene.SetActive(true);
-            }
-        }
-    }
     public void checkvolumn()
     {
         MusicVolumn.value = PlayerPrefs.GetFloat("MusicVolumn");
@@ -920,6 +946,7 @@ public class CanvasManager : MonoBehaviour
         }
         currentTime = startingTime;
         GameStartScene.SetActive(true);
+        DiamondFlyAdsReward();
     }
     public void LoseItGift()
     {
@@ -1147,6 +1174,7 @@ public class CanvasManager : MonoBehaviour
         PlayerPrefs.SetInt("ClaimedOfflineReward", 1);
         PopupRewardOffline.SetActive(false);
         BackGroundNenToi.SetActive(false);
+        DiamondFlyAdsReward();
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void WatchAdsUpdateLevel()

@@ -57,6 +57,10 @@ public class GameManager : Singleton<GameManager>
         Instance.GameInited = true;
     }
 
+    public void AddMoney(int value)
+    {
+        EventGlobalManager.Instance.OnMoneyChange.Dispatch(true);
+    }
     private void LoadGameData()
     {
         Data = Database.LoadData();

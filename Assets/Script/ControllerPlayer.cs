@@ -1501,6 +1501,7 @@ public class ControllerPlayer : MonoBehaviour
         DiamondBonusInHole = 0;
 
         ActiveLF();
+        CanvasManager.DiamondFlyAdsReward();
     }
     public bool adsShowing = false;
     /// ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1555,6 +1556,8 @@ public class ControllerPlayer : MonoBehaviour
         DiamondBonusInHole = 0;
 
         ActiveLF();
+
+        CanvasManager.DiamondFlyAdsReward();
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void WatchAdsAFK25s()

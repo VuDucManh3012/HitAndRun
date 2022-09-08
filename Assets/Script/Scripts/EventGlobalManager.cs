@@ -11,4 +11,5 @@ public class EventGlobalManager : Singleton<EventGlobalManager>
     public Relay OnChangeName = new Relay();
 
     public Relay OnPurchaseNoAds = new Relay();
+    public Relay<bool> OnMoneyChange = new Relay<bool>();
 }

@@ -52,6 +52,9 @@ public class Spin : MonoBehaviour
     public List<int> SkinNoBuy;
     public List<int> WeaponNoBuy;
 
+    [Header("CanvasManager")]
+    public CanvasManager CanvasManager;
+
     private bool OnAnimSliderProcess = false;
 
     /*
@@ -220,10 +223,6 @@ public class Spin : MonoBehaviour
         ProcessEnding = PlayerPrefs.GetInt("WheelProcess") + 1;
         ProcessCurrent = PlayerPrefs.GetInt("WheelProcess");
         OnAnimSliderProcess = true;
-        //Add Process
-
-        //
-
     }
     [ContextMenu("Rotate")]
     public void RotateNow()
@@ -295,6 +294,7 @@ public class Spin : MonoBehaviour
             //Bat PopUp
             PopUpGiftLuckyWheel.SetActive(true);
         }
+        CanvasManager.DiamondFly(null);
     }
     public void AddDiamond(int bonus2)
     {
@@ -419,27 +419,6 @@ public class Spin : MonoBehaviour
             SetProcess();
         }
 
-    }
-    public void CheckProcess()
-    {
-        int processNow = PlayerPrefs.GetInt("WheelProcess");
-        if (processNow == 4)
-        {
-            ///////////////////////////////////////////////////////////////
-            AddDiamond(500);
-            ReadText();
-        }
-        else if (processNow == 7)
-        {
-            ///////////////////////////////////////////////////////////////
-            AddDiamond(1000);
-            ReadText();
-        }
-        else if (processNow == 10)
-        {
-            ///////////////////////////////////////
-            Debug.Log("10 Diem");
-        }
     }
     public void SubTractSpinSlot()
     {

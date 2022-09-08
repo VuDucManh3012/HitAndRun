@@ -608,8 +608,9 @@ public class SpawnMap2 : MonoBehaviour
         TotalLevelInMap();
         MapHole.Clear();
         int random;
-        if (PlayerPrefs.GetInt("stage") != 1)
+        if (PlayerPrefs.GetInt("stage") > 1)
         {
+            Debug.Log(PlayerPrefs.GetInt("stage"));
             if (Random.Range(0, 10) <= 6)
             {
                 Debug.LogWarning("Co the Thang");
@@ -669,6 +670,7 @@ public class SpawnMap2 : MonoBehaviour
         }
         else
         {
+            Debug.Log(PlayerPrefs.GetInt("stage"));
             MapHole.Add(HoleStage1);
         }
 

@@ -49,6 +49,9 @@ public class RandomShop2 : MonoBehaviour
 
     [Header("ButtonRandom")]
     public Text TextButtonRandom;
+
+    [Header("CanvasManager")]
+    public CanvasManager CanvasManager;
     // Start is called before the first frame update
     public void Start()
     {
@@ -592,5 +595,6 @@ public class RandomShop2 : MonoBehaviour
         int diamondCurrentInt = int.Parse(diamondCurrent) + 1500;
         PlayerPrefs.SetString("diamond", diamondCurrentInt.ToString());
         DiamondText();
+        CanvasManager.DiamondFlyAdsReward();
     }
 }

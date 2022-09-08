@@ -32,6 +32,9 @@ public class ChestRoom : MonoBehaviour
     [Header("Save")]
     public Save DiamondKey;
 
+    [Header("CanvasManager")]
+    public CanvasManager CanvasManager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -93,6 +96,7 @@ public class ChestRoom : MonoBehaviour
                 ListImageDisable[0].SetActive(false);
                 PlayerPrefs.SetInt("OpenedChest " + 0, 1);
                 AddDiamond(100);
+                CanvasManager.DiamondFlyAdsReward();
             }
             else if (EventSystem.current.currentSelectedGameObject.name == "Item (2)")
             {
@@ -100,6 +104,7 @@ public class ChestRoom : MonoBehaviour
                 ListImageDisable[1].SetActive(false);
                 PlayerPrefs.SetInt("OpenedChest " + 1, 1);
                 AddDiamond(200);
+                CanvasManager.DiamondFlyAdsReward();
             }
             else if (EventSystem.current.currentSelectedGameObject.name == "Item (3)")
             {
@@ -107,6 +112,7 @@ public class ChestRoom : MonoBehaviour
                 ListImageDisable[2].SetActive(false);
                 PlayerPrefs.SetInt("OpenedChest " + 2, 1);
                 AddDiamond(300);
+                CanvasManager.DiamondFlyAdsReward();
             }
             else if (EventSystem.current.currentSelectedGameObject.name == "Item (4)")
             {
@@ -114,6 +120,7 @@ public class ChestRoom : MonoBehaviour
                 ListImageDisable[3].SetActive(false);
                 PlayerPrefs.SetInt("OpenedChest " + 3, 1);
                 AddDiamond(400);
+                CanvasManager.DiamondFlyAdsReward();
             }
             else if (EventSystem.current.currentSelectedGameObject.name == "Item (5)")
             {
@@ -121,6 +128,7 @@ public class ChestRoom : MonoBehaviour
                 ListImageDisable[4].SetActive(false);
                 PlayerPrefs.SetInt("OpenedChest " + 4, 1);
                 AddDiamond(500);
+                CanvasManager.DiamondFlyAdsReward();
             }
             else if (EventSystem.current.currentSelectedGameObject.name == "Item (6)")
             {
@@ -128,6 +136,7 @@ public class ChestRoom : MonoBehaviour
                 ListImageDisable[5].SetActive(false);
                 PlayerPrefs.SetInt("OpenedChest " + 5, 1);
                 AddDiamond(600);
+                CanvasManager.DiamondFlyAdsReward();
             }
             else if (EventSystem.current.currentSelectedGameObject.name == "Item (7)")
             {
@@ -135,6 +144,7 @@ public class ChestRoom : MonoBehaviour
                 ListImageDisable[6].SetActive(false);
                 PlayerPrefs.SetInt("OpenedChest " + 6, 1);
                 AddDiamond(700);
+                CanvasManager.DiamondFlyAdsReward();
             }
             else if (EventSystem.current.currentSelectedGameObject.name == "Item (8)")
             {
@@ -142,6 +152,7 @@ public class ChestRoom : MonoBehaviour
                 ListImageDisable[7].SetActive(false);
                 PlayerPrefs.SetInt("OpenedChest " + 7, 1);
                 AddDiamond(800);
+                CanvasManager.DiamondFlyAdsReward();
 
             }
             else if (EventSystem.current.currentSelectedGameObject.name == "Item (9)")
