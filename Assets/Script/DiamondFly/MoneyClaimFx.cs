@@ -24,7 +24,7 @@ public class MoneyClaimFx : HCMonobehavior
     }
 
     [Button]
-    public void ClaimMoney(int value, Transform spawn = null, int loops = 10, float interval = .05f)
+    public void ClaimMoney(int value, Transform spawn = null, int loops = 20, float interval = .03f)
     {
         Vector3 spawnOffset = Vector3.zero;
         if (spawn)
@@ -55,9 +55,9 @@ public class MoneyClaimFx : HCMonobehavior
 
         spawnedMoney.localScale = Vector3.zero;
         spawnedMoney.DOScale(Vector3.one, .3f).SetEase(Ease.OutExpo);
-        spawnedMoney.DOMove(rdPos, .5f).SetEase(Ease.OutExpo).OnComplete(() =>
+        spawnedMoney.DOMove(rdPos, .3f).SetEase(Ease.OutExpo).OnComplete(() =>
         {
-            spawnedMoney.DOMove(moneyIcon.position, .3f).SetEase(Ease.InExpo).SetDelay(.1f).OnComplete(() =>
+            spawnedMoney.DOMove(moneyIcon.position, .3f).SetEase(Ease.InExpo).SetDelay(.3f).OnComplete(() =>
             {
                 HCVibrate.Haptic(HapticTypes.LightImpact);
                 GM.AddMoney(value);

@@ -37,7 +37,7 @@ public class Hammer : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Road")
+        if (other.CompareTag("Road"))
         {
             onDown = false;
         }

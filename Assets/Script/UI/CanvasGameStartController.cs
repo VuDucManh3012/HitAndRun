@@ -41,7 +41,7 @@ public class CanvasGameStartController : MonoBehaviour
             ButtonNoAds.SetActive(false);
         }
         CanvasTouchPad.SetActive(true);
-        if (CanvasPopupOfflineReward.active)
+        if (CanvasPopupOfflineReward.activeInHierarchy)
         {
             transform.gameObject.SetActive(false);
         }

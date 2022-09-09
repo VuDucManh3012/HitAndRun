@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using RocketTeam.Sdk.Services.Ads;
-using UniRx;
+using TMPro;
 
 public class RandomSkin : MonoBehaviour
 {
@@ -16,8 +16,8 @@ public class RandomSkin : MonoBehaviour
     public GameObject[] YourSelect;
     public List<int> YourSelect2;
     public Animator ai;
-    public Text diamond;
-    int br;
+    public TMP_Text diamond;
+    int indexBall;
 
     public GameObject[] ImageVerySpecial;
     public GameObject[] ImageDisableSpecial;
@@ -80,7 +80,7 @@ public class RandomSkin : MonoBehaviour
     }
     public void Update()
     {
-        if (CanvasPopUpDontOpen.active && !offing)
+        if (CanvasPopUpDontOpen.activeInHierarchy && !offing)
         {
             StartCoroutine(OffCanvasPopupDontOpen());
             offing = true;
@@ -100,7 +100,7 @@ public class RandomSkin : MonoBehaviour
         }
         else
         {
-            diamond.text = PlayerPrefs.GetString("diamond");
+            diamond.text = (System.Int32.Parse(PlayerPrefs.GetString("diamond"))).ToFormatString();
         }
     }
     public void checkBall()
@@ -132,7 +132,6 @@ public class RandomSkin : MonoBehaviour
                 ImageTick[i].SetActive(true);
                 skinIndex = i;
                 ChangeSkinUpdate();
-                return;
             }
             else if (PlayerPrefs.GetString("CurrentSkin") == "")
             {
@@ -162,8 +161,6 @@ public class RandomSkin : MonoBehaviour
                 ImageDisableSpecial[i].SetActive(false);
             }
         }
-
-        //da duoc nhung skin gi
 
         //dag o skin nao
         for (int i = 0; i <= ImageDisableSpecial.Length - 1; i++)
@@ -196,17 +193,16 @@ public class RandomSkin : MonoBehaviour
                 price = (PlayerPrefs.GetInt("SoLanRandomSkin") * 1000) + 1500;
             }
             //
-            int e = int.Parse(PlayerPrefs.GetString("diamond"));
-            if (e >= price)
+            int currentDiamond = int.Parse(PlayerPrefs.GetString("diamond"));
+            if (currentDiamond >= price)
             {
-                e -= price;
-                string m = e.ToString();
-                diamond.text = m.ToString();
+                currentDiamond -= price;
+                diamond.text = currentDiamond.ToFormatString();
                 PlayerPrefs.SetString("diamond", diamond.text);
                 //
-                int random = Random.RandomRange(1, YourSelect2.Count + 1);
+                int random = Random.Range(1, YourSelect2.Count + 1);
                 //
-                br = YourSelect2.ToArray()[random - 1];
+                indexBall = YourSelect2.ToArray()[random - 1];
                 //
                 ai.enabled = true;
                 StartCoroutine(Wait());
@@ -236,196 +232,50 @@ public class RandomSkin : MonoBehaviour
             ImageVery[i].SetActive(false);
             YourSelect[i].SetActive(true);
         }
-        ImageDisable[br].SetActive(false);
-        ImageSelect[br].SetActive(true);
-        ImageVery[br].SetActive(true);
-        YourSelect[br].SetActive(true);
+        ImageDisable[indexBall].SetActive(false);
+        ImageSelect[indexBall].SetActive(true);
+        ImageVery[indexBall].SetActive(true);
+        YourSelect[indexBall].SetActive(true);
 
         yield return new WaitForSeconds(0.5f);
-        ImageSelect[br].SetActive(false);
-        ImageVery[br].SetActive(false);
-        YourSelect[br].SetActive(true);
-        PlayerPrefs.SetString("CurrentSkin", textSkin[br].name);
+        ImageSelect[indexBall].SetActive(false);
+        ImageVery[indexBall].SetActive(false);
+        YourSelect[indexBall].SetActive(true);
+        PlayerPrefs.SetString("CurrentSkin", textSkin[indexBall].name);
 
-        PlayerPrefs.SetInt("skin " + br, 1);
+        PlayerPrefs.SetInt("skin " + indexBall, 1);
         checkBall();
     }
-    public void ChangeSkin()
+    public void ChangeSkinSpecial(int value)
     {
         ActiveFalse();
-        if (EventSystem.current.currentSelectedGameObject.name == "Ball (1)")
+        if (!ImageDisableSpecial[value].activeInHierarchy)
         {
-            if (!ImageDisable[0].active)
-            {
-                ImageTick[0].SetActive(true);
-                PlayerPrefs.SetString("CurrentSkin", textSkin[0].name);
-                skinIndex = 0;
-                ChangeSkinUpdate();
-            }
-            else
-            {
-                checkBall();
-            }
+            ImageTickSpecial[value].SetActive(true);
+            PlayerPrefs.SetString("CurrentSkin", textSkin[value + 6].name);
+            skinIndex = value + 6;
+            ChangeSkinUpdate();
         }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (2)")
+        else
         {
-            if (!ImageDisable[1].active)
-            {
-                ImageTick[1].SetActive(true);
-                PlayerPrefs.SetString("CurrentSkin", textSkin[1].name);
-                skinIndex = 1;
-                ChangeSkinUpdate();
-            }
-            else
-            {
-                checkBall();
-            }
+            ///Ads
+            WatchAdsToAddSkin(value);
         }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (3)")
+        checkBallSpecial();
+    }
+    public void ChangeSkinNormal(int value)
+    {
+        ActiveFalse();
+        if (!ImageDisable[value].activeInHierarchy)
         {
-            if (!ImageDisable[2].active)
-            {
-                ImageTick[2].SetActive(true);
-                PlayerPrefs.SetString("CurrentSkin", textSkin[2].name);
-                skinIndex = 2;
-                ChangeSkinUpdate();
-            }
-            else
-            {
-                checkBall();
-            }
+            ImageTick[value].SetActive(true);
+            PlayerPrefs.SetString("CurrentSkin", textSkin[value].name);
+            skinIndex = value;
+            ChangeSkinUpdate();
         }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (4)")
+        else
         {
-            if (!ImageDisable[3].active)
-            {
-                ImageTick[3].SetActive(true);
-                PlayerPrefs.SetString("CurrentSkin", textSkin[3].name);
-                skinIndex = 3;
-                ChangeSkinUpdate();
-            }
-            else
-            {
-                checkBall();
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (5)")
-        {
-            if (!ImageDisable[4].active)
-            {
-                ImageTick[4].SetActive(true);
-                PlayerPrefs.SetString("CurrentSkin", textSkin[4].name);
-                skinIndex = 4;
-                ChangeSkinUpdate();
-            }
-            else
-            {
-                checkBall();
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (6)")
-        {
-            if (!ImageDisable[5].active)
-            {
-                ImageTick[5].SetActive(true);
-                PlayerPrefs.SetString("CurrentSkin", textSkin[5].name);
-                skinIndex = 5;
-                ChangeSkinUpdate();
-            }
-            else
-            {
-                checkBall();
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (7)")
-        {
-            if (!ImageDisableSpecial[0].active)
-            {
-                ImageTickSpecial[0].SetActive(true);
-                PlayerPrefs.SetString("CurrentSkin", textSkin[6].name);
-                skinIndex = 6;
-                ChangeSkinUpdate();
-            }
-            else
-            {
-                ///Ads
-                WatchAdsToAddSkin7();
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (8)")
-        {
-            if (!ImageDisableSpecial[1].active)
-            {
-                ImageTickSpecial[1].SetActive(true);
-                PlayerPrefs.SetString("CurrentSkin", textSkin[7].name);
-                skinIndex = 7;
-                ChangeSkinUpdate();
-            }
-            else
-            {
-                ///Ads
-                WatchAdsToAddSkin8();
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (9)")
-        {
-            if (!ImageDisableSpecial[2].active)
-            {
-                ImageTickSpecial[2].SetActive(true);
-                PlayerPrefs.SetString("CurrentSkin", textSkin[8].name);
-                skinIndex = 8;
-                ChangeSkinUpdate();
-            }
-            else
-            {
-                ///Ads
-                WatchAdsToAddSkin9();
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (10)")
-        {
-            if (!ImageDisableSpecial[3].active)
-            {
-                ImageTickSpecial[3].SetActive(true);
-                PlayerPrefs.SetString("CurrentSkin", textSkin[9].name);
-                skinIndex = 9;
-                ChangeSkinUpdate();
-            }
-            else
-            {
-                ///Ads
-                WatchAdsToAddSkin10();
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (11)")
-        {
-            if (!ImageDisableSpecial[4].active)
-            {
-                ImageTickSpecial[4].SetActive(true);
-                PlayerPrefs.SetString("CurrentSkin", textSkin[10].name);
-                skinIndex = 10;
-                ChangeSkinUpdate();
-            }
-            else
-            {
-                ///Ads
-                WatchAdsToAddSkin11();
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (12)")
-        {
-            if (!ImageDisableSpecial[5].active)
-            {
-                ImageTickSpecial[5].SetActive(true);
-                PlayerPrefs.SetString("CurrentSkin", textSkin[11].name);
-                skinIndex = 11;
-                ChangeSkinUpdate();
-            }
-            else
-            {
-                ///Ads
-                WatchAdsToAddSkin12();
-            }
+            checkBall();
         }
         checkBallSpecial();
     }
@@ -512,14 +362,10 @@ public class RandomSkin : MonoBehaviour
     {
         AnalyticManager.LogWatchAds("RewardDiamondInShopSkin", 1);
         adsShowing = false;
-        string diamondCurrent = PlayerPrefs.GetString("diamond");
-        int diamondCurrentInt = int.Parse(diamondCurrent) + 1500;
-        PlayerPrefs.SetString("diamond", diamondCurrentInt.ToString());
-        DiamondText();
-        CanvasManager.DiamondFlyAdsReward();
+        CanvasManager.DiamondFlyAdsReward(1500);
     }
     /// ///////////////////////////////////////////////////////////////////////////////////
-    public void WatchAdsToAddSkin7()
+    public void WatchAdsToAddSkin(int indexSkin)
     {
         if (!GameManager.NetworkAvailable)
         {
@@ -534,237 +380,34 @@ public class RandomSkin : MonoBehaviour
         if (!GameManager.EnableAds)
         {
             adsShowing = true;
-            AdManager.Instance.ShowAdsReward(OnCompleteAdsToAddSkin7, "AddSkin7");
+            indexSkinSpecial = indexSkin;
+            AdManager.Instance.ShowAdsReward(OnCompleteAdsToAddSkin, "AddSkin");
         }
 #if !PROTOTYPE
         else
         {
             adsShowing = true;
-            AdManager.Instance.ShowAdsReward(OnCompleteAdsToAddSkin7, "AddSkin7");
+            indexSkinSpecial = indexSkin;
+            AdManager.Instance.ShowAdsReward(OnCompleteAdsToAddSkin, "AddSkin");
         }
 #endif
     }
-    private void OnCompleteAdsToAddSkin7(int value)
+    private int indexSkinSpecial = 10;
+    private void OnCompleteAdsToAddSkin(int value)
     {
-        AnalyticManager.LogWatchAds("GetSkinSpecial7", 1);
+        AnalyticManager.LogWatchAds("GetSkinSpecial " + indexSkinSpecial, 1);
         adsShowing = false;
-        int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 0) + 1;
-        PlayerPrefs.SetInt("skinSpecial" + 0, adsPoint);
-        if (PlayerPrefs.GetInt("skinSpecial" + 0) == 2)
+        int adsPoint = PlayerPrefs.GetInt("skinSpecial" + indexSkinSpecial) + 1;
+        PlayerPrefs.SetInt("skinSpecial" + indexSkinSpecial, adsPoint);
+        if (PlayerPrefs.GetInt("skinSpecial" + indexSkinSpecial) == 2)
         {
-            PlayerPrefs.SetString("CurrentSkin", textSkin[6].name);
+            PlayerPrefs.SetString("CurrentSkin", textSkin[indexSkinSpecial + 6].name);
             checkBall();
             CheckItemChangeSkin();
         }
         checkBallSpecial();
     }
-    /// ///////////////////////////////////////////////////////////////////////////////////
-
-    public void WatchAdsToAddSkin8()
-    {
-        if (!GameManager.NetworkAvailable)
-        {
-            PopupNoInternet.Show();
-            return;
-        }
-
-        if (adsShowing)
-            return;
-
-
-        if (!GameManager.EnableAds)
-        {
-            adsShowing = true;
-            AdManager.Instance.ShowAdsReward(OnCompleteAdsToAddSkin8, "AddSkin8");
-        }
-#if !PROTOTYPE
-        else
-        {
-            adsShowing = true;
-            AdManager.Instance.ShowAdsReward(OnCompleteAdsToAddSkin8, "AddSkin8");
-        }
-#endif
-    }
-    private void OnCompleteAdsToAddSkin8(int value)
-    {
-        AnalyticManager.LogWatchAds("GetSkinSpecial8", 1);
-        adsShowing = false;
-        int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 1) + 1;
-        PlayerPrefs.SetInt("skinSpecial" + 1, adsPoint);
-        if (PlayerPrefs.GetInt("skinSpecial" + 1) == 2)
-        {
-            PlayerPrefs.SetString("CurrentSkin", textSkin[7].name);
-            checkBall();
-            CheckItemChangeSkin();
-        }
-        checkBallSpecial();
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////
-    ///
-    public void WatchAdsToAddSkin9()
-    {
-        if (!GameManager.NetworkAvailable)
-        {
-            PopupNoInternet.Show();
-            return;
-        }
-
-        if (adsShowing)
-            return;
-
-
-        if (!GameManager.EnableAds)
-        {
-            adsShowing = true;
-            AdManager.Instance.ShowAdsReward(OnCompleteAdsToAddSkin9, "AddSkin9");
-        }
-#if !PROTOTYPE
-        else
-        {
-            adsShowing = true;
-            AdManager.Instance.ShowAdsReward(OnCompleteAdsToAddSkin9, "AddSkin9");
-        }
-#endif
-    }
-    private void OnCompleteAdsToAddSkin9(int value)
-    {
-        AnalyticManager.LogWatchAds("GetSkinSpecial9", 1);
-        adsShowing = false;
-        int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 2) + 1;
-        PlayerPrefs.SetInt("skinSpecial" + 2, adsPoint);
-        if (PlayerPrefs.GetInt("skinSpecial" + 2) == 2)
-        {
-            PlayerPrefs.SetString("CurrentSkin", textSkin[8].name);
-            checkBall();
-            CheckItemChangeSkin();
-        }
-        checkBallSpecial();
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////
-    ///
-    public void WatchAdsToAddSkin10()
-    {
-        if (!GameManager.NetworkAvailable)
-        {
-            PopupNoInternet.Show();
-            return;
-        }
-
-        if (adsShowing)
-            return;
-
-
-        if (!GameManager.EnableAds)
-        {
-            adsShowing = true;
-            AdManager.Instance.ShowAdsReward(OnCompleteAdsToAddSkin10, "AddSkin10");
-        }
-#if !PROTOTYPE
-        else
-        {
-            adsShowing = true;
-            AdManager.Instance.ShowAdsReward(OnCompleteAdsToAddSkin10, "AddSkin10");
-        }
-#endif
-    }
-    private void OnCompleteAdsToAddSkin10(int value)
-    {
-        AnalyticManager.LogWatchAds("GetSkinSpecial10", 1);
-        adsShowing = false;
-        int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 3) + 1;
-        PlayerPrefs.SetInt("skinSpecial" + 3, adsPoint);
-        if (PlayerPrefs.GetInt("skinSpecial" + 3) == 2)
-        {
-            PlayerPrefs.SetString("CurrentSkin", textSkin[9].name);
-            checkBall();
-            CheckItemChangeSkin();
-        }
-        checkBallSpecial();
-    }
-    //////////////////////////////////////////////////////////////////////////////////////
-    public void WatchAdsToAddSkin11()
-    {
-        if (!GameManager.NetworkAvailable)
-        {
-            Debug.Log("a1");
-            PopupNoInternet.Show();
-            return;
-        }
-
-        if (adsShowing)
-        {
-            Debug.Log("a2");
-            return;
-        }
-        if (!GameManager.EnableAds)
-        {
-            Debug.Log("a3");
-            adsShowing = true;
-            AdManager.Instance.ShowAdsReward(OnCompleteAdsToAddSkin11, "AddSkin11");
-        }
-#if !PROTOTYPE
-        else
-        {
-            Debug.Log("a4");
-            adsShowing = true;
-            AdManager.Instance.ShowAdsReward(OnCompleteAdsToAddSkin11, "AddSkin11");
-        }
-#endif
-    }
-    private void OnCompleteAdsToAddSkin11(int value)
-    {
-        AnalyticManager.LogWatchAds("GetSkinSpecial11", 1);
-        adsShowing = false;
-        int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 4) + 1;
-        PlayerPrefs.SetInt("skinSpecial" + 4, adsPoint);
-        if (PlayerPrefs.GetInt("skinSpecial" + 4) == 2)
-        {
-            PlayerPrefs.SetString("CurrentSkin", textSkin[10].name);
-            checkBall();
-            CheckItemChangeSkin();
-        }
-        checkBallSpecial();
-    }
-    //////////////////////////////////////////////////////////////////////////////////////
-    public void WatchAdsToAddSkin12()
-    {
-        if (!GameManager.NetworkAvailable)
-        {
-            PopupNoInternet.Show();
-            return;
-        }
-
-        if (adsShowing)
-            return;
-
-
-        if (!GameManager.EnableAds)
-        {
-            adsShowing = true;
-            AdManager.Instance.ShowAdsReward(OnCompleteAdsToAddSkin12, "AddSkin12");
-        }
-#if !PROTOTYPE
-        else
-        {
-            adsShowing = true;
-            AdManager.Instance.ShowAdsReward(OnCompleteAdsToAddSkin12, "AddSkin12");
-        }
-#endif
-    }
-    private void OnCompleteAdsToAddSkin12(int value)
-    {
-        AnalyticManager.LogWatchAds("GetSkinSpecial12", 1);
-        adsShowing = false;
-        int adsPoint = PlayerPrefs.GetInt("skinSpecial" + 5) + 1;
-        PlayerPrefs.SetInt("skinSpecial" + 5, adsPoint);
-        if (PlayerPrefs.GetInt("skinSpecial" + 5) == 2)
-        {
-            PlayerPrefs.SetString("CurrentSkin", textSkin[11].name);
-            checkBall();
-        }
-        checkBallSpecial();
-    }
-
+    
     [Header("ItemChangeSkin")]
     public GameObject SpawnMap;
     private GameObject ItemChangeSkin;
@@ -775,6 +418,5 @@ public class RandomSkin : MonoBehaviour
             ItemChangeSkin = SpawnMap.transform.Find("MapDemoSkin(Clone)").Find("ItemChangeSkin").gameObject;
             ItemChangeSkin.GetComponent<ModelChangeSkin>().Start();
         }
-        
     }
 }

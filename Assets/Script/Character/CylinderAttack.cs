@@ -19,13 +19,13 @@ public class CylinderAttack : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Enemy")
+        if (other.CompareTag("Enemy"))
         {
             Sword.SetActive(true);
             ColliderCube.transform.localScale = new Vector3(1, 1, 1);
             ColliderCube.SetActive(true);
         }
-        else if (other.tag == "Enemy3")
+        else if (other.CompareTag("Enemy3"))
         {
             Sword.SetActive(true); 
             ColliderCube.transform.localScale = new Vector3(1, 1, 1);

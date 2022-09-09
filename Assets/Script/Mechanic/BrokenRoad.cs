@@ -17,7 +17,7 @@ public class BrokenRoad : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Character")
+        if (other.CompareTag("Character"))
         {
             transform.parent.Find("Road").gameObject.SetActive(false);
             transform.parent.Find("BrokenRoad").gameObject.SetActive(true);

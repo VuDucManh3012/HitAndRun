@@ -147,11 +147,11 @@ public class SpawnMap2 : MonoBehaviour
 
         //random key
         //chon diamond de thay
-        if (Random.RandomRange(0, 2) == 1)
+        if (Random.Range(0, 2) == 1)
         {
             if (ListDiamond.Count > 10)
             {
-                int index = Random.RandomRange(ListDiamond.Count / 2, ListDiamond.Count);
+                int index = Random.Range(ListDiamond.Count / 2, ListDiamond.Count);
                 //
                 Vector3 myPosition = ListDiamond[index].transform.position;
                 ListDiamond[index].SetActive(false);
@@ -608,7 +608,7 @@ public class SpawnMap2 : MonoBehaviour
         TotalLevelInMap();
         MapHole.Clear();
         int random;
-        if (PlayerPrefs.GetInt("stage") > 1)
+        if (System.Int32.Parse(PlayerPrefs.GetString("stage")) > 1)
         {
             if (Random.Range(0, 10) <= 6)
             {

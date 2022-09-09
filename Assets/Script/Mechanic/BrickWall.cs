@@ -19,7 +19,7 @@ public class BrickWall : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Character")
+        if (other.CompareTag("Character"))
         {
             Vector3 arrow = transform.position - other.transform.position;
             rigidbody.AddForce(arrow * 2, ForceMode.Impulse);

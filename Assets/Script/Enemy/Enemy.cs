@@ -43,7 +43,7 @@ public class Enemy : MonoBehaviour
         if (Enemy1)
         {
             Animator myanim = GetComponentInChildren<Animator>();
-            myanim.SetInteger("AnimRandom", Random.RandomRange(1, 3));
+            myanim.SetInteger("AnimRandom", Random.Range(1, 3));
             if (EnemyEnding)
             {
                 levelText.SetActive(true);

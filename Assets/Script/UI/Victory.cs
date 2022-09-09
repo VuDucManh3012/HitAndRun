@@ -20,7 +20,7 @@ public class Victory : MonoBehaviour
     void Update()
     {
         canvasManager.ScreenVictoryActive = true;
-        if (transform.gameObject.active)
+        if (transform.gameObject.activeInHierarchy)
         {
             canvasNewSkinDemo.SetActive(false);
         }

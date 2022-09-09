@@ -56,6 +56,7 @@ public class CanvasManager : MonoBehaviour
     public GameObject BossBonus;
     public Text DiamondBonusADSText;
     public Text DiamondBonusADSTextInLv1;
+    public GameObject ADSDiamondFly;
     private double DiamondADS;
     private double bonusX;
 
@@ -205,20 +206,20 @@ public class CanvasManager : MonoBehaviour
         }
         //
     }
-    public void DiamondFly(Transform spawnTransform)
+    public void DiamondFly(int diamondBonus, Transform spawnTransform)
     {
         if (spawnTransform != null)
         {
-            MoneyClaimFx.ClaimMoney(20, spawnTransform);
+            MoneyClaimFx.ClaimMoney(diamondBonus, spawnTransform);
         }
         else
         {
-            MoneyClaimFx.ClaimMoney(20, SpawnPointDefault);
+            MoneyClaimFx.ClaimMoney(diamondBonus, SpawnPointDefault);
         }
     }
-    public void DiamondFlyAdsReward()
+    public void DiamondFlyAdsReward(int diamondBonus)
     {
-        DiamondFly(SpawnPoint);
+        DiamondFly(diamondBonus, SpawnPoint);
     }
     public void SetSpawnPoint(Transform transform)
     {
@@ -252,7 +253,7 @@ public class CanvasManager : MonoBehaviour
     }
     public void FixedUpdate()
     {
-        if (VictoryScene.active)
+        if (VictoryScene.activeInHierarchy)
         {
             VictorySceneController();
         }
@@ -548,7 +549,7 @@ public class CanvasManager : MonoBehaviour
             TextXInLv1.text = "x2";
             bonusX = 2;
         }
-        if (BossBonus.active)
+        if (BossBonus.activeInHierarchy)
         {
             DiamondADS = (double.Parse(DiamondFound.text) + 300) * bonusX;
         }
@@ -566,14 +567,14 @@ public class CanvasManager : MonoBehaviour
     }
     public void ADSBonusButtonInLv1()
     {
-        AnalyticManager.LogWatchAds("AdsBonusVictory", 1);
         adsShowing = false;
-        double diamondCurrent = double.Parse(Save.Diamond.text);
-        diamondCurrent += DiamondADS;
-        Save.Diamond.text = diamondCurrent.ToString();
+        DiamondFlyAdsReward((int)DiamondADS);
         PlayerPrefs.SetInt("InterVictory", 0);
         Save.WriteText();
         SetTimeCountDown();
+    }
+    public void SetLoadScene()
+    {
         Loadscene = true;
     }
     public void Plus999Level()
@@ -636,10 +637,8 @@ public class CanvasManager : MonoBehaviour
     public void ClaimOfflineReward()
     {
         //Cong Diamond
-        int diamondCurrent = System.Int32.Parse(PlayerPrefs.GetString("diamond"));
-        diamondCurrent += TotalDiamondRewardOffline;
-        PlayerPrefs.SetString("diamond", diamondCurrent.ToString());
-        Save.ReadText();
+        DiamondFlyAdsReward(TotalDiamondRewardOffline);
+
         //Dong Popup
         Save.GameStartScene.SetActive(true);
         CanvasQualityKeyController();
@@ -720,8 +719,9 @@ public class CanvasManager : MonoBehaviour
             characterController.Particle[0].SetActive(true);
             //
             //tru tien
-            currentdiamond = currentdiamond - (currentUpdateLevel + 1) * 50;
-            PlayerPrefs.SetString("diamond", currentdiamond.ToString());
+            int currentDiamond = System.Int32.Parse(PlayerPrefs.GetString("diamond"));
+            currentDiamond -= (currentUpdateLevel + 1) * 50;
+            PlayerPrefs.SetString("diamond", currentDiamond.ToString());
             Save.ReadText();
             //
             CanvasGameStartController.CheckSceneStart();
@@ -863,7 +863,7 @@ public class CanvasManager : MonoBehaviour
 
         if (currentTime == 0)
         {
-            diamondInChest = Random.RandomRange(100, 500);
+            diamondInChest = Random.Range(100, 500);
             RewardGift10Minutes.text = diamondInChest.ToString();
             PopupGift.SetActive(true);
         }
@@ -888,9 +888,7 @@ public class CanvasManager : MonoBehaviour
         //diamond ++
         if (PlayerPrefs.GetString("diamond") != "")
         {
-            int diamond = int.Parse(PlayerPrefs.GetString("diamond"));
-            diamond += diamondInChest;
-            PlayerPrefs.SetString("diamond", diamond.ToString());
+            DiamondFlyAdsReward(diamondInChest);
             Save.ReadText();
         }
         //
@@ -934,9 +932,7 @@ public class CanvasManager : MonoBehaviour
         //diamond ++
         if (PlayerPrefs.GetString("diamond") != "")
         {
-            int diamond = int.Parse(PlayerPrefs.GetString("diamond"));
-            diamond += (diamondInChest * 2);
-            PlayerPrefs.SetString("diamond", diamond.ToString());
+            DiamondFlyAdsReward(diamondInChest * 2);
             Save.ReadText();
         }
         //
@@ -946,7 +942,7 @@ public class CanvasManager : MonoBehaviour
         }
         currentTime = startingTime;
         GameStartScene.SetActive(true);
-        DiamondFlyAdsReward();
+
     }
     public void LoseItGift()
     {
@@ -1055,13 +1051,11 @@ public class CanvasManager : MonoBehaviour
     {
         AnalyticManager.LogWatchAds("AdsBonusVictory", 1);
         adsShowing = false;
-        double diamondCurrent = double.Parse(Save.Diamond.text);
-        diamondCurrent += DiamondADS;
-        Save.Diamond.text = diamondCurrent.ToString();
+        DiamondFlyAdsReward((int)DiamondADS);
         PlayerPrefs.SetInt("InterVictory", 0);
         Save.WriteText();
         SetTimeCountDown();
-        Loadscene = true;
+        ADSDiamondFly.SetActive(true);
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void WatchAds999Level()
@@ -1164,9 +1158,7 @@ public class CanvasManager : MonoBehaviour
     {
         AnalyticManager.LogWatchAds("DoubleOfflineReward", 1);
         adsShowing = false;
-        int diamondCurrent = System.Int32.Parse(PlayerPrefs.GetString("diamond"));
-        diamondCurrent += TotalDiamondRewardOffline * 2;
-        PlayerPrefs.SetString("diamond", diamondCurrent.ToString());
+        DiamondFlyAdsReward(TotalDiamondRewardOffline * 2);
         Save.ReadText();
         Save.GameStartScene.SetActive(true);
         CanvasQualityKeyController();
@@ -1174,7 +1166,6 @@ public class CanvasManager : MonoBehaviour
         PlayerPrefs.SetInt("ClaimedOfflineReward", 1);
         PopupRewardOffline.SetActive(false);
         BackGroundNenToi.SetActive(false);
-        DiamondFlyAdsReward();
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void WatchAdsUpdateLevel()

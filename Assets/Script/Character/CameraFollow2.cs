@@ -21,8 +21,6 @@ public class CameraFollow2 : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        //new Vector3(Target.transform.position.x, 0,Target.transform.position.z)
-        //Target.transform.position
         if (onJump)
         {
             Vector3 smoothPosition = Vector3.Lerp(transform.position, new Vector3(Target.transform.position.x, PositionYOnJump , Target.transform.position.z), smooth);
@@ -36,7 +34,7 @@ public class CameraFollow2 : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Character")
+        if (other.CompareTag("Character"))
         {
             onJump = false;
             controllerPlayer.OnJump = false;

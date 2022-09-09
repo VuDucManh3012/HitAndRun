@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using RocketTeam.Sdk.Services.Ads;
+using TMPro;
 
 public class RandomShop2 : MonoBehaviour
 {
@@ -15,8 +16,8 @@ public class RandomShop2 : MonoBehaviour
     public GameObject[] YourSelect;
     public List<int> YourSelect2;
     public Animator ai;
-    public Text diamond;
-    int br;
+    public TMP_Text diamond;
+    int indexBall;
 
     public GameObject[] ImageVerySpecial;
     public GameObject[] ImageDisableSpecial;
@@ -25,8 +26,6 @@ public class RandomShop2 : MonoBehaviour
     public GameObject[] YourSelectSpecial;
     public List<int> YourSelect2Special;
     public GameObject[] ImageAds;
-    public Animator aiSpecial;
-    int brSpecial;
 
     public GameObject[] weaponlistRight;
     public GameObject[] weaponlistLeft;
@@ -72,7 +71,7 @@ public class RandomShop2 : MonoBehaviour
     }
     public void Update()
     {
-        if (CanvasPopUpDontOpen.active && !offing)
+        if (CanvasPopUpDontOpen.activeInHierarchy && !offing)
         {
             StartCoroutine(OffCanvasPopupDontOpen());
             offing = true;
@@ -92,7 +91,7 @@ public class RandomShop2 : MonoBehaviour
         }
         else
         {
-            diamond.text = PlayerPrefs.GetString("diamond");
+            diamond.text = (System.Int32.Parse(PlayerPrefs.GetString("diamond"))).ToFormatString();
         }
     }
 
@@ -199,16 +198,15 @@ public class RandomShop2 : MonoBehaviour
                 price = (PlayerPrefs.GetInt("SoLanRandomWeapon") * 1000) + 1500;
             }
             //
-            int e = int.Parse(PlayerPrefs.GetString("diamond"));
-            if (e >= price)
+            int diamondCurrent = int.Parse(PlayerPrefs.GetString("diamond"));
+            if (diamondCurrent >= price)
             {
-                e -= price;
-                string m = e.ToString();
-                diamond.text = m.ToString();
+                diamondCurrent -= price;
+                diamond.text = diamondCurrent.ToFormatString();
                 PlayerPrefs.SetString("diamond", diamond.text);
-                int random = Random.RandomRange(1, YourSelect2.Count + 1);
+                int random = Random.Range(1, YourSelect2.Count + 1);
                 //
-                br = YourSelect2.ToArray()[random - 1];
+                indexBall = YourSelect2.ToArray()[random - 1];
                 //
                 StartCoroutine(Wait());
                 ai.enabled = true;
@@ -228,37 +226,8 @@ public class RandomShop2 : MonoBehaviour
             }
         }
     }
-    [ContextMenu("RandomSpecial")]
-    public void RandomButtonSpecial()
-    {
-        if (YourSelect2Special.Count != 0)
-        {
-            int e = int.Parse(PlayerPrefs.GetString("diamond"));
-            if (e >= 1500)
-            {
-                e -= 1500;
-                string m = e.ToString();
-                diamond.text = m.ToString();
-                PlayerPrefs.SetString("diamond", diamond.text);
-                int random = Random.RandomRange(1, YourSelect2Special.Count + 1);
-                //
-                brSpecial = YourSelect2Special.ToArray()[random - 1];
-                //
-                StartCoroutine(WaitSpecial());
-            }
-            else
-            {
-                //
-                Debug.Log("Don`t enough money");
-                CanvasPopUpDontOpen.SetActive(true);
-                CanvasPopUpDontOpen.transform.Find("Text").GetComponent<Text>().text = "Don`t enough money";
-                //
-            }
-        }
-    }
     IEnumerator Wait()
     {
-
         yield return new WaitForSeconds(2f);
         ai.enabled = false;
         for (int i = 0; i <= ImageDisable.Length - 1; i++)
@@ -267,54 +236,19 @@ public class RandomShop2 : MonoBehaviour
             ImageVery[i].SetActive(false);
             YourSelect[i].SetActive(true);
         }
-        ImageDisable[br].SetActive(false);
-        ImageSelect[br].SetActive(true);
-        ImageVery[br].SetActive(true);
-        YourSelect[br].SetActive(true);
+        ImageDisable[indexBall].SetActive(false);
+        ImageSelect[indexBall].SetActive(true);
+        ImageVery[indexBall].SetActive(true);
+        YourSelect[indexBall].SetActive(true);
 
         yield return new WaitForSeconds(0.5f);
-        ImageSelect[br].SetActive(false);
-        ImageVery[br].SetActive(false);
-        YourSelect[br].SetActive(true);
-        PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[br].name);
+        ImageSelect[indexBall].SetActive(false);
+        ImageVery[indexBall].SetActive(false);
+        YourSelect[indexBall].SetActive(true);
+        PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[indexBall].name);
 
-        PlayerPrefs.SetInt("ball " + br, 1);
+        PlayerPrefs.SetInt("ball " + indexBall, 1);
         checkBall();
-    }
-    IEnumerator WaitSpecial()
-    {
-        yield return new WaitForSeconds(1f);
-
-        for (int i = 0; i <= ImageDisableSpecial.Length - 1; i++)
-        {
-            ImageSelectSpecial[i].SetActive(false);
-            ImageVerySpecial[i].SetActive(false);
-            YourSelectSpecial[i].SetActive(true);
-        }
-        ImageDisableSpecial[brSpecial].SetActive(false);
-        ImageSelectSpecial[brSpecial].SetActive(true);
-        ImageVerySpecial[brSpecial].SetActive(true);
-        YourSelectSpecial[brSpecial].SetActive(true);
-
-        yield return new WaitForSeconds(0.5f);
-        ImageSelectSpecial[brSpecial].SetActive(false);
-        ImageVerySpecial[brSpecial].SetActive(false);
-        YourSelectSpecial[brSpecial].SetActive(true);
-
-        PlayerPrefs.SetInt("ballSpecial " + brSpecial, 1);
-        PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[brSpecial + 6].name);
-
-        CheckBallSpecial();
-    }
-    [ContextMenu("DeleteAll")]
-    public void DeleteAll()
-    {
-        PlayerPrefs.DeleteAll();
-    }
-    [ContextMenu("Test")]
-    public void Test()
-    {
-        Debug.Log(PlayerPrefs.GetString("diamond"));
     }
     public void OnWeaponNormal()
     {
@@ -326,212 +260,34 @@ public class RandomShop2 : MonoBehaviour
         ListWeaponNormal.SetActive(false);
         ListWeaponSpecial.SetActive(true);
     }
-    public void ChangeWeapon()
+    public void ChangeWeaponSpecial(int value)
     {
-
-        if (EventSystem.current.currentSelectedGameObject.name == "Ball (1)")
+        if (!ImageDisableSpecial[value].activeInHierarchy)
         {
-            if (!ImageDisable[0].active)
-            {
-                ActiveFalse();
-                ImageTick[0].SetActive(true);
-                weaponlistRight[0].SetActive(true);
-                weaponlistLeft[0].SetActive(true);
-                PlayerPrefs.DeleteKey("CurrentWeapon");
-                PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[0].name);
-            }
-            else
-            {
-
-            }
+            ActiveFalse();
+            ImageTickSpecial[value].SetActive(true);
+            weaponlistRight[value + 6].SetActive(true);
+            weaponlistLeft[value + 6].SetActive(true);
+            PlayerPrefs.DeleteKey("CurrentWeapon");
+            PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[value + 6].name);
         }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (2)")
+        else
         {
-            if (!ImageDisable[1].active)
-            {
-                ActiveFalse();
-                ImageTick[1].SetActive(true);
-                weaponlistRight[1].SetActive(true);
-                weaponlistLeft[1].SetActive(true);
-                PlayerPrefs.DeleteKey("CurrentWeapon");
-                PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[1].name);
-            }
-            else
-            {
-
-            }
+            CanvasPopUpDontOpen.SetActive(true);
+            CanvasPopUpDontOpen.transform.Find("Text").GetComponent<Text>().text = "Unlock In ChestRoom";
+            CheckBallSpecial();
         }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (3)")
+    }
+    public void ChangeWeaponNormal(int value)
+    {
+        if (!ImageDisable[value].activeInHierarchy)
         {
-            if (!ImageDisable[2].active)
-            {
-                ActiveFalse();
-                ImageTick[2].SetActive(true);
-                weaponlistRight[2].SetActive(true);
-                weaponlistLeft[2].SetActive(true);
-                PlayerPrefs.DeleteKey("CurrentWeapon");
-                PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[2].name);
-            }
-            else
-            {
-
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (4)")
-        {
-            if (!ImageDisable[3].active)
-            {
-                ActiveFalse();
-                ImageTick[3].SetActive(true);
-                weaponlistRight[3].SetActive(true);
-                weaponlistLeft[3].SetActive(true);
-                PlayerPrefs.DeleteKey("CurrentWeapon");
-                PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[3].name);
-            }
-            else
-            {
-
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (5)")
-        {
-            if (!ImageDisable[4].active)
-            {
-                ActiveFalse();
-                ImageTick[4].SetActive(true);
-                weaponlistRight[4].SetActive(true);
-                weaponlistLeft[4].SetActive(true);
-                PlayerPrefs.DeleteKey("CurrentWeapon");
-                PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[4].name);
-            }
-            else
-            {
-
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (6)")
-        {
-            if (!ImageDisable[5].active)
-            {
-                ActiveFalse();
-                ImageTick[5].SetActive(true);
-                weaponlistRight[5].SetActive(true);
-                weaponlistLeft[5].SetActive(true);
-                PlayerPrefs.DeleteKey("CurrentWeapon");
-                PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[5].name);
-            }
-            else
-            {
-
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (7)")
-        {
-            if (!ImageDisableSpecial[0].active)
-            {
-                ActiveFalse();
-                ImageTickSpecial[0].SetActive(true);
-                weaponlistRight[6].SetActive(true);
-                weaponlistLeft[6].SetActive(true);
-                PlayerPrefs.DeleteKey("CurrentWeapon");
-                PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[6].name);
-            }
-            else
-            {
-                CanvasPopUpDontOpen.SetActive(true);
-                CanvasPopUpDontOpen.transform.Find("Text").GetComponent<Text>().text = "Unlock In ChestRoom";
-                CheckBallSpecial();
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (8)")
-        {
-            if (!ImageDisableSpecial[1].active)
-            {
-                ActiveFalse();
-                ImageTickSpecial[1].SetActive(true);
-                weaponlistRight[7].SetActive(true);
-                weaponlistLeft[7].SetActive(true);
-                PlayerPrefs.DeleteKey("CurrentWeapon");
-                PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[7].name);
-            }
-            else
-            {
-                CanvasPopUpDontOpen.SetActive(true);
-                CanvasPopUpDontOpen.transform.Find("Text").GetComponent<Text>().text = "Unlock In ChestRoom";
-                CheckBallSpecial();
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (9)")
-        {
-            if (!ImageDisableSpecial[2].active)
-            {
-                ActiveFalse();
-                ImageTickSpecial[2].SetActive(true);
-                weaponlistRight[8].SetActive(true);
-                weaponlistLeft[8].SetActive(true);
-                PlayerPrefs.DeleteKey("CurrentWeapon");
-                PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[8].name);
-            }
-            else
-            {
-                CanvasPopUpDontOpen.SetActive(true);
-                CanvasPopUpDontOpen.transform.Find("Text").GetComponent<Text>().text = "Unlock In ChestRoom";
-                CheckBallSpecial();
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (10)")
-        {
-            if (!ImageDisableSpecial[3].active)
-            {
-                ActiveFalse();
-                ImageTickSpecial[3].SetActive(true);
-                weaponlistRight[9].SetActive(true);
-                weaponlistLeft[9].SetActive(true);
-                PlayerPrefs.DeleteKey("CurrentWeapon");
-                PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[9].name);
-            }
-            else
-            {
-                CanvasPopUpDontOpen.SetActive(true);
-                CanvasPopUpDontOpen.transform.Find("Text").GetComponent<Text>().text = "Unlock In ChestRoom";
-                CheckBallSpecial();
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (11)")
-        {
-            if (!ImageDisableSpecial[4].active)
-            {
-                ActiveFalse();
-                ImageTickSpecial[4].SetActive(true);
-                weaponlistRight[10].SetActive(true);
-                weaponlistLeft[10].SetActive(true);
-                PlayerPrefs.DeleteKey("CurrentWeapon");
-                PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[10].name);
-            }
-            else
-            {
-                CanvasPopUpDontOpen.SetActive(true);
-                CanvasPopUpDontOpen.transform.Find("Text").GetComponent<Text>().text = "Unlock In ChestRoom";
-                CheckBallSpecial();
-            }
-        }
-        else if (EventSystem.current.currentSelectedGameObject.name == "Ball (12)")
-        {
-            if (!ImageDisableSpecial[5].active)
-            {
-                ActiveFalse();
-                ImageTickSpecial[5].SetActive(true);
-                weaponlistRight[11].SetActive(true);
-                weaponlistLeft[11].SetActive(true);
-                PlayerPrefs.DeleteKey("CurrentWeapon");
-                PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[11].name);
-            }
-            else
-            {
-                CanvasPopUpDontOpen.SetActive(true);
-                CanvasPopUpDontOpen.transform.Find("Text").GetComponent<Text>().text = "Unlock In ChestRoom";
-                CheckBallSpecial();
-            }
+            ActiveFalse();
+            ImageTick[value].SetActive(true);
+            weaponlistRight[value].SetActive(true);
+            weaponlistLeft[value].SetActive(true);
+            PlayerPrefs.DeleteKey("CurrentWeapon");
+            PlayerPrefs.SetString("CurrentWeapon", weaponlistRight[value].name);
         }
     }
     public void ActiveFalse()
@@ -591,10 +347,6 @@ public class RandomShop2 : MonoBehaviour
     {
         AnalyticManager.LogWatchAds("RewardDiamondInShopWeapon", 1);
         adsShowing = false;
-        string diamondCurrent = PlayerPrefs.GetString("diamond");
-        int diamondCurrentInt = int.Parse(diamondCurrent) + 1500;
-        PlayerPrefs.SetString("diamond", diamondCurrentInt.ToString());
-        DiamondText();
-        CanvasManager.DiamondFlyAdsReward();
+        CanvasManager.DiamondFlyAdsReward(1500);
     }
 }

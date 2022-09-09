@@ -207,7 +207,7 @@ public class SliderProcessStage : MonoBehaviour
         {
             for (int i = 0; i < 3; i++)
             {
-                if (item.transform.GetChild(i).gameObject.active)
+                if (item.transform.GetChild(i).gameObject.activeInHierarchy)
                 {
                     item.transform.GetChild(i).GetChild(0).GetComponent<Text>().text = (StageCurrent - a).ToString();
                     break;

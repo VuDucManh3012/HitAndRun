@@ -37,7 +37,7 @@ public class RandomKey : MonoBehaviour
         //chon diamond de thay
         if (ListDiamond.Count > 10)
         {
-            int index = Random.RandomRange(ListDiamond.Count / 2, ListDiamond.Count);
+            int index = Random.Range(ListDiamond.Count / 2, ListDiamond.Count);
             //
             Transform myPosition = ListDiamond[index].transform;
             ListDiamond[index].SetActive(false);

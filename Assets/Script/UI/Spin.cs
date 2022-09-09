@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using RocketTeam.Sdk.Services.Ads;
+using TMPro;
 public class Spin : MonoBehaviour
 {
     public int numberOfGift = 7;
@@ -17,7 +18,7 @@ public class Spin : MonoBehaviour
     private float currentTime;
 
     public AnimationCurve curve;
-    public Text Diamond;
+    public TMP_Text Diamond;
     public Slider ProcessSlider;
     public Text ProcessText;
     public Text SpinSlotText;
@@ -51,6 +52,8 @@ public class Spin : MonoBehaviour
     public GameObject CanvasPopUpProcess;
     public List<int> SkinNoBuy;
     public List<int> WeaponNoBuy;
+    public List<Texture> ListSkin;
+    public List<GameObject> ListWeapon;
 
     [Header("CanvasManager")]
     public CanvasManager CanvasManager;
@@ -217,7 +220,7 @@ public class Spin : MonoBehaviour
 
         //AddDiamond
         DiamondBonus();
-        AddDiamond(0);
+        AddDiamond();
         ReadText();
         //
         ProcessEnding = PlayerPrefs.GetInt("WheelProcess") + 1;
@@ -268,7 +271,7 @@ public class Spin : MonoBehaviour
     }
     public void ReadText()
     {
-        Diamond.text = PlayerPrefs.GetString("diamond");
+        Diamond.text = (System.Int32.Parse(PlayerPrefs.GetString("diamond"))).ToFormatString();
     }
     public void checkKey()
     {
@@ -279,7 +282,8 @@ public class Spin : MonoBehaviour
         }
     }
     public void DiamondBonus()
-    {//lay so kim cuong thang
+    {
+        //lay so kim cuong thang
         diamondbonus = System.Int32.Parse(listData[indexdiamondbonus].transform.GetChild(0).gameObject.GetComponent<Text>().text);
         TextPopUpGiftLuckyWheel.text = diamondbonus.ToString();
         if (diamondbonus == 0)
@@ -294,12 +298,10 @@ public class Spin : MonoBehaviour
             //Bat PopUp
             PopUpGiftLuckyWheel.SetActive(true);
         }
-        CanvasManager.DiamondFly(null);
     }
-    public void AddDiamond(int bonus2)
+    public void AddDiamond()
     {
-        int diamondcurrent = System.Int32.Parse(PlayerPrefs.GetString("diamond")) + diamondbonus + bonus2;
-        PlayerPrefs.SetString("diamond", diamondcurrent.ToString());
+        CanvasManager.DiamondFly(diamondbonus,null);
     }
     public void AddProcess()
     {
@@ -329,7 +331,9 @@ public class Spin : MonoBehaviour
     }
     public void RandomProcess()
     {
-        for (int i = 0; i < 6; i++)
+        SkinNoBuy.Clear();
+        WeaponNoBuy.Clear();
+        for (int i = 1; i < 6; i++)
         {
             if (!PlayerPrefs.HasKey("skin " + i))
             {
@@ -345,32 +349,35 @@ public class Spin : MonoBehaviour
             if (Random.Range(0, 2) == 1)
             {
                 int ran = Random.Range(0, SkinNoBuy.Count);
-                PlayerPrefs.SetInt("skin " + ran, 1);
+                PlayerPrefs.SetInt("skin " + SkinNoBuy[ran], 1);
                 CanvasPopUpProcess.SetActive(true);
-                CanvasPopUpProcess.GetComponent<CanvasPopupProcess>().ChangeSkin(ran);
+                CanvasPopUpProcess.GetComponent<CanvasPopupProcess>().ChangeSkin(SkinNoBuy[ran]);
+                PlayerPrefs.SetString("CurrentSkin", ListSkin[SkinNoBuy[ran]].name);
             }
             else
             {
                 int ran = Random.Range(0, WeaponNoBuy.Count);
-                PlayerPrefs.SetInt("ball " + ran, 1);
+                PlayerPrefs.SetInt("ball " + WeaponNoBuy[ran], 1);
                 CanvasPopUpProcess.SetActive(true);
-                CanvasPopUpProcess.GetComponent<CanvasPopupProcess>().ChangeSkin(ran + 6);
+                CanvasPopUpProcess.GetComponent<CanvasPopupProcess>().ChangeSkin(WeaponNoBuy[ran] + 6);
+                PlayerPrefs.SetString("CurrentWeapon", ListWeapon[WeaponNoBuy[ran]].name);
             }
         }
         else if (SkinNoBuy.Count != 0)
         {
             int ran = Random.Range(0, SkinNoBuy.Count);
-            PlayerPrefs.SetInt("skin " + ran, 1);
+            PlayerPrefs.SetInt("skin " + SkinNoBuy[ran], 1);
+            CanvasPopUpProcess.GetComponent<CanvasPopupProcess>().ChangeSkin(SkinNoBuy[ran]);
             CanvasPopUpProcess.SetActive(true);
-            CanvasPopUpProcess.GetComponent<CanvasPopupProcess>().ChangeSkin(ran);
+            PlayerPrefs.SetString("CurrentSkin", ListSkin[SkinNoBuy[ran]].name);
         }
         else if (WeaponNoBuy.Count != 0)
         {
             int ran = Random.Range(0, WeaponNoBuy.Count);
-            PlayerPrefs.SetInt("ball " + ran, 1);
+            PlayerPrefs.SetInt("ball " + WeaponNoBuy[ran], 1);
+            CanvasPopUpProcess.GetComponent<CanvasPopupProcess>().ChangeSkin(WeaponNoBuy[ran] + 6);
             CanvasPopUpProcess.SetActive(true);
-            CanvasPopUpProcess.GetComponent<CanvasPopupProcess>().ChangeSkin(ran + 6);
-
+            PlayerPrefs.SetString("CurrentWeapon", ListWeapon[WeaponNoBuy[ran]].name);
         }
     }
     [ContextMenu("DeleteWheelProcess")]
@@ -407,7 +414,6 @@ public class Spin : MonoBehaviour
             ImageDisable[0].SetActive(false);
         }
 
-
         if (processNow <= 10)
         {
             ProcessSlider.value = processNow;
@@ -418,7 +424,6 @@ public class Spin : MonoBehaviour
             PlayerPrefs.SetInt("WheelProcess", 10);
             SetProcess();
         }
-
     }
     public void SubTractSpinSlot()
     {

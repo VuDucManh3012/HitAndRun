@@ -74,94 +74,31 @@ public class ChestRoom : MonoBehaviour
     public void AddDiamond(int DiamondBonus)
     {
         //Add diamond
-        int currentDiamond = System.Int32.Parse(PlayerPrefs.GetString("diamond"));
-        currentDiamond += DiamondBonus;
-        PlayerPrefs.SetString("diamond", currentDiamond.ToString());
+        CanvasManager.DiamondFlyAdsReward(DiamondBonus);
         //cap nhat lai diamond
         DiamondKey.ReadText();
     }
-    public void OpenChest()
+    public void OpenChest(int indexChest)
     {
         if (System.Int32.Parse(PlayerPrefs.GetString("key")) >= 1)
         {
-            if (EventSystem.current.currentSelectedGameObject.transform.GetChild(1).gameObject.active)
+            if (EventSystem.current.currentSelectedGameObject.transform.GetChild(1).gameObject.activeInHierarchy)
             {
                 SubtractKey();
             }
             //DisableImage,set openedchest
-            if (EventSystem.current.currentSelectedGameObject.name == "Item (1)")
+            ListImageDisable[indexChest].SetActive(false);
+            PlayerPrefs.SetInt("OpenedChest " + indexChest, 1);
+            if (indexChest < 8)
             {
-                Debug.Log("1");
-                ListImageDisable[0].SetActive(false);
-                PlayerPrefs.SetInt("OpenedChest " + 0, 1);
-                AddDiamond(100);
-                CanvasManager.DiamondFlyAdsReward();
+                AddDiamond(indexChest + 1 * 100);
             }
-            else if (EventSystem.current.currentSelectedGameObject.name == "Item (2)")
+            else
             {
-                Debug.Log("2");
-                ListImageDisable[1].SetActive(false);
-                PlayerPrefs.SetInt("OpenedChest " + 1, 1);
-                AddDiamond(200);
-                CanvasManager.DiamondFlyAdsReward();
-            }
-            else if (EventSystem.current.currentSelectedGameObject.name == "Item (3)")
-            {
-                Debug.Log("3");
-                ListImageDisable[2].SetActive(false);
-                PlayerPrefs.SetInt("OpenedChest " + 2, 1);
-                AddDiamond(300);
-                CanvasManager.DiamondFlyAdsReward();
-            }
-            else if (EventSystem.current.currentSelectedGameObject.name == "Item (4)")
-            {
-                Debug.Log("4");
-                ListImageDisable[3].SetActive(false);
-                PlayerPrefs.SetInt("OpenedChest " + 3, 1);
-                AddDiamond(400);
-                CanvasManager.DiamondFlyAdsReward();
-            }
-            else if (EventSystem.current.currentSelectedGameObject.name == "Item (5)")
-            {
-                Debug.Log("5");
-                ListImageDisable[4].SetActive(false);
-                PlayerPrefs.SetInt("OpenedChest " + 4, 1);
-                AddDiamond(500);
-                CanvasManager.DiamondFlyAdsReward();
-            }
-            else if (EventSystem.current.currentSelectedGameObject.name == "Item (6)")
-            {
-                Debug.Log("6");
-                ListImageDisable[5].SetActive(false);
-                PlayerPrefs.SetInt("OpenedChest " + 5, 1);
-                AddDiamond(600);
-                CanvasManager.DiamondFlyAdsReward();
-            }
-            else if (EventSystem.current.currentSelectedGameObject.name == "Item (7)")
-            {
-                Debug.Log("7");
-                ListImageDisable[6].SetActive(false);
-                PlayerPrefs.SetInt("OpenedChest " + 6, 1);
-                AddDiamond(700);
-                CanvasManager.DiamondFlyAdsReward();
-            }
-            else if (EventSystem.current.currentSelectedGameObject.name == "Item (8)")
-            {
-                Debug.Log("8");
-                ListImageDisable[7].SetActive(false);
-                PlayerPrefs.SetInt("OpenedChest " + 7, 1);
-                AddDiamond(800);
-                CanvasManager.DiamondFlyAdsReward();
-
-            }
-            else if (EventSystem.current.currentSelectedGameObject.name == "Item (9)")
-            {
-                Debug.Log("9");
-                ListImageDisable[8].SetActive(false);
-                PlayerPrefs.SetInt("OpenedChest " + 8, 1);
                 int adsPoint = PlayerPrefs.GetInt("weaponSpecial" + currentItemSpecial) + 2;
                 PlayerPrefs.SetInt("weaponSpecial" + currentItemSpecial, adsPoint);
                 PlayerPrefs.SetString("CurrentWeapon", ListWeaponSpecial[currentItemSpecial].name);
+                ControllerPlayer.SetWeapon();
                 CanvasNewSkin.SetActive(true);
                 transform.GetChild(0).gameObject.SetActive(false);
                 ImageNewSkin.sprite = ListImageSpecialGift[currentItemSpecial];
@@ -185,7 +122,7 @@ public class ChestRoom : MonoBehaviour
     {
         for (int i = 0; i < ListItem.Length; i++)
         {
-            int ran = Random.RandomRange(1, 9);
+            int ran = Random.Range(1, 9);
             GameObject temp = ListItem[ran];
             ListItem[ran] = ListItem[i];
             ListItem[i] = temp;
@@ -195,7 +132,6 @@ public class ChestRoom : MonoBehaviour
             ListItem[i].transform.position = ListTranfrom[i].transform.position;
             PlayerPrefs.SetString("ChestRoomAfterMix " + i, ListItem[i].name);
         }
-
     }
     public void FirstTimeMeet()
     {

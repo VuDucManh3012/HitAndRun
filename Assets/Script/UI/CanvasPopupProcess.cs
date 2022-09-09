@@ -11,16 +11,5 @@ public class CanvasPopupProcess : MonoBehaviour
     {
         ImageGift.sprite = ListTexture[IndexTexture];
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
    
 }

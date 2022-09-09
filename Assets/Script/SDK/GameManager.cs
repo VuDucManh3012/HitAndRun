@@ -59,6 +59,9 @@ public class GameManager : Singleton<GameManager>
 
     public void AddMoney(int value)
     {
+        int currentDiamond = System.Int32.Parse(PlayerPrefs.GetString("diamond"));
+        currentDiamond += value;
+        PlayerPrefs.SetString("diamond", currentDiamond.ToString());
         EventGlobalManager.Instance.OnMoneyChange.Dispatch(true);
     }
     private void LoadGameData()

@@ -4,10 +4,11 @@ using UnityEngine;
 using System.IO;
 using System.Linq;
 using UnityEngine.UI;
+using TMPro;
 
 public class Save : MonoBehaviour
 {
-    public Text Diamond;
+    public TMP_Text Diamond;
     public Text Key;
     public Text Stage;
     public GameObject Char;
@@ -26,7 +27,6 @@ public class Save : MonoBehaviour
         {
             WriteTextFirst();
         }
-        ReadText();
         GameStartScene.SetActive(true);
         CanvasManager.CanvasQualityKeyController();
         ReadText();
@@ -42,7 +42,7 @@ public class Save : MonoBehaviour
 
     public void ReadText()
     {
-        Diamond.text = PlayerPrefs.GetString("diamond");
+        Diamond.text = (System.Int32.Parse(PlayerPrefs.GetString("diamond"))).ToFormatString();
         Char.GetComponent<ControllerPlayer>().QualityDiamond = double.Parse(PlayerPrefs.GetString("diamond"));
 
         Key.text = PlayerPrefs.GetString("key");
@@ -65,7 +65,7 @@ public class Save : MonoBehaviour
     [ContextMenu("AddDiamond")]
     public void AddDiamond()
     {
-        PlayerPrefs.SetString("diamond", 10000.ToString());
+        CanvasManager.DiamondFly(10000, null);
     }
     public static float ToSingle(double value)
     {

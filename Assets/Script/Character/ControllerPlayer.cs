@@ -23,7 +23,7 @@ public class ControllerPlayer : MonoBehaviour
 
     public bool isUnDead = false;
 
-    public bool moveOnWall = false;
+    private bool moveOnWall = false;
     private bool onWall = false;
 
     public double myLevel;
@@ -320,11 +320,7 @@ public class ControllerPlayer : MonoBehaviour
         }
         XFrame1 = CnInputManager.GetAxis("Horizontal");
     }
-    public void Test()
-    {
-        XFrame1 = 1;
-    }
-    public int JumpHighLeft;
+    private int JumpHighLeft;
     [ContextMenu("Addforce")]
     public void addForce(float y)
     {
@@ -443,7 +439,7 @@ public class ControllerPlayer : MonoBehaviour
             }
         }
     }
-    private void SetWeapon()
+    public void SetWeapon()
     {
         if (PlayerPrefs.GetString("CurrentWeapon") == "")
         {
@@ -474,7 +470,7 @@ public class ControllerPlayer : MonoBehaviour
             if (transform.position.x > maxX)
             {
                 Vector3 pos = transform.position;
-                pos.x = maxX;
+                pos.x = maxX-0.1f;
                 transform.position = pos;
 
                 vel.x = 0;
@@ -482,7 +478,7 @@ public class ControllerPlayer : MonoBehaviour
             else if (transform.position.x < -maxX)
             {
                 Vector3 pos = transform.position;
-                pos.x = -maxX;
+                pos.x = -maxX+0.1f;
                 transform.position = pos;
 
                 vel.x = 0;
@@ -494,7 +490,10 @@ public class ControllerPlayer : MonoBehaviour
             //transform.position = new Vector3(Mathf.Clamp(transform.position.x + CnInputManager.GetAxis("Horizontal") * SpeedLeftRight * Time.deltaTime, -maxX, maxX), transform.position.y, transform.position.z);
         }
     }
-
+    public void TouchToStart()
+    {
+        XFrame1 = 1;
+    }
     public void SetSpeedLeftRight(float speed)
     {
         SpeedLeftRight = speed;
@@ -564,8 +563,6 @@ public class ControllerPlayer : MonoBehaviour
             if (!OnJump)
             {
                 myAnim.SetTrigger("PunchRight");
-                //myAnim.SetBool("Attack", true);
-                //myAnim.SetBool("Attack2", false);
             }
             attack = 1;
             OnParticle(1);
@@ -575,8 +572,6 @@ public class ControllerPlayer : MonoBehaviour
             if (!OnJump)
             {
                 myAnim.SetTrigger("PunchLeft");
-                //myAnim.SetBool("Attack", false);
-                //myAnim.SetBool("Attack2", true);
             }
             attack = 2;
             OnParticle(2);
@@ -927,14 +922,14 @@ public class ControllerPlayer : MonoBehaviour
     public bool Plus999 = false;
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Glass")
+        if (other.CompareTag("Glass"))
         {
             other.transform.parent.Find("Brick").gameObject.SetActive(true);
             other.gameObject.SetActive(false);
             AudioAssistant.Shot(TYPE_SOUND.Glass);
             HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
-        else if (other.tag == "Bridge")
+        else if (other.CompareTag("Bridge"))
         {
 
             SetSpeed(SpeedRoad);
@@ -942,25 +937,25 @@ public class ControllerPlayer : MonoBehaviour
             AudioAssistant.Shot(TYPE_SOUND.Diamond);
             HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
-        else if (other.tag == "WallBrick")
+        else if (other.CompareTag("WallBrick"))
         {
             other.transform.parent.Find("Brick").gameObject.SetActive(true);
             other.gameObject.SetActive(false);
             AudioAssistant.Shot(TYPE_SOUND.WallBrick);
             HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
-        else if (other.tag == "EndingBoard")
+        else if (other.CompareTag("EndingBoard"))
         {
             other.transform.GetComponent<Renderer>().material = WhiteBoard;
             //AudioAssistant.Instance.PlayMusic("WinEnding");
         }
-        else if (other.tag == "ButtonOpenGate")
+        else if (other.CompareTag("ButtonOpenGate"))
         {
             other.transform.parent.Find("Gate").GetComponent<Gate>().enabled = true;
             AudioAssistant.Shot(TYPE_SOUND.Jump);
             HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
-        else if (other.tag == "Road")
+        else if (other.CompareTag("Road"))
         {
             if (startgame && !OnJump)
             {
@@ -971,7 +966,7 @@ public class ControllerPlayer : MonoBehaviour
                 }
             }
         }
-        else if (other.tag == "StageEnding")
+        else if (other.CompareTag("StageEnding"))
         {
             CanvasTouchPad.SetActive(false);
             isMove = false;
@@ -989,11 +984,11 @@ public class ControllerPlayer : MonoBehaviour
                 SetSpeed(0);
             }
         }
-        else if (other.tag == "FireWork")
+        else if (other.CompareTag("FireWork"))
         {
             other.transform.GetChild(0).gameObject.SetActive(true);
         }
-        else if (other.tag == "JumpLow")
+        else if (other.CompareTag("JumpLow"))
         {
             JumpLow();
             if (other.transform.position.x < -1.5)
@@ -1007,7 +1002,7 @@ public class ControllerPlayer : MonoBehaviour
             other.transform.GetComponent<Animator>().enabled = true;
 
         }
-        else if (other.tag == "JumpHigh")
+        else if (other.CompareTag("JumpHigh"))
         {
             JumpHigh();
             SetJumpAttack360(false);
@@ -1034,17 +1029,17 @@ public class ControllerPlayer : MonoBehaviour
                 JumpHighLeft = 0;
             }
         }
-        else if (other.tag == "ItemWall")
+        else if (other.CompareTag("ItemWall"))
         {
             moveOnWall = true;
             StartCoroutine(setMoveOnWall());
         }
-        else if (other.tag == "ItemWallLeft")
+        else if (other.CompareTag("ItemWallLeft"))
         {
             moveOnWall = true;
             StartCoroutine(setMoveOnWall());
         }
-        else if (other.tag == "Wall")
+        else if (other.CompareTag("Wall"))
         {
             if (moveOnWall)
             {
@@ -1070,16 +1065,16 @@ public class ControllerPlayer : MonoBehaviour
                 HCVibrate.Haptic(HapticTypes.SoftImpact);
             }
         }
-        else if (other.tag == "BoxingGloves")
+        else if (other.CompareTag("BoxingGloves"))
         {
             other.transform.parent.transform.Find("Boxing_Gloves").transform.GetComponent<Animator>().enabled = true;
             AudioAssistant.Shot(TYPE_SOUND.Punch);
         }
-        else if (other.tag == "Flag")
+        else if (other.CompareTag("Flag"))
         {
             other.transform.gameObject.GetComponent<Animator>().enabled = true;
         }
-        else if (other.tag == "Spike")
+        else if (other.CompareTag("Spike"))
         {
             if (isUnDead == false)
             {
@@ -1088,7 +1083,7 @@ public class ControllerPlayer : MonoBehaviour
                 SetSpeed(0);
             }
         }
-        else if (other.tag == "Enemy")
+        else if (other.CompareTag("Enemy"))
         {
             SeBonus = other.GetComponent<Enemy>().SeBonus;
             void destroyEnemy()
@@ -1132,7 +1127,7 @@ public class ControllerPlayer : MonoBehaviour
                 }
             }
         }
-        else if (other.tag == "Enemy3")
+        else if (other.CompareTag("Enemy3"))
         {
             SeBonus = other.GetComponent<Enemy>().SeBonus;
             void destroyEnemy()
@@ -1180,18 +1175,18 @@ public class ControllerPlayer : MonoBehaviour
             }
             CheckLevelEnemy();
         }
-        else if (other.tag == "Diamond")
+        else if (other.CompareTag("Diamond"))
         {
             AddPitchSoundDiamond();
             HCVibrate.Haptic(HapticTypes.RigidImpact);
             QualityDiamond += 1;
             Destroy(other.gameObject);
-            Save.Diamond.text = QualityDiamond.ToString();
+            Save.Diamond.text = QualityDiamond.ToFormatString();
             DiamondFound += 1;
             DiamondBonusInHole += 1;
             OnParticle(7);
         }
-        else if (other.tag == "Key")
+        else if (other.CompareTag("Key"))
         {
             Destroy(other.gameObject);
             if (!PlayerPrefs.HasKey("key"))
@@ -1205,7 +1200,7 @@ public class ControllerPlayer : MonoBehaviour
             AudioAssistant.Shot(TYPE_SOUND.Diamond);
             HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
-        else if (other.tag == "EnemyStageEnding")
+        else if (other.CompareTag("EnemyStageEnding"))
         {
             BossEndingBonus = true;
             //
@@ -1230,7 +1225,7 @@ public class ControllerPlayer : MonoBehaviour
 
             }
         }
-        else if (other.tag == "EndBlackHole")
+        else if (other.CompareTag("EndBlackHole"))
         {
             if (DiamondBonusInHole <= 1)
             {
@@ -1252,7 +1247,7 @@ public class ControllerPlayer : MonoBehaviour
                 HCVibrate.Haptic(HapticTypes.SoftImpact);
             }
         }
-        else if (other.tag == "JumpAttack")
+        else if (other.CompareTag("JumpAttack"))
         {
             attackObject.SetActive(true);
             attackObject.GetComponent<AttackCharacter>().setSubTractTimeScale(true);
@@ -1264,13 +1259,13 @@ public class ControllerPlayer : MonoBehaviour
             ChangeTimeScale(1);
             SetFixedDeltaTimeNormal();
         }
-        else if (other.tag == "StartCurve")
+        else if (other.CompareTag("StartCurve"))
         {
             GetComponent<PathCreation.Examples.PathFollower>().moveOnCurve = true;
             GetComponent<PathCreation.Examples.PathFollower>().pathCreator = other.transform.parent.Find("ControllerCurve").GetComponent<PathCreation.PathCreator>();
             SetSpeed(0);
         }
-        else if (other.tag == "EndCurve")
+        else if (other.CompareTag("EndCurve"))
         {
             GetComponent<PathCreation.Examples.PathFollower>().moveOnCurve = false;
             GetComponent<PathCreation.Examples.PathFollower>().pathCreator = null;
@@ -1280,7 +1275,7 @@ public class ControllerPlayer : MonoBehaviour
             SetSpeed(SpeedRoad);
             SetJumpWall(true);
         }
-        else if (other.tag == "ItemHammer")
+        else if (other.CompareTag("ItemHammer"))
         {
             WeaponHammer.SetActive(true);
             WeaponHammer.GetComponent<AttackCharacter>().setSubTractTimeScale(true);
@@ -1293,7 +1288,7 @@ public class ControllerPlayer : MonoBehaviour
             other.transform.gameObject.SetActive(false);
             OnJump = true;
         }
-        else if (other.tag == "ItemDemoSkin")
+        else if (other.CompareTag("ItemDemoSkin"))
         {
             int indexSkin = other.GetComponent<ModelChangeSkin>().indexSkin;
             indexSkinDemo = indexSkin;
@@ -1365,7 +1360,7 @@ public class ControllerPlayer : MonoBehaviour
     }
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Wall")
+        if (other.CompareTag("Wall"))
         {
             if (moveOnWall)
             {
@@ -1382,11 +1377,11 @@ public class ControllerPlayer : MonoBehaviour
                 }
             }
         }
-        else if (other.tag == "StageEnding")
+        else if (other.CompareTag("StageEnding"))
         {
             transform.position = new Vector3(other.transform.position.x, transform.position.y, transform.position.z);
         }
-        else if (other.tag == "Bridge")
+        else if (other.CompareTag("Bridge"))
         {
             isMove = false;
             transform.position = new Vector3(other.transform.position.x, transform.position.y, transform.position.z);
@@ -1394,14 +1389,14 @@ public class ControllerPlayer : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Bridge")
+        if (other.CompareTag("Bridge"))
         {
             isMove = true;
             Jump(17);
             SetSpeed(SpeedRoad);
             SetJumpWall(true);
         }
-        else if (other.tag == "Wall")
+        else if (other.CompareTag("Wall"))
         {
             if (moveOnWall)
             {
@@ -1429,7 +1424,7 @@ public class ControllerPlayer : MonoBehaviour
                 //
             }
         }
-        else if (other.tag == "StartBlackHole")
+        else if (other.CompareTag("StartBlackHole"))
         {
             if (other.GetComponent<BlackHole>().levelHole <= myLevel)
             {
@@ -1454,16 +1449,16 @@ public class ControllerPlayer : MonoBehaviour
                 other.transform.parent.gameObject.SetActive(false);
             }
         }
-        else if (other.tag == "Road")
+        else if (other.CompareTag("Road"))
         {
             onRoad = false;
         }
-        else if (other.tag == "JumpHigh")
+        else if (other.CompareTag("JumpHigh"))
         {
             SetJumpAttack360(true);
             onRoad = false;
         }
-        else if (other.tag == "Enemy")
+        else if (other.CompareTag("Enemy"))
         {
             SetSkin();
             SetAttackFalse();
@@ -1472,7 +1467,7 @@ public class ControllerPlayer : MonoBehaviour
                 PitchSound = 1;
             }
         }
-        else if (other.tag == "Enemy3")
+        else if (other.CompareTag("Enemy3"))
         {
             SetSkin();
             myAnim.SetBool("AttackBoss", false);
@@ -1501,7 +1496,7 @@ public class ControllerPlayer : MonoBehaviour
         DiamondBonusInHole = 0;
 
         ActiveLF();
-        CanvasManager.DiamondFlyAdsReward();
+        CanvasManager.DiamondFlyAdsReward(0);
     }
     public bool adsShowing = false;
     /// ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1550,32 +1545,11 @@ public class ControllerPlayer : MonoBehaviour
         adsShowing = false;
         CanvasX2Hole.SetActive(false);
         SetSpeed(SpeedRoad);
-        QualityDiamond += (DiamondBonusInHole * 10);
-        Save.Diamond.text = QualityDiamond.ToString();
         DiamondFound += (DiamondBonusInHole * 10);
         DiamondBonusInHole = 0;
 
         ActiveLF();
-
-        CanvasManager.DiamondFlyAdsReward();
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public void WatchAdsAFK25s()
-    {
-        if (!GameManager.NetworkAvailable)
-        {
-            PopupNoInternet.Show();
-            return;
-        }
-
-        if (adsShowing)
-            return;
-
-
-        if (GameManager.EnableAds)
-        {
-            AdManager.Instance.ShowInterstitial("AdsAFK25s", 1);
-        }
+        CanvasManager.DiamondFlyAdsReward(DiamondBonusInHole * 10);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void ADSReborn()
