@@ -35,6 +35,9 @@ public class ChestRoom : MonoBehaviour
     [Header("CanvasManager")]
     public CanvasManager CanvasManager;
 
+    [Header("DiamondFly")]
+    public MoneyClaimFx MoneyClaimFx;
+    private Transform SpawnPoint;
     // Start is called before the first frame update
     void Start()
     {
@@ -71,12 +74,18 @@ public class ChestRoom : MonoBehaviour
             }
         }
     }
-    public void AddDiamond(int DiamondBonus)
+    private void AddDiamond(int DiamondBonus)
     {
         //Add diamond
         CanvasManager.DiamondFlyAdsReward(DiamondBonus);
         //cap nhat lai diamond
         DiamondKey.ReadText();
+        //FX
+        MoneyClaimFx.ClaimMoneyOnlyFx(10, SpawnPoint);
+    }
+    public void SetSpawnPoint(Transform SpawnPointNew)
+    {
+        SpawnPoint = SpawnPointNew;
     }
     public void OpenChest(int indexChest)
     {
@@ -85,24 +94,25 @@ public class ChestRoom : MonoBehaviour
             if (EventSystem.current.currentSelectedGameObject.transform.GetChild(1).gameObject.activeInHierarchy)
             {
                 SubtractKey();
+                //DisableImage,set openedchest
+                ListImageDisable[indexChest].SetActive(false);
+                PlayerPrefs.SetInt("OpenedChest " + indexChest, 1);
+                if (indexChest < 8)
+                {
+                    AddDiamond(indexChest + 1 * 100);
+                }
+                else
+                {
+                    int adsPoint = PlayerPrefs.GetInt("weaponSpecial" + currentItemSpecial) + 2;
+                    PlayerPrefs.SetInt("weaponSpecial" + currentItemSpecial, adsPoint);
+                    PlayerPrefs.SetString("CurrentWeapon", ListWeaponSpecial[currentItemSpecial].name);
+                    ControllerPlayer.SetWeapon();
+                    CanvasNewSkin.SetActive(true);
+                    transform.GetChild(0).gameObject.SetActive(false);
+                    ImageNewSkin.sprite = ListImageSpecialGift[currentItemSpecial];
+                }
             }
-            //DisableImage,set openedchest
-            ListImageDisable[indexChest].SetActive(false);
-            PlayerPrefs.SetInt("OpenedChest " + indexChest, 1);
-            if (indexChest < 8)
-            {
-                AddDiamond(indexChest + 1 * 100);
-            }
-            else
-            {
-                int adsPoint = PlayerPrefs.GetInt("weaponSpecial" + currentItemSpecial) + 2;
-                PlayerPrefs.SetInt("weaponSpecial" + currentItemSpecial, adsPoint);
-                PlayerPrefs.SetString("CurrentWeapon", ListWeaponSpecial[currentItemSpecial].name);
-                ControllerPlayer.SetWeapon();
-                CanvasNewSkin.SetActive(true);
-                transform.GetChild(0).gameObject.SetActive(false);
-                ImageNewSkin.sprite = ListImageSpecialGift[currentItemSpecial];
-            }
+
         }
     }
     public void SubtractKey()

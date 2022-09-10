@@ -75,4 +75,55 @@ public class MoneyClaimFx : HCMonobehavior
             });
         });
     }
+    [Button]
+    public void ClaimMoneyOnlyFx(int value, Transform spawn = null, int loops = 20, float interval = .03f)
+    {
+        Vector3 spawnOffset = Vector3.zero;
+        if (spawn)
+            spawnOffset = spawn.position - spawnTrans.position;
+
+        StartCoroutine(ClaimMoneyCoroutineOnlyFx(value, spawnOffset, loops, interval));
+    }
+
+    public IEnumerator ClaimMoneyCoroutineOnlyFx(int value, Vector3 spawnOffset, int loops, float interval)
+    {
+        int val = Math.DivRem(value, loops, out int remain);
+
+        for (int i = 0; i < loops; i++)
+        {
+            SpawnMoneyOnlyFx(i == loops - 1 ? val + remain : val, spawnOffset);
+            yield return new WaitForSeconds(interval);
+        }
+    }
+
+    void SpawnMoneyOnlyFx(int value, Vector3 spawnOffset)
+    {
+        Vector3 rdPos = spawnOffset + new Vector3(Random.Range(_minRdPos.x, _maxRdPos.x),
+            Random.Range(_minRdPos.y, _maxRdPos.y),
+            Random.Range(_minRdPos.z, _maxRdPos.z));
+
+        Vector3 spawnPos = spawnTrans.position + spawnOffset;
+        Transform spawnedMoney = Instantiate(moneyIconPrefab, spawnPos, Quaternion.identity, transform).transform;
+
+        spawnedMoney.localScale = Vector3.zero;
+        spawnedMoney.DOScale(Vector3.one, .3f).SetEase(Ease.OutExpo);
+        spawnedMoney.DOMove(rdPos, .3f).SetEase(Ease.OutExpo).OnComplete(() =>
+        {
+            spawnedMoney.DOMove(moneyIcon.position, .3f).SetEase(Ease.InExpo).SetDelay(.3f).OnComplete(() =>
+            {
+                HCVibrate.Haptic(HapticTypes.LightImpact);
+
+                DOTween.Kill(moneyIcon);
+                moneyIcon.DOScale(Vector3.one * 1.1f, .05f).OnComplete(() =>
+                {
+                    moneyIcon.DOScale(Vector3.one, .05f);
+                });
+
+                spawnedMoney.DOScale(Vector3.zero, .1f).OnComplete(() =>
+                {
+                    Destroy(spawnedMoney.gameObject);
+                });
+            });
+        });
+    }
 }
