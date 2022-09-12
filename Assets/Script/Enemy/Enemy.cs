@@ -81,7 +81,7 @@ public class Enemy : MonoBehaviour
         {
             SetUpperLower(false, true);
             Animator myanim = GetComponentInChildren<Animator>();
-            myanim.SetBool("LevelUpper", false);
+            try { myanim.SetBool("LevelUpper", false); } catch { }
         }
         else if (Enemy2 && !EnemyEnding)
         {

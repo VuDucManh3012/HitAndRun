@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 569549180615718090}
-  - component: {fileID: 1691008220373742656}
   m_Layer: 0
   m_Name: PendulumHammer
   m_TagString: Untagged
@@ -32,25 +31,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
---- !u!95 &1691008220373742656
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 569549180615718093}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 9f5c796b0a32f2b4282656c3f09646e1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &569549181091871368
 GameObject:
   m_ObjectHideFlags: 0
@@ -61,6 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 569549181091871369}
   - component: {fileID: 8835721257027301625}
+  - component: {fileID: 6292207337585922814}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -96,6 +77,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 7.9391127, y: 4.5719404, z: 4.609421}
   m_Center: {x: -0.029699463, y: -11.634821, z: -0.00000025544847}
+--- !u!95 &6292207337585922814
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 569549181091871368}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9f5c796b0a32f2b4282656c3f09646e1, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &3927554771185724513
 PrefabInstance:
   m_ObjectHideFlags: 0

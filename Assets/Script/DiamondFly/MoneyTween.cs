@@ -35,7 +35,7 @@ public class MoneyTween : HCMonobehavior
         if (success)
         {
             int tmp = _currentMoney;
-            DOTween.To(() => tmp, UpdateMoneyText, System.Int32.Parse(PlayerPrefs.GetString("diamond")), .2f)
+            DOTween.To(() => tmp, UpdateMoneyText, PlayerPrefs.GetInt("diamond"), .2f)
                 .SetEase(Ease.Linear).SetTarget(this);
         }
         else

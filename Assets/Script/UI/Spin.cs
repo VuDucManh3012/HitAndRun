@@ -79,7 +79,6 @@ public class Spin : MonoBehaviour
         CheckSpinSlot();
         CheckTimeSpin();
     }
-
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -163,7 +162,6 @@ public class Spin : MonoBehaviour
             if (AddDayBefore)
             {
                 System.DateTime t2 = System.DateTime.Now.AddSeconds(-(14400 - timeNextSpin));
-                Debug.Log(t2);
                 PlayerPrefs.SetString("TimeNextSpin", t2.ToString());
                 AddDayBefore = false;
             }
@@ -199,7 +197,6 @@ public class Spin : MonoBehaviour
         currentTime = 0;
         int indexGiftRandom = Random.Range(1, numberOfGift + 1);
         indexdiamondbonus = indexGiftRandom - 1;
-        Debug.Log(indexGiftRandom);
         indexGift = indexGiftRandom;
         float angleWant = (numberCircleRotate * CIRCLE) + angleofOneGift * indexGiftRandom - startAngle - angleofOneGift - 22.5f;
 
@@ -271,7 +268,7 @@ public class Spin : MonoBehaviour
     }
     public void ReadText()
     {
-        Diamond.text = (System.Int32.Parse(PlayerPrefs.GetString("diamond"))).ToFormatString();
+        Diamond.text = PlayerPrefs.GetInt("diamond").ToFormatString();
     }
     public void checkKey()
     {
@@ -301,7 +298,10 @@ public class Spin : MonoBehaviour
     }
     public void AddDiamond()
     {
-        CanvasManager.DiamondFly(diamondbonus,null);
+        if (diamondbonus != 0)
+        {
+            CanvasManager.DiamondFly(diamondbonus, null);
+        }
     }
     public void AddProcess()
     {

@@ -37,13 +37,11 @@ public class Save : MonoBehaviour
         int currentKey = System.Int32.Parse(PlayerPrefs.GetString("key"));
         currentKey += 1;
         PlayerPrefs.SetString("key", currentKey.ToString());
-        Debug.Log(PlayerPrefs.GetString("key"));
     }
-
     public void ReadText()
     {
-        Diamond.text = (System.Int32.Parse(PlayerPrefs.GetString("diamond"))).ToFormatString();
-        Char.GetComponent<ControllerPlayer>().QualityDiamond = double.Parse(PlayerPrefs.GetString("diamond"));
+        Diamond.text = PlayerPrefs.GetInt("diamond").ToFormatString();
+        Char.GetComponent<ControllerPlayer>().QualityDiamond = PlayerPrefs.GetInt("diamond");
 
         Key.text = PlayerPrefs.GetString("key");
 
@@ -52,13 +50,13 @@ public class Save : MonoBehaviour
     }
     public void WriteText()
     {
-        PlayerPrefs.SetString("diamond", Diamond.text);
+        PlayerPrefs.SetInt("diamond", (int)Char.GetComponent<ControllerPlayer>().QualityDiamond);
         PlayerPrefs.SetString("key", PlayerPrefs.GetString("key"));
         PlayerPrefs.SetString("stage", Char.GetComponent<ControllerPlayer>().QualityStage.ToString());
     }
     public void WriteTextFirst()
     {
-        PlayerPrefs.SetString("diamond", 0.ToString());
+        PlayerPrefs.SetInt("diamond", 0);
         PlayerPrefs.SetString("key", 0.ToString());
         PlayerPrefs.SetString("stage", 1.ToString());
     }

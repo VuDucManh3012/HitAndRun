@@ -9,11 +9,19 @@ public class Ragdoll : MonoBehaviour
     private float z = 0.7f;
     private float timeDestroy = 0.4f;
     public bool EnemyEnding = false;
-    public bool EnemyInStageEnding;
+    public bool EnemyInStageEnding=false;
     // Start is called before the first frame update
     void Start()
     {
-        EnemyInStageEnding = transform.parent.GetComponent<Enemy>().EnemyEnding;
+        try
+        {
+            EnemyInStageEnding = transform.parent.GetComponent<Enemy>().EnemyEnding;
+        }
+        catch
+        {
+
+        }
+        
         if (!EnemyEnding)
         {
             Destroy(transform.gameObject, timeDestroy);

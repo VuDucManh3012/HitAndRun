@@ -96,11 +96,11 @@ public class RandomSkin : MonoBehaviour
     {
         if (!PlayerPrefs.HasKey("diamond"))
         {
-            PlayerPrefs.SetString("diamond", 0.ToString());
+            PlayerPrefs.SetInt("diamond", 0);
         }
         else
         {
-            diamond.text = (System.Int32.Parse(PlayerPrefs.GetString("diamond"))).ToFormatString();
+            diamond.text = (PlayerPrefs.GetInt("diamond")).ToFormatString();
         }
     }
     public void checkBall()
@@ -193,12 +193,12 @@ public class RandomSkin : MonoBehaviour
                 price = (PlayerPrefs.GetInt("SoLanRandomSkin") * 1000) + 1500;
             }
             //
-            int currentDiamond = int.Parse(PlayerPrefs.GetString("diamond"));
+            int currentDiamond = PlayerPrefs.GetInt("diamond");
             if (currentDiamond >= price)
             {
                 currentDiamond -= price;
                 diamond.text = currentDiamond.ToFormatString();
-                PlayerPrefs.SetString("diamond", diamond.text);
+                PlayerPrefs.SetInt("diamond", currentDiamond);
                 //
                 int random = Random.Range(1, YourSelect2.Count + 1);
                 //
@@ -214,8 +214,7 @@ public class RandomSkin : MonoBehaviour
             }
             else
             {
-                //
-                Debug.Log("Don`t enough money");
+                //Don`t enough money
                 CanvasPopUpDontOpen.SetActive(true);
                 CanvasPopUpDontOpen.transform.Find("Text").GetComponent<Text>().text = "Don`t enough money";
                 //

@@ -470,7 +470,7 @@ public class ControllerPlayer : MonoBehaviour
             if (transform.position.x > maxX)
             {
                 Vector3 pos = transform.position;
-                pos.x = maxX-0.1f;
+                pos.x = maxX - 0.1f;
                 transform.position = pos;
 
                 vel.x = 0;
@@ -478,7 +478,7 @@ public class ControllerPlayer : MonoBehaviour
             else if (transform.position.x < -maxX)
             {
                 Vector3 pos = transform.position;
-                pos.x = -maxX+0.1f;
+                pos.x = -maxX + 0.1f;
                 transform.position = pos;
 
                 vel.x = 0;
@@ -608,7 +608,7 @@ public class ControllerPlayer : MonoBehaviour
             {
                 QualityDiamond += diamondBonus;
             }
-            Save.Diamond.text = QualityDiamond.ToString();
+            Save.Diamond.text = QualityDiamond.ToFormatString();
         }
         PlusedSeBonus = true;
     }
@@ -1015,7 +1015,7 @@ public class ControllerPlayer : MonoBehaviour
             {
 
             }
-            
+
             if (transform.position.x <= -2)
             {
                 JumpHighLeft = -1;
@@ -1089,7 +1089,14 @@ public class ControllerPlayer : MonoBehaviour
             void destroyEnemy()
             {
                 SetAttack();
-                Destroy(other.transform.Find("EnemyModel").gameObject);
+                try
+                {
+                    Destroy(other.transform.Find("EnemyModel").gameObject);
+                }
+                catch
+                {
+
+                }
                 Destroy(other.transform.Find("TextLevel").gameObject);
                 Destroy(other.transform.Find("LowerLevel").gameObject);
                 other.transform.Find("EnemyRagdoll").gameObject.SetActive(true);
@@ -1290,19 +1297,26 @@ public class ControllerPlayer : MonoBehaviour
         }
         else if (other.CompareTag("ItemDemoSkin"))
         {
-            int indexSkin = other.GetComponent<ModelChangeSkin>().indexSkin;
-            indexSkinDemo = indexSkin;
+            if (other.GetComponent<ModelChangeSkin>().TypeShop == 1)
+            {
+                indexSkinDemo = other.GetComponent<ModelChangeSkin>().WeaponNoBuy[other.GetComponent<ModelChangeSkin>().indexSkin];
+            }
+            else if (other.GetComponent<ModelChangeSkin>().TypeShop == 2)
+            {
+                indexSkinDemo = other.GetComponent<ModelChangeSkin>().SkinNoBuy[other.GetComponent<ModelChangeSkin>().indexSkin];
+            }
+            Debug.Log(indexSkinDemo);
             if (other.GetComponent<ModelChangeSkin>().TypeShop == 2)
             {
                 OnChangeSkin = false;
                 //thay skin
                 ModelCharacterParent.transform.localScale = new Vector3(80, 80, 80);
-                NumberTextSkinLevel = 27 + (indexSkin * 4);
+                NumberTextSkinLevel = 27 + (indexSkinDemo * 4);
                 SkinRenderer.material.mainTexture = textSkin[NumberTextSkinLevel];
                 ModelCharacterArmor.SetActive(true);
                 SkinArmorRenderer.material.mainTexture = textSkin[NumberTextSkinLevel];
                 //bat weaponSpecial
-                WeaponSpecial.transform.GetChild(indexSkin + 6).gameObject.SetActive(true);
+                WeaponSpecial.transform.GetChild(indexSkinDemo + 6).gameObject.SetActive(true);
             }
             else if (other.GetComponent<ModelChangeSkin>().TypeShop == 1)
             {
@@ -1314,8 +1328,8 @@ public class ControllerPlayer : MonoBehaviour
                     WeaponRight.transform.GetChild(i).gameObject.SetActive(false);
                 }
                 //bat weapon demo moi
-                WeaponLeft.transform.GetChild(indexSkin + 6).gameObject.SetActive(true);
-                WeaponRight.transform.GetChild(indexSkin + 6).gameObject.SetActive(true);
+                WeaponLeft.transform.GetChild(indexSkinDemo + 6).gameObject.SetActive(true);
+                WeaponRight.transform.GetChild(indexSkinDemo + 6).gameObject.SetActive(true);
             }
             typeShopSkinDemo = other.GetComponent<ModelChangeSkin>().TypeShop;
             OnParticle(3);
@@ -1493,10 +1507,11 @@ public class ControllerPlayer : MonoBehaviour
         CanvasX2Hole.SetActive(false);
         isMove = true;
         SetSpeed(SpeedRoad);
-        DiamondBonusInHole = 0;
 
+        PlayerPrefs.SetInt("diamond", (int)QualityDiamond);
         ActiveLF();
-        CanvasManager.DiamondFlyAdsReward(0);
+        CanvasManager.DiamondFlyAdsReward(DiamondBonusInHole);
+        DiamondBonusInHole = 0;
     }
     public bool adsShowing = false;
     /// ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1546,10 +1561,10 @@ public class ControllerPlayer : MonoBehaviour
         CanvasX2Hole.SetActive(false);
         SetSpeed(SpeedRoad);
         DiamondFound += (DiamondBonusInHole * 10);
-        DiamondBonusInHole = 0;
-
         ActiveLF();
+        PlayerPrefs.SetInt("diamond", (int)QualityDiamond);
         CanvasManager.DiamondFlyAdsReward(DiamondBonusInHole * 10);
+        DiamondBonusInHole = 0;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void ADSReborn()

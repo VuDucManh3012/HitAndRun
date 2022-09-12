@@ -671,7 +671,16 @@ public class SpawnMap2 : MonoBehaviour
         {
             MapHole.Add(HoleStage1);
         }
-
+        if (System.Int32.Parse(PlayerPrefs.GetString("stage")) < 12)
+        {
+            for (int i = 0; i < MapHole.Count; i++)
+            {
+                if (MapHole[i].CompareTag("MapNoHammerAttack"))
+                {
+                    MapHole.Remove(MapHole[i]);
+                }
+            }
+        }
         random = Random.Range(0, MapHole.Count);
         ListMapFound.Add(MapHole[random]);
     }

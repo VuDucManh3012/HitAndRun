@@ -50,7 +50,7 @@ public class CanvasGameStartController : MonoBehaviour
     {
         if (PlayerPrefs.HasKey("diamond"))
         {
-            currentDiamond = System.Int32.Parse(PlayerPrefs.GetString("diamond"));
+            currentDiamond = PlayerPrefs.GetInt("diamond");
         }
         else
         {

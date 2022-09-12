@@ -91,19 +91,21 @@ public class CanvasManager : MonoBehaviour
     public int phanTramNewSkinEndingCurrent = 0;
     public int phanTramNewSkinEndingBefore = 0;
     public GameObject CanvasNewSkinEnding;
+    public DemoSkinEnding DemoSkinEnding;
     public Image ImageSkin;
     public Image ImageMarkSkin;
     public Text TextButtonNewSkin;
     public Text TextPhanTram;
     public Sprite[] ListSpriteImage;
     public GameObject ButtonNoThank;
+    public GameObject ButtonAdsNewSkinEnding;
+    public GameObject ButtonNextLevel;
+    public GameObject ButtonGetIt;
     private float AnimFillAmountSkinEnding;
     private float AnimFillAmountSkinEndingCurrent;
     private float TextFillAmountSkinEnding;
     private float TextFillAmountSkinEndingCurrent;
-    public GameObject ButtonAdsNewSkinEnding;
-    public GameObject ButtonNextLevel;
-    public GameObject ButtonGetIt;
+
 
     [Header("CanVasPopUpRateUs")]
     public GameObject CanvasPopupRate;
@@ -425,11 +427,13 @@ public class CanvasManager : MonoBehaviour
         }
         else if (TypeShop == 1)
         {
-            ImageSkin.sprite = ListSpriteImage[WeaponNoBuy[indexSkin]];
+            DemoSkinEnding.OnModel(TypeShop, indexSkin);
+            //ImageSkin.sprite = ListSpriteImage[WeaponNoBuy[indexSkin]];
         }
         else if (TypeShop == 2)
         {
-            ImageSkin.sprite = ListSpriteImage[SkinNoBuy[indexSkin] + 6];
+            DemoSkinEnding.OnModel(TypeShop, indexSkin);
+            //ImageSkin.sprite = ListSpriteImage[SkinNoBuy[indexSkin] + 6];
         }
         int CurrentProcess = PlayerPrefs.GetInt("phanTramNewSkinEndingCurrent");
         float fillAmount = CurrentProcess;
@@ -610,7 +614,7 @@ public class CanvasManager : MonoBehaviour
     }
     public void DiamondOfflineRewardUpdate()
     {
-        int currentDiamond = System.Int32.Parse(PlayerPrefs.GetString("diamond"));
+        int currentDiamond = PlayerPrefs.GetInt("diamond");
         int currentPriceUpdateOfllineLevel = System.Int32.Parse(TextPriceUpdateOfflineLevel.text);
         if (currentDiamond >= currentPriceUpdateOfllineLevel)
         {
@@ -621,7 +625,7 @@ public class CanvasManager : MonoBehaviour
             SetTextOfflineRewardUpdate();
             //tru diamond
             currentDiamond -= currentPriceUpdateOfllineLevel;
-            PlayerPrefs.SetString("diamond", currentDiamond.ToString());
+            PlayerPrefs.SetInt("diamond", currentDiamond);
             Save.ReadText();
             //Finish
             characterController.Particle[8].SetActive(false);
@@ -706,7 +710,7 @@ public class CanvasManager : MonoBehaviour
     public void Updatelevel()
     {
         currentUpdateLevel = PlayerPrefs.GetInt("UpdateLevel");
-        int currentdiamond = System.Int32.Parse(PlayerPrefs.GetString("diamond"));
+        int currentdiamond = PlayerPrefs.GetInt("diamond");
         if (currentdiamond >= (currentUpdateLevel + 1) * 50)
         {
             PlayerPrefs.SetInt("UpdateLevel", currentUpdateLevel + 1);
@@ -719,9 +723,9 @@ public class CanvasManager : MonoBehaviour
             characterController.Particle[0].SetActive(true);
             //
             //tru tien
-            int currentDiamond = System.Int32.Parse(PlayerPrefs.GetString("diamond"));
+            int currentDiamond = PlayerPrefs.GetInt("diamond");
             currentDiamond -= (currentUpdateLevel + 1) * 50;
-            PlayerPrefs.SetString("diamond", currentDiamond.ToString());
+            PlayerPrefs.SetInt("diamond", currentDiamond);
             Save.ReadText();
             //
             CanvasGameStartController.CheckSceneStart();
@@ -886,7 +890,7 @@ public class CanvasManager : MonoBehaviour
     {
         PopupGift.SetActive(false);
         //diamond ++
-        if (PlayerPrefs.GetString("diamond") != "")
+        if (PlayerPrefs.HasKey("diamond"))
         {
             DiamondFlyAdsReward(diamondInChest);
             Save.ReadText();
@@ -930,7 +934,7 @@ public class CanvasManager : MonoBehaviour
         AnalyticManager.LogWatchAds("ClaimX2Gift10Minutes", 1);
 
         //diamond ++
-        if (PlayerPrefs.GetString("diamond") != "")
+        if (PlayerPrefs.HasKey("diamond"))
         {
             DiamondFlyAdsReward(diamondInChest * 2);
             Save.ReadText();
