@@ -583,9 +583,17 @@ public class CanvasManager : MonoBehaviour
     }
     public void Plus999Level()
     {
+        if (PlayerPrefs.HasKey("First999Level"))
+        {
         //ads
         WatchAds999Level();
         //
+        }
+        else
+        {
+            OnCompleteAds999Level(1);
+        }
+
     }
     public void GameOver()
     {
@@ -1093,6 +1101,10 @@ public class CanvasManager : MonoBehaviour
         adsShowing = false;
         characterController.myLevel += 999;
         characterController.SetSkin();
+        if (!PlayerPrefs.HasKey("First999Level"))
+        {
+            PlayerPrefs.SetInt("First999Level", 1);
+        }
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void WatchAdsUpdateOfflineReward()
