@@ -19,4 +19,5 @@ public class GameFps : MonoBehaviour
 		Application.targetFrameRate = frameRate;
 		deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
 	}
+
 }
