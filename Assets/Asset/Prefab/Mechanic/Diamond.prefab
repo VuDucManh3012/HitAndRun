@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 370322989984916637}
   - component: {fileID: 341114162962947062}
+  - component: {fileID: 2591759867625829264}
   m_Layer: 0
   m_Name: Diamond
   m_TagString: Diamond
@@ -46,6 +47,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.1052299, y: 1.2104595, z: 0.19932199}
   m_Center: {x: 0.0030950606, y: 0.0061899424, z: -0.0020099282}
+--- !u!205 &2591759867625829264
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 370322989984916625}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: -0.000000059604645, z: 0.000000067055225}
+  m_Size: 1.1818184
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.002383952
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 8335776162233840396}
+  m_Enabled: 1
 --- !u!1 &7505282608308064543
 GameObject:
   m_ObjectHideFlags: 0

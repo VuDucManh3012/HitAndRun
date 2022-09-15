@@ -102,6 +102,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6627276111156358316}
+  - component: {fileID: 3695629382388965006}
   m_Layer: 0
   m_Name: GateSquareBlue
   m_TagString: Untagged
@@ -127,6 +128,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!205 &3695629382388965006
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6627276111156358319}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0.00000333786, y: 5.025628, z: -0.27375364}
+  m_Size: 11.722503
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.0052385484
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 8568208382256745328}
+    - renderer: {fileID: 6627276111026374336}
+    - renderer: {fileID: 6627276111172816771}
+    - renderer: {fileID: 6627276111728847010}
+  m_Enabled: 1
 --- !u!1 &6627276111172816780
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,6 +466,12 @@ PrefabInstance:
 --- !u!4 &5644168716233585727 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4824361659445464678, guid: 1935316b9f8ff6e428c3ced1666242d1,
+    type: 3}
+  m_PrefabInstance: {fileID: 911854496995048025}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8568208382256745328 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8813521337764770089, guid: 1935316b9f8ff6e428c3ced1666242d1,
     type: 3}
   m_PrefabInstance: {fileID: 911854496995048025}
   m_PrefabAsset: {fileID: 0}

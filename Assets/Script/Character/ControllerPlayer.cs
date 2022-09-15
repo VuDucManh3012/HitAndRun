@@ -719,8 +719,12 @@ public class ControllerPlayer : MonoBehaviour
         myBody.AddForce(new Vector3(0, 0, -23), ForceMode.Impulse);
         StartCoroutine(setUnDead());
 
-        AudioAssistant.Shot(TYPE_SOUND.PushOppsite);
-        HCVibrate.Haptic(HapticTypes.SoftImpact);
+        if (!OnAudio)
+        {
+            AudioAssistant.Shot(TYPE_SOUND.PushOppsite);
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
+        }
+
     }
     public void pushOppsiteEnemy()
     {
@@ -851,7 +855,6 @@ public class ControllerPlayer : MonoBehaviour
             else
             {
                 QualityDiamond -= DiamondFound;
-                StartCoroutine(GameOver());
                 isMove = false;
                 if (!OnAudio)
                 {
@@ -859,11 +862,12 @@ public class ControllerPlayer : MonoBehaviour
                     HCVibrate.Haptic(HapticTypes.SoftImpact);
                     OnAudio = true;
                 }
+                StartCoroutine(GameOver());
             }
             myLevel = 0;
         }
     }
-
+    private Vector3 CheckPoint;
     [ContextMenu("ReBorn")]
     public void ReBorn(int value)
     {
@@ -879,18 +883,27 @@ public class ControllerPlayer : MonoBehaviour
         isMove = true;
         OnAudio = false;
         //dich vi tri
-        Transform Start, End;
-        for (int i = 1; i <= SpawnMap.transform.childCount; i++)
+        if (CheckPoint.z != 0)
         {
-            Start = SpawnMap.transform.GetChild(i).Find("Start");
-            End = SpawnMap.transform.GetChild(i).Find("End");
-            if (Start.position.z <= transform.position.z && transform.position.z <= End.transform.position.z)
+            transform.position = new Vector3(0, CheckPoint.y, CheckPoint.z - 5);
+            ObjectFollowCharacter.transform.position = new Vector3(0, CheckPoint.y, CheckPoint.z - 5);
+        }
+        else
+        {
+            Transform Start, End;
+            for (int i = 1; i <= SpawnMap.transform.childCount; i++)
             {
-                transform.position = new Vector3(0, 2.3f, Start.transform.position.z - 5);
-                ObjectFollowCharacter.transform.position = new Vector3(0, 2.3f, Start.transform.position.z - 5);
-                break;
+                Start = SpawnMap.transform.GetChild(i).Find("Start");
+                End = SpawnMap.transform.GetChild(i).Find("End");
+                if (Start.position.z <= transform.position.z && transform.position.z <= End.transform.position.z)
+                {
+                    transform.position = new Vector3(0, 2.3f, Start.transform.position.z - 5);
+                    ObjectFollowCharacter.transform.position = new Vector3(0, 2.3f, Start.transform.position.z - 5);
+                    break;
+                }
             }
         }
+
         AudioAssistant.Instance.PlayMusic("Start");
         HCVibrate.Haptic(HapticTypes.SoftImpact);
 
@@ -929,6 +942,10 @@ public class ControllerPlayer : MonoBehaviour
             AudioAssistant.Shot(TYPE_SOUND.Glass);
             HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
+        else if (other.CompareTag("CheckPoint"))
+        {
+            this.CheckPoint = other.transform.position;
+        }
         else if (other.CompareTag("Bridge"))
         {
 
@@ -947,7 +964,6 @@ public class ControllerPlayer : MonoBehaviour
         else if (other.CompareTag("EndingBoard"))
         {
             other.transform.GetComponent<Renderer>().material = WhiteBoard;
-            //AudioAssistant.Instance.PlayMusic("WinEnding");
         }
         else if (other.CompareTag("ButtonOpenGate"))
         {

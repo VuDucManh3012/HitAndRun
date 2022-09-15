@@ -38,6 +38,9 @@ public class ChestRoom : MonoBehaviour
     [Header("DiamondFly")]
     public MoneyClaimFx MoneyClaimFx;
     private Transform SpawnPoint;
+
+    [Header("DisableImage")]
+    public Animator DisableImageAnimator;
     // Start is called before the first frame update
     void Start()
     {
@@ -48,18 +51,24 @@ public class ChestRoom : MonoBehaviour
     }
     private void Update()
     {
-        checkButtonAdsKey();
+        
     }
     public void checkButtonAdsKey()
     {
         if (System.Int32.Parse(PlayerPrefs.GetString("key")) == 0)
         {
-            ButtonAdsKey.SetActive(true);
+            StartCoroutine(OnButtonAdsKey());
+            DisableImageAnimator.SetTrigger("Disable");
         }
         else
         {
             ButtonAdsKey.SetActive(false);
         }
+    }
+    IEnumerator OnButtonAdsKey()
+    {
+        yield return new WaitForSeconds(2f);
+        ButtonAdsKey.SetActive(true);
     }
     public void SetImageSpecial()
     {
@@ -112,7 +121,6 @@ public class ChestRoom : MonoBehaviour
                     ImageNewSkin.sprite = ListImageSpecialGift[currentItemSpecial];
                 }
             }
-
         }
     }
     public void SubtractKey()

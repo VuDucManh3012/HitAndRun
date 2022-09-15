@@ -1093,6 +1093,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7066779238770506861}
   - component: {fileID: 1610480472723510769}
+  - component: {fileID: 3054397226197442488}
   m_Layer: 0
   m_Name: BrickWall
   m_TagString: WallBrick
@@ -1128,6 +1129,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.10214399, y: 0.060930125, z: 0.0068678856}
   m_Center: {x: -0.00321599, y: 0.030491633, z: 0.00042140007}
+--- !u!205 &3054397226197442488
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4670366102147061537}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: -0.0037442409, y: 0.03049903, z: 0.0003672915}
+  m_Size: 0.10047924
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.0056921174
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 8899704445179881782}
+  m_Enabled: 1
 --- !u!1 &4817397058286192390
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,11 +7,10 @@ public class CameraFollow2 : MonoBehaviour
     public bool unsetTarget;
     public Transform Target;
     public float smooth = 0.125f;
-    public Vector3 offset;
     private ControllerPlayer controllerPlayer;
     public bool onJump;
     public float PositionYOnJump = 2.3f;
-    // Start is called before the first frame update
+    // Start is called before the first frame updateo
     void Start()
     {
         onJump = false;

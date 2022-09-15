@@ -460,6 +460,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6293859623394340224}
+  - component: {fileID: 4434682460489931235}
   m_Layer: 0
   m_Name: Trap1
   m_TagString: Untagged
@@ -482,6 +483,31 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!205 &4434682460489931235
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5694458589333375768}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 2.4331946, z: 0.00000047683716}
+  m_Size: 6.463361
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.0059060245
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 3257146612541215404}
+    - renderer: {fileID: 1037726129247017888}
+    - renderer: {fileID: 584402026225869094}
+    - renderer: {fileID: 4462583737982620366}
+    - renderer: {fileID: 82044292811760264}
+    - renderer: {fileID: 8001028987027355488}
+    - renderer: {fileID: 540044208313503338}
+  m_Enabled: 1
 --- !u!1 &5818567535965667448
 GameObject:
   m_ObjectHideFlags: 0

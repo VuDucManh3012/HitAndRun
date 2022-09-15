@@ -253,6 +253,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7629575935582325344}
+  - component: {fileID: 2803542455913737274}
   m_Layer: 0
   m_Name: GateSquareRed
   m_TagString: Untagged
@@ -278,6 +279,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!205 &2803542455913737274
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7629575935582325345}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 5.025628, z: -0.21375489}
+  m_Size: 11.842501
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.0052385484
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 4934492293031877123}
+    - renderer: {fileID: 7629575935996680817}
+    - renderer: {fileID: 7629575935236745876}
+    - renderer: {fileID: 7629575934522797099}
+  m_Enabled: 1
 --- !u!1 &7629575935996680828
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,6 +466,12 @@ PrefabInstance:
 --- !u!4 &8359109615176507775 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4348755821325967989, guid: 3772e96e81b250542b684b8c4f08e341,
+    type: 3}
+  m_PrefabInstance: {fileID: 5213030406423446282}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4934492293031877123 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 874455961471768841, guid: 3772e96e81b250542b684b8c4f08e341,
     type: 3}
   m_PrefabInstance: {fileID: 5213030406423446282}
   m_PrefabAsset: {fileID: 0}

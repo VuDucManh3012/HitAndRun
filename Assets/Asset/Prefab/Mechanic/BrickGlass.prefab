@@ -1936,6 +1936,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9062173109001635618}
   - component: {fileID: 3105546493895398883}
+  - component: {fileID: 5059821006422042714}
   m_Layer: 0
   m_Name: Glass
   m_TagString: Glass
@@ -1971,6 +1972,26 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.09999999, y: 0.10675885, z: 0.0053746914}
   m_Center: {x: 0, y: 0.079229854, z: 0.00075098826}
+--- !u!205 &5059821006422042714
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9062173109001635619}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: -0.00024999678, y: 0.08053163, z: 0.00031821057}
+  m_Size: 0.106609374
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.006895663
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 1712641795911985681}
+    - renderer: {fileID: 7170428239937582747}
+  m_Enabled: 1
 --- !u!1 &9062173109088826316
 GameObject:
   m_ObjectHideFlags: 0
