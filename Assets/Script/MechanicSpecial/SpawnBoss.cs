@@ -6,6 +6,7 @@ public class SpawnBoss : MonoBehaviour
 {
     public GameObject[] ArrayBossModel;
     public int IntBossToSpawn;
+
     // Start is called before the first frame update
     void Start()
     {

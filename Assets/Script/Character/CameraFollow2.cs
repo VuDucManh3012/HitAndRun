@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraFollow2 : MonoBehaviour
 {
-    public bool unsetTarget;
+    public bool unsetTarget=false;
     public Transform Target;
     public float smooth = 0.125f;
     private ControllerPlayer controllerPlayer;
@@ -20,12 +20,12 @@ public class CameraFollow2 : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (onJump)
+        if (onJump && !unsetTarget)
         {
             Vector3 smoothPosition = Vector3.Lerp(transform.position, new Vector3(Target.transform.position.x, PositionYOnJump , Target.transform.position.z), smooth);
             transform.position = smoothPosition;
         }
-        else
+        else if(!onJump && !unsetTarget)
         {
             Vector3 smoothPosition = Vector3.Lerp(transform.position, Target.transform.position, smooth);
             transform.position = smoothPosition;

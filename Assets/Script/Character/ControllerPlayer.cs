@@ -160,6 +160,12 @@ public class ControllerPlayer : MonoBehaviour
     public GameObject CanvasStage;
 
     private bool RunnedOnHole;
+
+    [Header("SplineMove")]
+    private SWS.splineMove SplineMove;
+
+    [Header("AttackBossEnding")]
+    public AttackBossEnding AttackBossEnding;
     private void Awake()
     {
         myLevel = 1;
@@ -210,6 +216,8 @@ public class ControllerPlayer : MonoBehaviour
         TimefixedNormal = Time.fixedDeltaTime;
         RotateCharacter(0, 180, 0);
         RunnedOnHole = false;
+
+        SplineMove = transform.GetComponent<SWS.splineMove>();
     }
     public float PitchSound;
     public float PitchSoundDiamond;
@@ -537,7 +545,6 @@ public class ControllerPlayer : MonoBehaviour
     {
         victory = true;
         myAnim.SetBool("Victory", true);
-        ChangeCam("CamBossEnding");
     }
     void SetOnRoad()
     {
@@ -685,23 +692,24 @@ public class ControllerPlayer : MonoBehaviour
         myAnim.SetInteger("AttackItem", 0);
         unLimitDamage = false;
     }
-    IEnumerator WaitToVictory(float second)
+    public void Victory()
     {
-        yield return new WaitForSeconds(second);
-        OnParticle(5);
-        //BossEnding
+        StartCoroutine(WaitToVictory());
+    }
+    IEnumerator WaitToVictory()
+    {
+        //RagdollBossEnding
         Destroy(EnemyEndingModel);
         EnemyEndingRagdoll.transform.GetChild(PlayerPrefs.GetInt("IntBossToSpawn")).gameObject.SetActive(true);
         EnemyEndingRagdoll.SetActive(true);
 
         int currentBoss = PlayerPrefs.GetInt("IntBossToSpawn") + 1;
         PlayerPrefs.SetInt("IntBossToSpawn", currentBoss);
+
+        myAnim.SetBool("Dance", true);
         //
-        yield return new WaitForSeconds(1.8f);
+        yield return new WaitForSeconds(0.5f);
         Time.timeScale = 1f;
-        Floatingtext.SetActive(false);
-        OffParticle(5);
-        ModelCharacterParent.transform.localRotation = Quaternion.Euler(new Vector3(0, 180, 0));
         FireWorkEnemyEnding.SetActive(true);
         ChangeCam("CamStart");
         WeaponLeft.SetActive(false);
@@ -711,7 +719,6 @@ public class ControllerPlayer : MonoBehaviour
         yield return new WaitForSeconds(3);
         UpdateDiamond();
         ActiveCanvasVictory();
-        //AudioAssistant.Instance.PlayMusic("WinEnding");
         ModelCharacterParent.transform.rotation = new Quaternion(0, 1, 0, 0);
     }
     public void pushOpposite()
@@ -806,7 +813,6 @@ public class ControllerPlayer : MonoBehaviour
         yield return new WaitForSeconds(3f);
         ActiveCanvasVictory();
 
-        //AudioAssistant.Instance.PlayMusic("WinNormal");
         if (!OnAudio)
         {
             AudioAssistant.Shot(TYPE_SOUND.WinBinhThuong);
@@ -1231,22 +1237,24 @@ public class ControllerPlayer : MonoBehaviour
             numberTimesKillBoss += 1;
             PlayerPrefs.SetInt("NumberTimesKillBoss", numberTimesKillBoss);
             //
-            Time.timeScale = 0.7f;
+            OnParticle(11);
             SetSpeed(0);
-            Jump(26);
             SetVictoryTrue();
-            StartCoroutine(WaitToVictory(1.5f));
+            ChangeCam("CamBossEnding");
+            Floatingtext.SetActive(false);
             startgame = false;
             EnemyEndingRagdoll = other.transform.Find("EnemyRagdoll").gameObject;
-            try
-            {
-                EnemyEndingModel = other.transform.Find("EnemyModel").gameObject;
-                FireWorkEnemyEnding = other.transform.Find("FireWork").GetChild(0).gameObject;
-            }
-            catch
-            {
 
-            }
+            EnemyEndingModel = other.transform.Find("EnemyModel").gameObject;
+            FireWorkEnemyEnding = other.transform.Find("FireWork").GetChild(0).gameObject;
+
+            ObjectFollowCharacter.GetComponent<CameraFollow2>().unsetTarget = true;
+            //anim
+            myAnim.SetInteger("AttackBossEnding", 1);
+            Debug.LogWarning(other.transform.Find("ListTransform").gameObject.name);
+            AttackBossEnding.ListTransform = other.transform.Find("ListTransform").gameObject;
+            myBody.isKinematic = true;
+            other.GetComponent<AttackBossEnding2>().ControllerPlayer = this.GetComponent<ControllerPlayer>();
         }
         else if (other.CompareTag("EndBlackHole"))
         {
@@ -1387,6 +1395,11 @@ public class ControllerPlayer : MonoBehaviour
     public void SetHammerAttack()
     {
         ModelHammer.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 3);
+    }
+    public void SetPosition(Transform transFormTo)
+    {
+        this.transform.position = transFormTo.position;
+        this.ModelCharacterParent.transform.rotation = transFormTo.rotation;
     }
     private void OnTriggerStay(Collider other)
     {

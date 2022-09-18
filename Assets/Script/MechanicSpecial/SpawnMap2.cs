@@ -610,7 +610,7 @@ public class SpawnMap2 : MonoBehaviour
         int random;
         if (System.Int32.Parse(PlayerPrefs.GetString("stage")) > 1)
         {
-            if (Random.Range(0, 10) <= 6)
+            if (Random.Range(0, 10) <= 7)
             {
                 Debug.LogWarning("Co the Thang");
                 if (ToTalLevelInMap <= 100)
