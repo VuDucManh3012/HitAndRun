@@ -52,7 +52,7 @@ public class GameManager : Singleton<GameManager>
 
         EventGlobalManager.Instance.OnUpdateSetting.Dispatch();
 
-        LoadingManager.Instance.LoadScene(SCENE_INDEX.Stage, () => { MainScreen.Show(); });
+        LoadingManager.Instance.LoadScene(SCENE_INDEX.Stage, GUIManager.Instance.SliderLoading, () => { MainScreen.Show(); });
 
         Instance.GameInited = true;
     }

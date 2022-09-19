@@ -49,6 +49,9 @@ public class GUIManager : Singleton<GUIManager>
     [SerializeField]
     PanelInstance Prefabs;
 
+    [SerializeField]
+    public Slider SliderLoading;
+
     private Dictionary<UI_PANEL, UIPanel> initiedPanels = new Dictionary<UI_PANEL, UIPanel>();
 
     private List<UIPanel> showingPopups = new List<UIPanel>();

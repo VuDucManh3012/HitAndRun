@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class LoadingManager : Singleton<LoadingManager>
 {
     private UILoading loading;
-
+    private Slider slider;
     private Dictionary<SCENE_INDEX, Action> SceneLoadedSpecialAction = new Dictionary<SCENE_INDEX, Action>();
 
     void SetSceneAction(SCENE_INDEX scene, Action action)
@@ -18,7 +19,7 @@ public class LoadingManager : Singleton<LoadingManager>
             SceneLoadedSpecialAction.Add(scene, action);
     }
 
-    public void LoadScene(SCENE_INDEX type, Action action = null, bool overrideNullAction = false)
+    public void LoadScene(SCENE_INDEX type,Slider sli, Action action = null, bool overrideNullAction = false)
     {
         if (loading == null)
             loading = GUIManager.Instance.LoadingUI;
@@ -28,6 +29,7 @@ public class LoadingManager : Singleton<LoadingManager>
 
         EventGlobalManager.Instance.OnStartLoadScene.Dispatch();
         StartCoroutine(LoadSceneAsync(type));
+        slider = sli;
     }
 
     IEnumerator LoadSceneAsync(SCENE_INDEX index)
@@ -38,9 +40,11 @@ public class LoadingManager : Singleton<LoadingManager>
         Application.backgroundLoadingPriority = ThreadPriority.Normal;
         while (!asyncLoad.isDone)
         {
+            float progerss = Mathf.Clamp01(asyncLoad.progress / 0.9f);
+            slider.value = progerss;
             if (asyncLoad.progress >= 0.90f)
                 asyncLoad.allowSceneActivation = true;
-
+                
             yield return null;
         }
 
