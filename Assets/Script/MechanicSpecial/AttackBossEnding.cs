@@ -5,7 +5,7 @@ using UnityEngine;
 public class AttackBossEnding : MonoBehaviour
 {
     private float timeScaleDisSubtract = 0.008f;
-    private float minTimeScale = 0.05f;
+    private float minTimeScale = 0.1f;
     private float fixedDeltaTimeNormal;
 
     [Header("Character")]

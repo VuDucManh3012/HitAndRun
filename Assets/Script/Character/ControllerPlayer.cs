@@ -62,7 +62,7 @@ public class ControllerPlayer : MonoBehaviour
 
     [Header("CharacterParent")]
     public AutoMove AutoMoveCharacter;
-
+    public GameObject ModelCharacterRoot;
     public GameObject ModelCharacterParent;
     public GameObject ModelCharacterBase;
     public GameObject ModelCharacterArmor;
@@ -166,6 +166,9 @@ public class ControllerPlayer : MonoBehaviour
 
     [Header("AttackBossEnding")]
     public AttackBossEnding AttackBossEnding;
+
+    [Header("BossRoom")]
+    public BossRoomMechanic BossRoomMechanic;
     private void Awake()
     {
         myLevel = 1;
@@ -1251,7 +1254,6 @@ public class ControllerPlayer : MonoBehaviour
             ObjectFollowCharacter.GetComponent<CameraFollow2>().unsetTarget = true;
             //anim
             myAnim.SetInteger("AttackBossEnding", 1);
-            Debug.LogWarning(other.transform.Find("ListTransform").gameObject.name);
             AttackBossEnding.ListTransform = other.transform.Find("ListTransform").gameObject;
             myBody.isKinematic = true;
             other.GetComponent<AttackBossEnding2>().ControllerPlayer = this.GetComponent<ControllerPlayer>();
@@ -1361,6 +1363,16 @@ public class ControllerPlayer : MonoBehaviour
             HCVibrate.Haptic(HapticTypes.SoftImpact);
             other.transform.gameObject.SetActive(false);
             DemoingSkin = true;
+        }
+        else if (other.CompareTag("StartSlide"))
+        {
+            CanvasManager.CanvasTouchPad.SetActive(false);
+            transform.position = new Vector3(0, transform.position.y, transform.position.z);
+            SetSpeed(0);
+            myAnim.SetTrigger("Samurai");
+            BossRoomMechanic.ReadySlide();
+            OnParticle(12);
+            Floatingtext.SetActive(false);
         }
     }
     public void SetOffUnLimitDamege()

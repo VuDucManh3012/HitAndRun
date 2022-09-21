@@ -133,7 +133,11 @@ public class CanvasManager : MonoBehaviour
     [Header("CanvasDiamondFly")]
     public MoneyClaimFx MoneyClaimFx;
     public Transform SpawnPointDefault;
+    public GameObject QuantityDiamondDisplay;
     private Transform SpawnPoint;
+
+    [Header("CanvasBossRoom")]
+    public GameObject CanvasBossRoom;
 
     // Start is called before the first frame update
     void Start()
@@ -1391,6 +1395,19 @@ public class CanvasManager : MonoBehaviour
         SoundVolumn.value = PlayerPrefs.GetFloat("SfxVolumn");
         MusicVolumn.value = PlayerPrefs.GetFloat("MusicVolumn");
         AudioAssistant.Instance.UpdateSoundSetting2(SoundVolumn.value, MusicVolumn.value);
+    }
+    public void ButtonOffCanvasBossRoom()
+    {
+        CanvasBossRoom.SetActive(false);
+        GameStartScene.SetActive(true);
+        QuantityDiamondDisplay.SetActive(true);
+    }
+
+    public void ButtonOnCanvasBossRoom()
+    {
+        CanvasBossRoom.SetActive(true);
+        GameStartScene.SetActive(false);
+        QuantityDiamondDisplay.SetActive(false);
     }
     private void OnApplicationPause(bool pause)
     {

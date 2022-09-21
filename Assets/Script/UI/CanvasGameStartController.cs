@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CanvasGameStartController : MonoBehaviour
 {
@@ -15,10 +16,18 @@ public class CanvasGameStartController : MonoBehaviour
 
     [Header("Noads")]
     public GameObject ButtonNoAds;
+
     [Header("CanvasTouchPad")]
     public GameObject CanvasTouchPad;
+
     [Header("CanvasPopupOfflineReward")]
     public GameObject CanvasPopupOfflineReward;
+
+    [Header("CanvasBossRoom")]
+    public GameObject CanvasBossRoom;
+    public Text CanvasStage;
+    public GameObject CanvasDiamondQuality;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -76,6 +85,13 @@ public class CanvasGameStartController : MonoBehaviour
             OfflineUpdateEnoughDiamond.SetActive(false);
             OfflineUpdateNoEnoughDiamond.SetActive(true);
         }
+    }
+    public void ButtonOnBossRoom()
+    {
+        this.transform.gameObject.SetActive(false);
+        CanvasBossRoom.SetActive(true);
+        CanvasStage.text = "Boss";
+        CanvasDiamondQuality.gameObject.SetActive(false);
     }
 }
 
