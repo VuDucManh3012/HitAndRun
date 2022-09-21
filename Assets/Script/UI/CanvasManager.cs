@@ -767,9 +767,8 @@ public class CanvasManager : MonoBehaviour
     }
     public void TatADS()
     {
-        ///tat ads
-        GameManager.Instance.Data.User.PurchasedNoAds = true;
         ///
+        IAPManager.Instance.BuyProduct(GameManager.Instance.NoAdsId);
     }
 
     public void checkvolumn()

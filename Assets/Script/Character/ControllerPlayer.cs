@@ -533,6 +533,10 @@ public class ControllerPlayer : MonoBehaviour
     {
         Particle[a].SetActive(false);
     }
+    public void OffParticleChild(int Parent,int Child)
+    {
+        Particle[Parent].transform.GetChild(Child).gameObject.SetActive(false);
+    }
     //Animation
     void SetRunTrue()
     {

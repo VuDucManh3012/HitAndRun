@@ -11,7 +11,7 @@ public class HCGameSetting : ScriptableObject
     public string GameVersion = "1.0";
     public int BuildVersion = 0;
     public int BundleVersion = 1;
-    public string PackageName = "com.hypercat.prototype";
+    public string PackageName = "com.hypercat.solorun";
     public string BuildPath = "D:/HyperCat Build/";
 
     [Space, Header("Appstore ID (iOS Only)")]

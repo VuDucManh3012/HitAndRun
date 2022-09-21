@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class AttackBossEnding : MonoBehaviour
 {
-    private float timeScaleDisSubtract = 0.008f;
-    private float minTimeScale = 0.1f;
+    private float timeScaleDisSubtract = 0.012f;
+    private float minTimeScale = 0.2f;
     private float fixedDeltaTimeNormal;
 
     [Header("Character")]
@@ -32,6 +32,7 @@ public class AttackBossEnding : MonoBehaviour
                 subTractTime = true;
                 ChangeCam();
                 ListTransform.SetActive(true);
+                ControllerPlayer.OffParticleChild(11, 1);
             }
         }
     }
