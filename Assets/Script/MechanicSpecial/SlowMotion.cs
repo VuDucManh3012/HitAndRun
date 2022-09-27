@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class SlowMotion : MonoBehaviour
 {
-    private float timeScaleDisSubtract = 0.004f;
-    private float minTimeScale = 0.1f;
+    public float timeScaleDisSubtract = 0.02f;
+    public float minTimeScale = 0.2f;
     private float fixedDeltaTimeNormal;
 
     private bool subTractTime = false;

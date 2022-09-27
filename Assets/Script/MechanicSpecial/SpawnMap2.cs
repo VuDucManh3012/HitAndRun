@@ -102,6 +102,9 @@ public class SpawnMap2 : MonoBehaviour
 
     [Header("DemoSkin")]
     public GameObject MapDemoSkin;
+
+    [Header("TicketBossRoom")]
+    public GameObject TicketBossRoom;
     // Start is called before the first frame update
     public void Start()
     {
@@ -147,15 +150,22 @@ public class SpawnMap2 : MonoBehaviour
 
         //random key
         //chon diamond de thay
-        if (Random.Range(0, 2) == 1)
+        if (ListDiamond.Count > 10)
         {
-            if (ListDiamond.Count > 10)
+            if (Random.Range(0, 2) == 1)
             {
                 int index = Random.Range(ListDiamond.Count / 2, ListDiamond.Count);
                 //
                 Vector3 myPosition = ListDiamond[index].transform.position;
                 ListDiamond[index].SetActive(false);
                 Instantiate(Key, new Vector3(myPosition.x, myPosition.y - 1, myPosition.z), Quaternion.Euler(-90, 0, 0));
+            }
+            else if (System.Int32.Parse(PlayerPrefs.GetString("stage")) >= 2)
+            {
+                int index = Random.Range(1, ListDiamond.Count / 2);
+                Vector3 myPosition = ListDiamond[index].transform.position;
+                ListDiamond[index].SetActive(false);
+                Instantiate(TicketBossRoom, new Vector3(myPosition.x, myPosition.y, myPosition.z), Quaternion.Euler(0, 0, 0));
             }
         }
     }

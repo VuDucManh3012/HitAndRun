@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using RocketTeam.Sdk.Services.Ads;
 public class BossRoom : MonoBehaviour
 {
     public TMP_Text TextQualityTicket;
 
     public int indexBoss;
 
+    private bool adsShowing;
+    public GameObject EnterBossRoom;
     private CanvasManager CanvasManager;
+
+    public Text textStage;
 
     [Header("ListBoss")]
     public List<Boss> ListInfoBoss;
@@ -17,16 +22,18 @@ public class BossRoom : MonoBehaviour
     [Header("InfoBoss")]
     private int numberId;
     private string name;
+    private int healthCurrent;
     private Sprite image;
     private Sprite imageShadow;
-    private int healthCurrent;
     private int healthMax;
     private bool fighted;
     private int levelToFight;
+    private bool dead;
 
     [Header("DisplayInfo")]
     public TMP_Text TextNameBoss;
     public Image ImageBoss;
+    public GameObject ImageCleaned;
     public TMP_Text TextHealthBoss;
     public Slider SliderHealthBoss;
     public GameObject HealthBoss;
@@ -37,7 +44,11 @@ public class BossRoom : MonoBehaviour
     public GameObject ButtonChallengeNormal;
     public GameObject ButtonLocked;
     public GameObject ButtonAdsChallenge;
-
+    public static BossRoom Instance { get; private set; }
+    private void Awake()
+    {
+        Instance = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -48,11 +59,11 @@ public class BossRoom : MonoBehaviour
     }
     public int GetQualityTicketBossRoom()
     {
-        if (!PlayerPrefs.HasKey("TicketBossRoom"))
-        {
-            PlayerPrefs.SetInt("TicketBossRoom", 0);
-        }
         return PlayerPrefs.GetInt("TicketBossRoom");
+    }
+    public Boss GetDataBoss()
+    {
+        return ListInfoBoss[indexBoss];
     }
     void SetTextQualityTicket()
     {
@@ -65,12 +76,23 @@ public class BossRoom : MonoBehaviour
         this.name = currentBoss.name;
         this.image = currentBoss.image;
         this.imageShadow = currentBoss.imageShadow;
+
+        if (currentBoss.healthCurrent <= 0)
+        {
+            currentBoss.healthCurrent = currentBoss.healthMax;
+        }
+
         this.healthCurrent = currentBoss.healthCurrent;
         this.healthMax = currentBoss.healthMax;
         this.fighted = currentBoss.fighted;
         this.levelToFight = currentBoss.levelToFight;
+        this.dead = currentBoss.dead;
     }
-    void DisplayInfoBoss()
+    public Sprite GetImageBoss()
+    {
+        return this.image;
+    }
+    public void DisplayInfoBoss()
     {
         GetInfo();
         CheckCanFight();
@@ -85,7 +107,18 @@ public class BossRoom : MonoBehaviour
             SetTextCanFight();
         }
         OnOffHealthBarCanFight();
-        Debug.LogWarning(CheckConditionCanFight.CanFight + "," + CheckConditionCanFight.TypeFight);
+        OnOffImageCleaned();
+    }
+    void OnOffImageCleaned()
+    {
+        if (dead)
+        {
+            ImageCleaned.SetActive(true);
+        }
+        else
+        {
+            ImageCleaned.SetActive(false);
+        }
     }
     class CheckConditionCanFight
     {
@@ -126,14 +159,12 @@ public class BossRoom : MonoBehaviour
             //Cothedanh
             this.HealthBoss.SetActive(true);
             this.HealthBarCantFight.SetActive(false);
-            Debug.Log("aaa");
         }
         else if (!CheckConditionCanFight.CanFight)
         {
             //Khongthedanh
             this.HealthBoss.SetActive(false);
             this.HealthBarCantFight.SetActive(true);
-            Debug.Log("bbb");
         }
     }
     void OnOffButtonChallenge(GameObject ButtonOn)
@@ -148,7 +179,8 @@ public class BossRoom : MonoBehaviour
         TextNameBoss.text = numberId.ToString() + ". " + name;
         ImageBoss.sprite = image;
         TextHealthBoss.text = healthCurrent + "/" + healthMax;
-        SliderHealthBoss.value = healthCurrent / healthMax;
+        SliderHealthBoss.maxValue = healthMax;
+        SliderHealthBoss.value = healthCurrent;
 
         if (CheckConditionCanFight.TypeFight == 1)
         {
@@ -170,12 +202,12 @@ public class BossRoom : MonoBehaviour
         if (CheckConditionCanFight.TypeFight == 1)
         {
             //Khong du lv
-            TextCantFight.text = "Level " + "<color=red>" + levelToFight;
+            TextCantFight.text = "You Need <color=purple>Level" + levelToFight;
         }
         else
         {
             //chua danh boss truoc
-            TextCantFight.text = "Kill <color=red> PrevBoss";
+            TextCantFight.text = "You Need <color=purple> Kill PrevBoss";
         }
         OnOffButtonChallenge(ButtonLocked);
     }
@@ -194,5 +226,51 @@ public class BossRoom : MonoBehaviour
             indexBoss += 1;
             DisplayInfoBoss();
         }
+    }
+    public void ButtonEnterBossRoomNormal()
+    {
+        if (PlayerPrefs.GetInt("TicketBossRoom") >= 1)
+        {
+            textStage.text = "Boss";
+            int quantityTicket = PlayerPrefs.GetInt("TicketBossRoom");
+            quantityTicket -= 1;
+            PlayerPrefs.SetInt("TicketBossRoom", quantityTicket);
+            EnterBossRoom.SetActive(true);
+            SetTextQualityTicket();
+            this.gameObject.SetActive(false);
+            
+        }
+    }
+    public void ButtonAdsBossRoom()
+    {
+        if (!GameManager.NetworkAvailable)
+        {
+            PopupNoInternet.Show();
+            return;
+        }
+
+        if (adsShowing)
+            return;
+
+        if (!GameManager.EnableAds)
+        {
+            adsShowing = true;
+            AdManager.Instance.ShowAdsReward(OnCompleteAdsEnterBossRoom, "AdsEnterBossRoom");
+        }
+#if !PROTOTYPE
+        else
+        {
+            adsShowing = true;
+            AdManager.Instance.ShowAdsReward(OnCompleteAdsEnterBossRoom, "AdsEnterBossRoom");
+        }
+#endif
+    }
+    private void OnCompleteAdsEnterBossRoom(int value)
+    {
+        AnalyticManager.LogWatchAds("AdsEnterBossRoom", 1);
+        adsShowing = false;
+        EnterBossRoom.SetActive(true);
+        textStage.text = "Boss";
+        this.gameObject.SetActive(false);
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName ="New Boss", menuName =("Boss"))]
+[CreateAssetMenu(fileName = "New Boss", menuName = ("Boss"))]
 public class Boss : ScriptableObject
 {
     public int numberId;
@@ -13,4 +13,5 @@ public class Boss : ScriptableObject
     public int healthMax;
     public bool fighted;
     public int levelToFight;
+    public bool dead;
 }
