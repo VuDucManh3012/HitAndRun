@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class SlowMotionBossRoom : MonoBehaviour
 {
-    private float timeScaleDisSubtract = 0.006f;
-    private float minTimeScale = 0.05f;
+    private float timeScaleDisSubtract = 0.01f;
+    private float minTimeScale = 0.2f;
     private float fixedDeltaTimeNormal;
 
     private bool subTractTime = false;

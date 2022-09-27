@@ -139,6 +139,20 @@ public class CanvasManager : MonoBehaviour
     [Header("CanvasBossRoom")]
     public GameObject CanvasBossRoom;
 
+    [Header("CanvasAttackBoss")]
+    public GameObject CanvasAttackBoss;
+
+    [Header("CanvasSplashArt")]
+    public GameObject CanvasSplash;
+    public static CanvasManager Instance { get; private set; }
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+
+            Instance = this;
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -307,24 +321,57 @@ public class CanvasManager : MonoBehaviour
         //
         if (WeaponNoBuy.Count > 0 || SkinNoBuy.Count > 0)
         {
+            //check da mua chua
+            int typeShopCurrent = PlayerPrefs.GetInt("TypeShopEndingSkin");
+            int skinCurrent = PlayerPrefs.GetInt("IndexSkinEndingShop");
+            //
             if (PlayerPrefs.HasKey("phanTramNewSkinEndingCurrent") && PlayerPrefs.GetInt("phanTramNewSkinEndingCurrent") != 100)
             {
-                ThemPhanTramSkinEndingCurrent();
-                SetTextAndAnimSkinEnding();
+                if (typeShopCurrent == 1)
+                {
+                    if (!CheckInList(WeaponNoBuy, PlayerPrefs.GetInt("NumberSkinEnding")))
+                    {
+                        RandomSkinEnding();
+                    }
+                    else
+                    {
+                        ThemPhanTramSkinEndingCurrent();
+                    }
+                }
+                else
+                {
+                    if (!CheckInList(SkinNoBuy, PlayerPrefs.GetInt("NumberSkinEnding")))
+                    {
+                        RandomSkinEnding();
+                    }
+                    else
+                    {
+                        ThemPhanTramSkinEndingCurrent();
+                    }
+                }
             }
             else
             {
                 RandomSkinEnding();
-                SetTextAndAnimSkinEnding();
             }
+            SetTextAndAnimSkinEnding();
         }
         else
         {
             ButtonCanvasNewSkinEnding();
         }
-
     }
-
+    bool CheckInList(List<int> List, int value)
+    {
+        foreach (int item in List)
+        {
+            if (item == value)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     public void RandomSkinEnding()
     {
         //checkball
@@ -347,6 +394,14 @@ public class CanvasManager : MonoBehaviour
         PlayerPrefs.SetInt("TypeShopEndingSkin", TypeShop);
         PlayerPrefs.SetInt("IndexSkinEndingShop", indexSkin);
         PlayerPrefs.SetInt("phanTramNewSkinEndingCurrent", phanTramNewSkinEndingCurrent);
+        if (TypeShop == 1)
+        {
+            PlayerPrefs.SetInt("NumberSkinEnding", WeaponNoBuy[indexSkin]);
+        }
+        else if (TypeShop == 2)
+        {
+            PlayerPrefs.SetInt("NumberSkinEnding", SkinNoBuy[indexSkin]);
+        }
     }
     void RandomTypeShopAndIndexSkin()
     {
@@ -431,12 +486,12 @@ public class CanvasManager : MonoBehaviour
         }
         else if (TypeShop == 1)
         {
-            DemoSkinEnding.OnModel(TypeShop, indexSkin);
+            DemoSkinEnding.OnModel(TypeShop, WeaponNoBuy[indexSkin]);
             //ImageSkin.sprite = ListSpriteImage[WeaponNoBuy[indexSkin]];
         }
         else if (TypeShop == 2)
         {
-            DemoSkinEnding.OnModel(TypeShop, indexSkin);
+            DemoSkinEnding.OnModel(TypeShop, SkinNoBuy[indexSkin]);
             //ImageSkin.sprite = ListSpriteImage[SkinNoBuy[indexSkin] + 6];
         }
         int CurrentProcess = PlayerPrefs.GetInt("phanTramNewSkinEndingCurrent");
@@ -520,7 +575,6 @@ public class CanvasManager : MonoBehaviour
             }
             CanVasQualityKey.SetActive(true);
         }
-
     }
     public void VictorySceneController()
     {
@@ -589,9 +643,9 @@ public class CanvasManager : MonoBehaviour
     {
         if (PlayerPrefs.HasKey("First999Level"))
         {
-        //ads
-        WatchAds999Level();
-        //
+            //ads
+            WatchAds999Level();
+            //
         }
         else
         {
@@ -613,7 +667,13 @@ public class CanvasManager : MonoBehaviour
 
         SetTimeCountDown();
         PlayerPrefs.SetInt("InterVictory", 1);
+
+        OnCanvasSplash();
         Loadscene = true;
+    }
+    public void OnCanvasSplash()
+    {
+        CanvasSplash.SetActive(true);
     }
     public bool Loadscene = false;
     public bool ScreenVictoryActive;
@@ -767,7 +827,6 @@ public class CanvasManager : MonoBehaviour
     }
     public void TatADS()
     {
-        ///
         IAPManager.Instance.BuyProduct(GameManager.Instance.NoAdsId);
     }
 
@@ -850,7 +909,7 @@ public class CanvasManager : MonoBehaviour
     {
         CanvasNewSkinChestRoom.SetActive(false);
     }
-    private void SetTimeCountDown()
+    public void SetTimeCountDown()
     {
         PlayerPrefs.SetInt("currenttime", currentTime);
     }
@@ -1407,6 +1466,11 @@ public class CanvasManager : MonoBehaviour
         CanvasBossRoom.SetActive(true);
         GameStartScene.SetActive(false);
         QuantityDiamondDisplay.SetActive(false);
+        BossRoom.Instance.DisplayInfoBoss();
+    }
+    public void OnQuantityDiamond()
+    {
+        QuantityDiamondDisplay.SetActive(true);
     }
     private void OnApplicationPause(bool pause)
     {

@@ -11,7 +11,6 @@ public class DemoSkinEnding : MonoBehaviour
     public List<Texture> ListTextureSkin;
     public void OnModel(int TypeShop, int IndexSkin)
     {
-        IndexSkin += 1;
         ModelCharacter.SetActive(false);
         for (int i = 0; i < ListModelWeapons.Count; i++)
         {

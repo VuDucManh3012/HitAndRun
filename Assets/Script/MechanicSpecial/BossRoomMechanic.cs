@@ -35,6 +35,7 @@ public class BossRoomMechanic : MonoBehaviour
         OpenPortal();
         OnOFfTouchPad(false);
         Target = new Vector3(-7, 5, 0);
+        CanvasManager.Instance.OnQuantityDiamond();
     }
     public void OnOFfTouchPad(bool On)
     {

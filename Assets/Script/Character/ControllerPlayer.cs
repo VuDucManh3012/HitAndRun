@@ -161,16 +161,22 @@ public class ControllerPlayer : MonoBehaviour
 
     private bool RunnedOnHole;
 
-    [Header("SplineMove")]
-    private SWS.splineMove SplineMove;
-
     [Header("AttackBossEnding")]
     public AttackBossEnding AttackBossEnding;
 
     [Header("BossRoom")]
     public BossRoomMechanic BossRoomMechanic;
+
+    [Header("TicketBossRoom")]
+    public GameObject TicketBossRoom;
+
+    public static ControllerPlayer Instance { get; private set; }
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
         myLevel = 1;
         startgame = false;
     }
@@ -219,11 +225,13 @@ public class ControllerPlayer : MonoBehaviour
         TimefixedNormal = Time.fixedDeltaTime;
         RotateCharacter(0, 180, 0);
         RunnedOnHole = false;
-
-        SplineMove = transform.GetComponent<SWS.splineMove>();
     }
     public float PitchSound;
     public float PitchSoundDiamond;
+    public double GetMyLevel()
+    {
+        return myLevel;
+    }
     public void SetPlus999()
     {
         Plus999 = true;
@@ -362,7 +370,6 @@ public class ControllerPlayer : MonoBehaviour
     {
         myLevel += PlayerPrefs.GetInt("UpdateLevel");
     }
-    [ContextMenu("SetSkin")]
     public void SetSkin2()
     {
         for (int i = 0; i <= 11; i++)
@@ -498,7 +505,6 @@ public class ControllerPlayer : MonoBehaviour
                 vel.x = CnInputManager.GetAxis("Horizontal") * SpeedLeftRight;
 
             myBody.velocity = myBody.transform.TransformVector(vel);
-            //transform.position = new Vector3(Mathf.Clamp(transform.position.x + CnInputManager.GetAxis("Horizontal") * SpeedLeftRight * Time.deltaTime, -maxX, maxX), transform.position.y, transform.position.z);
         }
     }
     public void TouchToStart()
@@ -533,7 +539,7 @@ public class ControllerPlayer : MonoBehaviour
     {
         Particle[a].SetActive(false);
     }
-    public void OffParticleChild(int Parent,int Child)
+    public void OffParticleChild(int Parent, int Child)
     {
         Particle[Parent].transform.GetChild(Child).gameObject.SetActive(false);
     }
@@ -547,6 +553,10 @@ public class ControllerPlayer : MonoBehaviour
         myAnim.SetBool("Die", true);
         //tat textlevel
         unsetLevelText = true;
+    }
+    public void SetTriggerAnim(string nameTrigger)
+    {
+        myAnim.SetTrigger(nameTrigger);
     }
     void SetVictoryTrue()
     {
@@ -568,6 +578,10 @@ public class ControllerPlayer : MonoBehaviour
     void SetJumpAttack360(bool TorF)
     {
         myAnim.SetBool("JumpAttack360", TorF);
+    }
+    public void SetDance()
+    {
+        myAnim.SetBool("Dance", true);
     }
     void SetAttack()
     {
@@ -716,7 +730,6 @@ public class ControllerPlayer : MonoBehaviour
         myAnim.SetBool("Dance", true);
         //
         yield return new WaitForSeconds(0.5f);
-        Time.timeScale = 1f;
         FireWorkEnemyEnding.SetActive(true);
         ChangeCam("CamStart");
         WeaponLeft.SetActive(false);
@@ -1250,8 +1263,8 @@ public class ControllerPlayer : MonoBehaviour
             ChangeCam("CamBossEnding");
             Floatingtext.SetActive(false);
             startgame = false;
-            EnemyEndingRagdoll = other.transform.Find("EnemyRagdoll").gameObject;
 
+            EnemyEndingRagdoll = other.transform.Find("EnemyRagdoll").gameObject;
             EnemyEndingModel = other.transform.Find("EnemyModel").gameObject;
             FireWorkEnemyEnding = other.transform.Find("FireWork").GetChild(0).gameObject;
 
@@ -1377,6 +1390,24 @@ public class ControllerPlayer : MonoBehaviour
             BossRoomMechanic.ReadySlide();
             OnParticle(12);
             Floatingtext.SetActive(false);
+        }
+        else if (other.CompareTag("Boss"))
+        {
+            ObjectFollowCharacter.GetComponent<CameraFollow2>().unsetTarget = true;
+            this.GetComponent<TranformAttackBoss>().enabled = true;
+            CanvasManager.CanvasAttackBoss.SetActive(true);
+            SetSpeed(0);
+            myBody.isKinematic = true;
+            ChangeCam("CamAttackBossRoom");
+            isMove = false;
+        }
+        else if (other.CompareTag("TicketBossRoom"))
+        {
+            Destroy(other.gameObject);
+            TicketBossRoom.SetActive(true);
+            PlayerPrefs.SetInt("TicketBossRoom", PlayerPrefs.GetInt("TicketBossRoom") + 1);
+            AudioAssistant.Shot(TYPE_SOUND.Diamond);
+            HCVibrate.Haptic(HapticTypes.SoftImpact);
         }
     }
     public void SetOffUnLimitDamege()
