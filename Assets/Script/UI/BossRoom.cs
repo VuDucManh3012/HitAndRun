@@ -50,7 +50,7 @@ public class BossRoom : MonoBehaviour
         Instance = this;
     }
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
         indexBoss = 0;
         SetTextQualityTicket();
@@ -126,6 +126,15 @@ public class BossRoom : MonoBehaviour
     }
     void CheckCanFight()
     {
+        if (CanvasManager==null)
+        {
+            Debug.Log("!!!CanvasManager");
+        }
+        else if(CanvasManager.characterController==null)
+        {
+            Debug.Log("!!!CanvasManager.characterController");
+        }
+
         if (indexBoss > 0 && !ListInfoBoss[indexBoss - 1].fighted)
         {
             //chua danh boss truoc
@@ -237,7 +246,6 @@ public class BossRoom : MonoBehaviour
             EnterBossRoom.SetActive(true);
             SetTextQualityTicket();
             this.gameObject.SetActive(false);
-            
         }
     }
     public void ButtonAdsBossRoom()

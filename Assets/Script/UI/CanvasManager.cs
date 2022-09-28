@@ -1460,14 +1460,6 @@ public class CanvasManager : MonoBehaviour
         GameStartScene.SetActive(true);
         QuantityDiamondDisplay.SetActive(true);
     }
-
-    public void ButtonOnCanvasBossRoom()
-    {
-        CanvasBossRoom.SetActive(true);
-        GameStartScene.SetActive(false);
-        QuantityDiamondDisplay.SetActive(false);
-        BossRoom.Instance.DisplayInfoBoss();
-    }
     public void OnQuantityDiamond()
     {
         QuantityDiamondDisplay.SetActive(true);

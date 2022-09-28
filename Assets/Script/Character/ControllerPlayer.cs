@@ -267,7 +267,6 @@ public class ControllerPlayer : MonoBehaviour
     }
     void FixedUpdate()
     {
-
         checkDead();
         checkY();
         setLevelText();
