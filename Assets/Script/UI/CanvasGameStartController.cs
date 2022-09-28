@@ -197,6 +197,10 @@ public class CanvasGameStartController : MonoBehaviour
     }
     void SetInfoUpgradeCritBoss()
     {
+        if (!PlayerPrefs.HasKey("UpgradeCritBoss"))
+        {
+            PlayerPrefs.SetInt("UpgradeCritBoss", 1);
+        }
         int critBoss = 10 * PlayerPrefs.GetInt("UpgradeCritBoss");
         InfoUpgradeCritBoss.text = "+" + critBoss + "%";
     }

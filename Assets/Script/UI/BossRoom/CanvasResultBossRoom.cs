@@ -72,6 +72,10 @@ public class CanvasResultBossRoom : MonoBehaviour
     public void Continous()
     {
         CanvasAttackBoss.Instance.SetData();
-        CanvasManager.Instance.Continues();
+        CanvasManager.Instance.SetTimeCountDown();
+        PlayerPrefs.SetInt("InterVictory", 1);
+
+        CanvasManager.Instance.OnCanvasSplash();
+        SceneManager.LoadScene(1);
     }
 }

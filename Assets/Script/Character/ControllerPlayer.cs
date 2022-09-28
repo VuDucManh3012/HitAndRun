@@ -104,6 +104,7 @@ public class ControllerPlayer : MonoBehaviour
 
     [Header("Particle System")]
     public GameObject[] Particle;
+    public GameObject[] ParticleCanScale;
 
     [Header("SpawnMap")]
     public EnemyCheckLevel EnemyCheckLevelObject;
@@ -285,6 +286,13 @@ public class ControllerPlayer : MonoBehaviour
             pushOppsiteEnemy();
         }
     }
+    void ScaleParticle()
+    {
+        foreach(GameObject item in ParticleCanScale)
+        {
+            item.transform.localScale = new Vector3(0.9f, 0.9f, 0.9f);
+        }
+    }
     public void checkSoundAttack()
     {
         if (PitchSound > 1)
@@ -415,6 +423,7 @@ public class ControllerPlayer : MonoBehaviour
                     CharacterGlowUp = 3;
                 }
                 ModelCharacterParent.transform.localScale = new Vector3(80, 80, 80);
+                ScaleParticle();
                 NumberTextSkinLevel = NumberTextSkin + 3;
                 SkinRenderer.material.mainTexture = textSkin[NumberTextSkinLevel];
                 ModelCharacterArmor.SetActive(true);

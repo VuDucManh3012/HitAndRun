@@ -202,12 +202,12 @@ public class BossRoom : MonoBehaviour
         if (CheckConditionCanFight.TypeFight == 1)
         {
             //Khong du lv
-            TextCantFight.text = "You Need <color=purple>Level" + levelToFight;
+            TextCantFight.text = "You Need <color=red> Level " + levelToFight;
         }
         else
         {
             //chua danh boss truoc
-            TextCantFight.text = "You Need <color=purple> Kill PrevBoss";
+            TextCantFight.text = "You Need <color=red> Kill PrevBoss";
         }
         OnOffButtonChallenge(ButtonLocked);
     }

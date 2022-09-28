@@ -6,7 +6,15 @@ public class SetDataDefault : MonoBehaviour
 {
     public List<Boss> ListDataNormal;
     public List<Boss> ListDataDefault;
-
+    private void Start()
+    {
+        if (!PlayerPrefs.HasKey("SetDataBossDefault"))
+        {
+            SetDefault();
+            PlayerPrefs.SetInt("SetDataBossDefault", 1);
+        }
+        Destroy(this.gameObject);
+    }
     [ContextMenu("SetDataBoss")]
     public void SetDefault()
     {
