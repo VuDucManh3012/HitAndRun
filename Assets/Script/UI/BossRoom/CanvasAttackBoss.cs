@@ -178,7 +178,10 @@ public class CanvasAttackBoss : MonoBehaviour
             time += 0.02f;
             if (i == 10)
             {
-                BossInBossRoom.Instance.OnRagdoll();
+                if (currentHealth <= 0)
+                {
+                    BossInBossRoom.Instance.OnRagdoll();
+                }
                 //OFfTornado
                 ControllerPlayer.Instance.OffParticle(14);
                 yield return new WaitForSeconds(0.3f);
@@ -205,7 +208,7 @@ public class CanvasAttackBoss : MonoBehaviour
 
         //CanvasVictory
         CanvasResultBossRoom.SetActive(true);
-        
+
 
         //OffThisCanvas
         this.gameObject.SetActive(false);

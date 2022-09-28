@@ -12,7 +12,7 @@ public class BossRoom : MonoBehaviour
 
     private bool adsShowing;
     public GameObject EnterBossRoom;
-    private CanvasManager CanvasManager;
+    public CanvasManager CanvasManager;
 
     public Text textStage;
 
@@ -53,7 +53,6 @@ public class BossRoom : MonoBehaviour
     void Start()
     {
         indexBoss = 0;
-        CanvasManager = transform.parent.GetComponent<CanvasManager>();
         SetTextQualityTicket();
         DisplayInfoBoss();
     }
