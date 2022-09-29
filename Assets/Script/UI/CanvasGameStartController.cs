@@ -130,6 +130,7 @@ public class CanvasGameStartController : MonoBehaviour
         CanvasBossRoom.SetActive(true);
         CanvasStage.text = "Boss";
         CanvasDiamondQuality.gameObject.SetActive(false);
+        BossRoom.Instance.Start();
     }
     public void ButtonUpgradeCritBoss()
     {

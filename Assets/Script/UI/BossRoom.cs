@@ -12,7 +12,6 @@ public class BossRoom : MonoBehaviour
 
     private bool adsShowing;
     public GameObject EnterBossRoom;
-    public CanvasManager CanvasManager;
 
     public Text textStage;
 
@@ -126,22 +125,13 @@ public class BossRoom : MonoBehaviour
     }
     void CheckCanFight()
     {
-        if (CanvasManager==null)
-        {
-            Debug.Log("!!!CanvasManager");
-        }
-        else if(CanvasManager.characterController==null)
-        {
-            Debug.Log("!!!CanvasManager.characterController");
-        }
-
         if (indexBoss > 0 && !ListInfoBoss[indexBoss - 1].fighted)
         {
             //chua danh boss truoc
             CheckConditionCanFight.CanFight = false;
             CheckConditionCanFight.TypeFight = 2;
         }
-        else if (levelToFight > CanvasManager.characterController.myLevel)
+        else if (levelToFight > ControllerPlayer.Instance.GetMyLevel())
         {
             //Khong du level
             CheckConditionCanFight.CanFight = false;
