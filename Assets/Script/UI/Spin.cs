@@ -139,6 +139,10 @@ public class Spin : MonoBehaviour
     }
     public void AddSpinSlot(int x)
     {
+        if (x > 1)
+        {
+            x = 1;
+        }
         int spinslot = PlayerPrefs.GetInt("SpinSlot") + x;
         PlayerPrefs.SetInt("SpinSlot", spinslot);
         CheckSpinSlot();
@@ -153,6 +157,7 @@ public class Spin : MonoBehaviour
             System.TimeSpan t = dayBefore - dayNow;
             float Diff = Mathf.Abs(ToSingle(t.TotalSeconds));
             Diff = Diff - Diff % 1;
+            
             float spinslot = ToSingle(Diff) / 14400 - ToSingle(Diff) / 14400 % 1;
             float timeNextSpin = 14400 - (ToSingle(Diff) - (14400 * spinslot));
             System.TimeSpan nextTime = System.TimeSpan.FromSeconds(timeNextSpin);
